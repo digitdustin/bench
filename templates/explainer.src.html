@@ -1,0 +1,27 @@
+<title>{{Name}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* page-specific layout only */
+</style>
+<main class="b-page" data-width="read">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">{{Topic}}</span><span class="b-label">Explainer</span><span class="b-label">{{Oct 15, 2026}}</span></div>
+    <h1 class="b-display">{{How X works}}</h1>
+    <p class="b-lede">{{What the reader will understand after the figures.}}</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Figures</dt><dd>{{5}}</dd></div>
+    </dl>
+  </header>
+
+  <!-- Hero figure: build it with /anatomy, write out/NAME.json next to this file, then: -->
+  <figure style="margin:0">
+    <!--bench:figure {{name}}-->
+    <figcaption class="b-caption"><strong>{{Figure title.}}</strong> {{What it shows and how to use it.}}</figcaption>
+  </figure>
+
+  <section class="b-section">
+    <div class="b-section-head"><h2 class="b-h2">{{Next idea}}</h2></div>
+    <div class="b-prose"><p>{{Short prose between figures.}}</p></div>
+  </section>
+</main>

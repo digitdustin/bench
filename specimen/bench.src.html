@@ -1,0 +1,317 @@
+<title>Bench Design System</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* Specimen layout: one 780px column. Page CSS sets layout only. */
+.sp-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:var(--b-2)}
+.sp-sw{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.sp-sw-chip{height:52px;box-shadow:inset 0 -1px 0 var(--b-line-3)}
+.sp-sw-meta{padding:10px var(--b-3) var(--b-3);display:flex;flex-direction:column;gap:2px}
+.sp-sw-meta code{padding:0;background:none;box-shadow:none;font-size:12px}
+.sp-group{display:flex;flex-direction:column;gap:var(--b-3)}
+.sp-type{display:flex;flex-direction:column;box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);background:var(--b-card);overflow:hidden}
+.sp-type-row{display:grid;grid-template-columns:140px 1fr;gap:var(--b-4);padding:var(--b-5) var(--b-5);border-bottom:1px solid var(--b-line-3);align-items:baseline}
+.sp-type-row:last-child{border-bottom:0}
+.sp-type-row>*{min-width:0}
+.sp-type-spec{display:flex;flex-direction:column;gap:2px}
+@media (max-width:560px){.sp-type-row{grid-template-columns:1fr;gap:var(--b-2);padding:var(--b-4)}}
+.sp-demo{display:flex;flex-wrap:wrap;gap:var(--b-2);align-items:center}
+.sp-icons{gap:var(--b-4);color:var(--b-text)}
+.sp-sizes{display:flex;flex-direction:column;gap:var(--b-2);color:var(--b-text)}
+.sp-sizes>span{display:inline-flex;align-items:center;gap:6px}
+.sp-themebar{display:flex;flex-wrap:wrap;gap:var(--b-3);align-items:center;justify-content:space-between}
+.sp-space{display:flex;flex-direction:column;gap:var(--b-2)}
+.sp-space-row{display:grid;grid-template-columns:56px 48px 1fr;gap:var(--b-3);align-items:center}
+.sp-space-bar{height:8px;border-radius:var(--b-radius-xs);background:var(--b-strong)}
+.sp-radii{display:flex;flex-wrap:wrap;gap:var(--b-4)}
+.sp-radius{display:flex;flex-direction:column;gap:var(--b-2);align-items:flex-start}
+.sp-radius div{width:72px;height:48px;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring)}
+.sp-dodont{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--b-4)}
+.sp-dodont ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:var(--b-2);font-size:var(--b-small)}
+.sp-dodont .b-h3{display:flex;align-items:center;gap:var(--b-2)}
+.sp-dodont .b-h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--b-green)}
+.sp-dodont .b-panel+.b-panel .b-h3::before{background:var(--b-red)}
+</style>
+
+<main class="b-page" data-width="read">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">Design system</span><span class="b-label">v1.4</span><span class="b-label">Oct 15, 2026</span></div>
+    <h1 class="b-display">Bench</h1>
+    <p class="b-lede">The house style for my artifacts. Colors and figures come from <em>How a Polymarket market works</em>. Labels, tables, controls and spacing follow Linear: sentence case, quiet borders, soft corners, and color only where it means something.</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Source</dt><dd>Market Press, Oct 12</dd></div>
+      <div><dt class="b-label">Skill</dt><dd><code>/bench</code></dd></div>
+      <div><dt class="b-label">Files</dt><dd><code>~/.claude/skills/bench</code></dd></div>
+      <div><dt class="b-label">Status</dt><dd>Trial, opt-in only</dd></div>
+      <!--bench:connectors slack claude_in_chrome-->
+    </dl>
+  </header>
+
+
+  <figure style="margin:0">
+    <div class="b-plate">
+      <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">YES price, 30 days</span><span class="b-corner" data-corner="hint">Example data</span><span class="b-corner" data-corner="readout">59¢ · +13¢</span></div>
+      <svg class="b-chart" viewBox="0 0 640 222" role="img" aria-label="Line chart of an example YES price rising from 46 cents on September 15 to 59 cents on October 15, 2026.">
+        <path class="grid" d="M40 16H628M40 76H628M40 136H628M40 196H628"/>
+        <text class="axis" x="32" y="20" text-anchor="end">70¢</text><text class="axis" x="32" y="80" text-anchor="end">60¢</text><text class="axis" x="32" y="140" text-anchor="end">50¢</text><text class="axis" x="32" y="200" text-anchor="end">40¢</text>
+        <text class="axis" x="40" y="218">Sep 15</text><text class="axis" x="334" y="218" text-anchor="middle">Sep 30</text><text class="axis" x="628" y="218" text-anchor="end">Oct 15</text>
+        <path class="area" d="M40.0 159.8 L59.6 152.1 L79.2 151.6 L98.8 151.9 L118.4 158.2 L138.0 157.5 L157.6 144.1 L177.2 137.4 L196.8 124.7 L216.4 119.6 L236.0 113.1 L255.6 108.7 L275.2 122.0 L294.8 111.0 L314.4 103.5 L334.0 96.0 L353.6 109.5 L373.2 123.6 L392.8 129.4 L412.4 131.2 L432.0 125.6 L451.6 123.3 L471.2 115.6 L490.8 119.1 L510.4 113.4 L530.0 106.9 L549.6 110.6 L569.2 91.4 L588.8 83.3 L608.4 69.2 L628.0 82.0 L628 196 L40 196 Z"/>
+        <path class="line" data-tone="yes" d="M40.0 159.8 L59.6 152.1 L79.2 151.6 L98.8 151.9 L118.4 158.2 L138.0 157.5 L157.6 144.1 L177.2 137.4 L196.8 124.7 L216.4 119.6 L236.0 113.1 L255.6 108.7 L275.2 122.0 L294.8 111.0 L314.4 103.5 L334.0 96.0 L353.6 109.5 L373.2 123.6 L392.8 129.4 L412.4 131.2 L432.0 125.6 L451.6 123.3 L471.2 115.6 L490.8 119.1 L510.4 113.4 L530.0 106.9 L549.6 110.6 L569.2 91.4 L588.8 83.3 L608.4 69.2 L628.0 82.0"/>
+        <circle class="dot" cx="628" cy="82" r="4"/>
+      </svg>
+    </div>
+    <figcaption class="b-caption"><strong>Plate.</strong> Every image, chart or figure sits in a plate with four corner labels: figure number, title, a hint or source, and a readout. Isometric figures from the anatomy kit drop into the same frame.</figcaption>
+  </figure>
+
+  <section class="b-section" id="color">
+    <div class="b-section-head"><h2 class="b-h2">Color</h2><p class="b-small">Greys do the hierarchy work. Green, red and blue only ever mean YES or up, NO or down, and information or a link.</p></div>
+    <div class="sp-group"><span class="b-label">Ground</span><div class="sp-swatches" data-swatches="page card raised sunk"></div></div>
+    <div class="sp-group"><span class="b-label">Ink and lines</span><div class="sp-swatches" data-swatches="strong text muted line line-2 line-3"></div></div>
+    <div class="sp-group"><span class="b-label">Signals</span><div class="sp-swatches" data-swatches="green red blue"></div></div>
+  </section>
+
+  <section class="b-section" id="type">
+    <div class="b-section-head"><h2 class="b-h2">Type</h2><p class="b-small">The system sans for everything you read, numbers included. Mono is kept for code and live figure readouts. All labels are sentence case. Every page opens with the same masthead: eyebrow, 40px headline, lede, details row.</p></div>
+    <div class="sp-type">
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Display</span><span class="b-small b-num">30–40 · Semibold</span></div><div class="b-display">The press splits a dollar</div></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Heading 1</span><span class="b-small b-num">26–32 · Semibold</span></div><div class="b-h1">Where the spread comes from</div></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Heading 2</span><span class="b-small b-num">20 · Semibold</span></div><div class="b-h2">Takers pay, makers don't</div></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Heading 3</span><span class="b-small b-num">15 · Semibold</span></div><div class="b-h3">Tick size changes mid-life</div></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Lede</span><span class="b-small b-num">17 / 1.55</span></div><p class="b-lede">One share pays a dollar if the event happens. Its price is the market's guess at the chance.</p></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Body</span><span class="b-small b-num">15 / 1.6 · 62ch</span></div><p style="margin:0">A taker who crosses the spread pays θ·C·p(1−p), largest at 50¢ and falling to nothing at the ends. A maker who rests an order pays nothing.</p></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Small</span><span class="b-small b-num">13 / 1.55</span></div><p class="b-small" style="margin:0">Captions, table cells, footnotes and sources.</p></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Label</span><span class="b-small b-num">12.5 · Medium</span></div><span class="b-label">Last price</span></div>
+      <div class="sp-type-row"><div class="sp-type-spec"><span class="b-label">Number</span><span class="b-small b-num">24–30 · Semibold</span></div><span class="b-stat-v">59.0¢</span></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="space">
+    <div class="b-section-head"><h2 class="b-h2">Space and shape</h2><p class="b-small">Spacing sits on a 4px grid: 48px between sections, 24px between blocks in a section. Corners are soft and step up with the size of the thing. Borders are 1px rings, so they never shift the layout.</p></div>
+    <div class="sp-space" id="space-scale"></div>
+    <div class="sp-radii">
+      <div class="sp-radius"><div style="border-radius:var(--b-radius-xs)"></div><span class="b-small">4 · inline code</span></div>
+      <div class="sp-radius"><div style="border-radius:var(--b-radius-sm)"></div><span class="b-small">6 · buttons, inputs</span></div>
+      <div class="sp-radius"><div style="border-radius:var(--b-radius)"></div><span class="b-small">8 · notes, code</span></div>
+      <div class="sp-radius"><div style="border-radius:var(--b-radius-lg)"></div><span class="b-small">12 · plates, tables</span></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="components">
+    <div class="b-section-head"><h2 class="b-h2">Components</h2><p class="b-small">The parts every page is built from. The figures are examples.</p></div>
+
+    <div class="sp-group"><span class="b-label">Details row with connectors (example, overflows and scrolls)</span>
+      <dl class="b-meta" data-no-author style="margin:0">
+        <div><dt class="b-label">Owner</dt><dd>Crypto growth</dd></div>
+        <div><dt class="b-label">Data through</dt><dd>Oct 14, 2026</dd></div>
+        <div><dt class="b-label">Status</dt><dd><span class="b-chip" data-tone="warn">In review</span></dd></div>
+        <!--bench:connectors hex notion amplitude clickhouse slack github linear figma-->
+      </dl>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Stats</span>
+      <div class="b-stats">
+        <div class="b-stat"><span class="b-label">Last price</span><span class="b-stat-v">59¢</span><span class="b-delta" data-dir="up">13¢ in 30 days</span></div>
+        <div class="b-stat"><span class="b-label">Spread</span><span class="b-stat-v">2¢</span><span class="b-delta">No change this week</span></div>
+        <div class="b-stat"><span class="b-label">Volume, 24h</span><span class="b-stat-v">$1.42M</span><span class="b-delta" data-dir="down">8% vs. yesterday</span></div>
+      </div>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Table</span>
+      <div class="b-table-wrap"><table class="b-table">
+        <thead><tr><th>Side</th><th data-num>Price</th><th data-num>Shares</th><th style="width:34%">Depth</th></tr></thead>
+        <tbody>
+          <tr><td>Ask</td><td data-num>61¢</td><td data-num>4,200</td><td><div class="b-meter" data-tone="no"><span style="width:62%"></span></div></td></tr>
+          <tr><td>Ask</td><td data-num>60¢</td><td data-num>1,850</td><td><div class="b-meter" data-tone="no"><span style="width:28%"></span></div></td></tr>
+          <tr><td>Bid</td><td data-num>58¢</td><td data-num>2,600</td><td><div class="b-meter" data-tone="yes"><span style="width:39%"></span></div></td></tr>
+          <tr><td>Bid</td><td data-num>57¢</td><td data-num>6,700</td><td><div class="b-meter" data-tone="yes"><span style="width:100%"></span></div></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="b-grid" data-cols="2">
+      <div class="sp-group"><span class="b-label">Chips</span>
+        <div class="b-chips"><span class="b-chip" data-tone="yes">Yes 59¢</span><span class="b-chip" data-tone="no">No 41¢</span><span class="b-chip" data-tone="info">Live</span><span class="b-chip" data-tone="warn">In progress</span><span class="b-chip" data-tone="none">Unknown</span><span class="b-chip">Resolved</span><span class="b-chip" data-plain>Crypto</span></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Legend</span>
+        <div class="b-keys"><span class="b-key"><i data-tone="yes"></i>Bids</span><span class="b-key"><i data-tone="no"></i>Asks</span><span class="b-key"><i data-dash></i>Mid</span><span class="b-key"><i data-tone="info"></i>Last trade</span></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Icons, Nucleo UI outline</span>
+        <div class="sp-demo sp-icons"><!--icon:sun--><!--icon:moon--><!--icon:monitor--><!--icon:eye--><!--icon:circle-info--><!--icon:copy--><!--icon:check--><!--icon:triangle-warning--><!--icon:arrow-trend-up--><!--icon:magnifier--></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Icon sizes follow the text</span>
+        <div class="sp-sizes">
+          <span class="b-small"><!--icon:circle-info:12--> 12 grid beside 13px text</span>
+          <span><!--icon:circle-info--> 18 grid at 16px beside body</span>
+          <span class="b-h2"><!--icon:circle-info--> 18px by a heading</span>
+        </div>
+        <div class="sp-demo"><span class="b-delta" data-dir="up">4.2%</span><span class="b-delta" data-dir="down">1.8%</span><span class="b-delta" data-dir="up" data-size="18">13¢</span></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Segmented control</span>
+        <div class="sp-demo"><div class="b-tabs" role="tablist" aria-label="Range"><button class="b-tab" role="tab" aria-selected="true">1D</button><button class="b-tab" role="tab" aria-selected="false">1W</button><button class="b-tab" role="tab" aria-selected="false">1M</button><button class="b-tab" role="tab" aria-selected="false">All</button></div></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Buttons</span>
+        <div class="sp-demo"><button class="b-btn" data-variant="solid" type="button">Publish</button><button class="b-btn" type="button"><!--icon:eye-->Preview</button><button class="b-btn" data-variant="ghost" type="button">Cancel</button></div>
+      </div>
+      <div class="sp-group"><div class="b-field"><label class="b-label" for="demo-input">Market slug</label><input class="b-input" id="demo-input" value="btc-above-120k-dec-31"></div></div>
+    </div>
+
+    <div class="b-grid" data-cols="2">
+      <div class="sp-group"><span class="b-label">Details list</span>
+        <dl class="b-kv"><dt>Resolution</dt><dd>UMA optimistic oracle</dd><dt>Tick</dt><dd>0.01</dd><dt>Ends</dt><dd>Dec 31, 2026</dd></dl>
+      </div>
+      <div class="sp-group"><span class="b-label">Note</span>
+        <aside class="b-note" data-tone="info"><p><strong>Tick sizes can change mid-life.</strong> The 4¢ and 96¢ trigger isn't documented, so any figure that shows it says so in the caption.</p></aside>
+      </div>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Status icons, from the Polymarket Slack status reactions</span>
+      <div class="b-table-wrap"><table class="b-table">
+        <thead><tr><th>Icon</th><th>Use it for</th><th>Example labels</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b-chip" data-status="todo">To do</span></td><td>Not started, planned, or not measured yet</td><td>Planned, Unknown, To check, Specced</td></tr>
+          <tr><td><span class="b-chip" data-status="ongoing">Underway</span></td><td>Work is moving right now</td><td>In progress, Shipping today, Rolling out</td></tr>
+          <tr><td><span class="b-chip" data-status="progress">Partly done</span></td><td>Some of it is done or known, some isn't</td><td>Partly met, Partly known, Partly there</td></tr>
+          <tr><td><span class="b-chip" data-status="paused">On hold</span></td><td>Stopped on purpose, or waiting on something</td><td>Hold, Blocked on legal, Deferred</td></tr>
+          <tr><td><span class="b-chip" data-status="check">Done</span></td><td>Shipped, met, confirmed</td><td>Done, Met, Shipped, Live</td></tr>
+          <tr><td><span class="b-chip" data-status="canceled">Canceled</span></td><td>Dropped, won't do, or failed a gate</td><td>Canceled, Cut, Won't do</td></tr>
+          <tr><td><span class="b-chip" data-status="aligned-intensified">Aligned</span></td><td>A decision everyone has agreed to. Animated, so once per page at most</td><td>Aligned, Decided, Signed off</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="b-pair">
+      <div class="sp-group"><span class="b-label">Figure numerals, for big numbers inside interactive figures</span>
+        <div class="sp-demo"><span class="b-stat-v b-figure-num">$84,351.90</span><span class="b-stat-v b-figure-num">01:08</span></div>
+      </div>
+      <div class="sp-group"><span class="b-label">Choice list, one connected box</span>
+        <div class="b-options" role="group" aria-label="Example rule">
+          <button class="b-option" type="button" aria-pressed="false"><span class="b-key b-h3"><i data-series="3"></i>Spot</span><p>The raw print.</p></button>
+          <button class="b-option" type="button" aria-pressed="true"><span class="b-panel-tag">Proposed</span><span class="b-key b-h3"><i data-series="1"></i>Projected settlement</span><p>Settles exactly at 0:00.</p></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Vertical tabs, for reference Q&amp;A with four or more topics</span>
+      <div class="b-vtabs">
+        <div class="b-vtabs-list" role="tablist" aria-orientation="vertical" aria-label="Example questions">
+          <button class="b-vtab" role="tab" id="sq-1" aria-controls="sp-1" aria-selected="true" type="button">Who computes the 60s TWAP?</button>
+          <button class="b-vtab" role="tab" id="sq-2" aria-controls="sp-2" aria-selected="false" type="button">Why is today's chart smoothed?</button>
+          <button class="b-vtab" role="tab" id="sq-3" aria-controls="sp-3" aria-selected="false" type="button">How would we roll it out?</button>
+          <button class="b-vtab" role="tab" id="sq-4" aria-controls="sp-4" aria-selected="false" type="button">What's still unconfirmed?</button>
+        </div>
+        <div>
+          <section class="b-vtab-panel" role="tabpanel" id="sp-1" aria-labelledby="sq-1"><h3 class="b-h2">We do. CF Benchmarks only publishes the BRTI print.</h3><p class="b-small">Settlement is the equal-weight mean of the 60 cent-rounded prints before close, rounded half-up.</p></section>
+          <section class="b-vtab-panel" role="tabpanel" id="sp-2" aria-labelledby="sq-2" hidden><h3 class="b-h2">A gateway flag makes each frame carry the 60s mean.</h3><p class="b-small">It shipped Oct 7 and is on in production.</p></section>
+          <section class="b-vtab-panel" role="tabpanel" id="sp-3" aria-labelledby="sq-3" hidden><h3 class="b-h2">Restore the raw print, then switch clients at T−60.</h3><p class="b-small">Each step can ship on its own.</p></section>
+          <section class="b-vtab-panel" role="tabpanel" id="sp-4" aria-labelledby="sq-4" hidden><h3 class="b-h2">Three facts to check with the backend team.</h3><p class="b-small">Settlement window, the flag's intent, and how price to beat is stamped.</p></section>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Rows</span>
+      <ol class="b-rows">
+        <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">They don't need it</h3><p>Kalshi holds ~85% of US+Kalshi BTC 15m volume, so a leader has no reason to split its best book.</p></div><span class="b-chip" data-tone="yes">High</span></li>
+        <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Settlement design</h3><p>A 60-second average covers 20% of a 5-minute window, which probably needs a new benchmark spec.</p></div><span class="b-chip" data-tone="warn">Medium</span></li>
+      </ol>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Options, one selected</span>
+      <div class="b-grid">
+        <div class="b-panel"><span class="b-label">A. Ship now</span><h3 class="b-h3">Take the moment</h3><ul><li>Fastest headline</li><li>Easy to copy</li></ul></div>
+        <div class="b-panel" data-selected><span class="b-panel-tag">Recommended</span><h3 class="b-h3">Parity first</h3><ul><li>Close the gaps</li><li>Then launch as a package</li></ul></div>
+        <div class="b-panel"><span class="b-label">C. Don't list</span><h3 class="b-h3">Stay out</h3><ul><li>No regulatory exposure</li><li>Leaves the opening</li></ul></div>
+      </div>
+    </div>
+
+    <div class="sp-group"><span class="b-label">Code</span>
+<pre class="b-code">fee = θ × C × p × (1 − p)      // θ 0.07 crypto · 0.03–0.05 sports</pre>
+    </div>
+    <div class="sp-group"><span class="b-label">Media cards (the picture runs to the card's edges, only the text is padded)</span>
+      <div class="b-grid" data-cols="3">
+        <a class="b-panel b-media-card" href="#components"><span class="b-media"><svg viewBox="0 0 160 90" aria-hidden="true"><path d="M0 70 L30 62 L55 66 L80 40 L105 46 L130 22 L160 18 L160 90 L0 90Z" style="fill:var(--b-line-3)"/><path d="M0 70 L30 62 L55 66 L80 40 L105 46 L130 22 L160 18" style="fill:none;stroke:var(--b-strong);stroke-width:1.5"/></svg><span class="b-media-tag"><!--icon:media-play:12:fill-->4:12</span></span><span class="b-media-body"><span class="b-h3">Price to beat, explained</span><span class="b-small">Crypto growth</span><span class="b-small">12.4K views</span></span></a>
+        <a class="b-panel b-media-card" href="#components"><span class="b-media"><svg viewBox="0 0 160 90" aria-hidden="true"><path d="M0 70 L25 58 L50 60 L75 52 L100 30 L125 34 L160 28 L160 90 L0 90Z" style="fill:var(--b-line-3)"/><path d="M0 70 L25 58 L50 60 L75 52 L100 30 L125 34 L160 28" style="fill:none;stroke:var(--b-strong);stroke-width:1.5"/></svg><span class="b-media-tag"><!--icon:media-play:12:fill-->1:05</span></span><span class="b-media-body"><span class="b-h3">How settlement works</span><span class="b-small">Markets team</span><span class="b-small">8.1K views</span></span></a>
+        <a class="b-panel b-media-card" href="#components"><span class="b-media"><svg viewBox="0 0 160 90" aria-hidden="true"><path d="M0 70 L30 50 L60 56 L90 36 L120 40 L160 12 L160 90 L0 90Z" style="fill:var(--b-line-3)"/><path d="M0 70 L30 50 L60 56 L90 36 L120 40 L160 12" style="fill:none;stroke:var(--b-strong);stroke-width:1.5"/></svg><span class="b-media-tag">Screenshot</span></span><span class="b-media-body"><span class="b-h3">Order book at 59¢</span><span class="b-small">Captured Oct 14, 2026</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-section" id="variants">
+    <div class="b-section-head"><h2 class="b-h2">Layouts</h2><p class="b-small">A layout changes structure and width, never color or type. Pick the one whose job matches the page.</p></div>
+    <div class="b-table-wrap"><table class="b-table">
+      <thead><tr><th>Layout</th><th data-num>Width</th><th>Opens with</th><th>Built from</th></tr></thead>
+      <tbody>
+        <tr><td>Memo</td><td data-num>780</td><td>Headline, lede, details row</td><td>Prose sections, notes, tables, at most one plate per section</td></tr>
+        <tr><td>Readout</td><td data-num>1080</td><td>Headline, then stats</td><td>Stats, tables with depth bars, charts in plates, sources</td></tr>
+        <tr><td>Explainer</td><td data-num>780</td><td>Headline, then a hero plate</td><td>Figures in plates, captions, short prose between them</td></tr>
+        <tr><td>Tool</td><td data-num>1080</td><td>Short header, the tool already working</td><td>Panels, tabs, inputs, buttons, readouts in plate corners</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="b-section" id="rules">
+    <div class="b-section-head"><h2 class="b-h2">Rules</h2></div>
+    <div class="sp-dodont">
+      <div class="b-panel"><h3 class="b-h3">Do</h3><ul>
+        <li>Start from a template and run <code>build.mjs</code>, so the CSS goes in word for word</li>
+        <li>Put every image or chart in a plate with its corner labels</li>
+        <li>Open every page with the masthead: eyebrow, headline, lede, details row</li>
+        <li>Write labels, headers and buttons in sentence case</li>
+        <li>Use green and red only for YES/NO and up/down</li>
+        <li>Add a token in <code>tokens.css</code> and log it here when a new value is needed</li>
+      </ul></div>
+      <div class="b-panel"><h3 class="b-h3">Don't</h3><ul>
+        <li>Use all caps, letter-spaced labels or mono for numbers in text</li>
+        <li>Add web fonts, emoji, or icons from any set but Nucleo</li>
+        <li>Use a brand accent for emphasis; use weight and the strong ink</li>
+        <li>Use more than one display headline per page</li>
+        <li>Write a color, font or radius into page CSS; <code>check.mjs</code> fails it</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <footer class="b-footer">
+    <span class="b-label">Changelog</span>
+    <ol reversed>
+      <li><strong>v1.9, Nov 8.</strong> Media cards: a picture in a card runs to the card's edges and the card's corners clip it. Only the text under it is padded, and a length or type tag sits on the picture's bottom-left corner.</li>
+      <li><strong>v1.4, Oct 16.</strong> A 2D mockup kit for web and mobile flows: phone and browser frames built from small parts, skeleton lines for text that doesn't matter, one lit element per screen, and wires from the tapped element to the next screen. The same wires join nodes in system diagrams. See Suggest a Feature Flows for the full set.</li>
+      <li><strong>v1.3, Oct 16.</strong> Pages declare a read (780) or wide (1080) width, and single wide blocks in a read page break out. Tables whose rows wrap to several lines stripe every other row faintly in place of row lines.</li>
+      <li><strong>v1.1, Oct 15.</strong> Vertical tabs for reference sections with four or more topics: questions in a quiet list on the left with a sliding raised highlight, one answer panel on the right.</li>
+      <li><strong>v1.0, Oct 15.</strong> Progress uses the Polymarket Slack status reactions (to do, underway, partly done, on hold, done, canceled, aligned), with the neutral ones inverted per theme. A condensed figure-numeral face for big numbers inside interactive figures. Choice lists are one connected box that stretches to the figure beside it.</li>
+      <li><strong>v0.9, Oct 15.</strong> Stats that describe a chart share its box, split by a dashed line. Boxes side by side are always the same height: charts center, text panels pin their source to the bottom, and captions move inside the plate.</li>
+      <li><strong>v0.8.1, Oct 15.</strong> Stats are one block with a ring around it and dashed dividers between cells.</li>
+      <li><strong>v0.8, Oct 15.</strong> Stat cards align part by part across a row. Chips that show a level or status always carry a dot. Card tags such as Recommended sit centered on the card edge, outlined like the selected card. Added pieces for interactive pages: four chart series colors (pending approval), selectable cards, a disclosure, a range slider and checkbox, table cell tones, code colors, and runtime carets for page scripts.</li>
+      <li><strong>v0.7, Oct 15.</strong> Every page gets a light and dark toggle, fixed top right: a pill-shaped segmented control with filled 12px Nucleo icons (sun, moon). It follows the system until the viewer picks, then remembers the choice in that browser.</li>
+      <li><strong>v0.6.1, Oct 15.</strong> Padding scales with the box: 24px for a panel that spans the full column, 16px for cards that share a row.</li>
+      <li><strong>v0.6, Oct 15.</strong> Up and down changes always use a filled Nucleo caret, which the build adds to every change marked up or down. Icon size follows the text beside it: the 12 grid for text up to 13px, the 18 grid at 16px for body text, buttons and tabs, and 18px beside headings and big numbers. Filled icons show a state, outline icons are for actions and objects.</li>
+      <li><strong>v0.5.2, Oct 15.</strong> The page date is always the last item in the eyebrow, and the build checks for it.</li>
+      <li><strong>v0.5.1, Oct 15.</strong> Panels and stat tiles padded 16px all round, with 8px between parts. Connectors show logos only, with the name on hover.</li>
+      <li><strong>v0.5, Oct 15.</strong> One border color for every container and control (a new ring token); line tokens are now only for dividers inside a container. Tighter heading groups: 4px from label to heading, 6px to the description, 16px to the content. The details row stays on one line, scrolls sideways with a fade when it overflows, and can end with a Connectors field showing the logos of the MCPs a page drew on.</li>
+      <li><strong>v0.4, Oct 15.</strong> Skill restructured: scripts/, four layout templates, a component cookbook and a chart guide; build runs the drift check and rejects leftover placeholders. Added from the 5-minute memo trial: amber signal for partial or in progress, hollow chip for unknown, numbered rows, table group rows and stacked status cells, a selected panel, bar chart marks with a hatch for partial periods. Fixed captions breaking inline code onto its own line, and stat values not lining up when a label wraps. Segmented control track lost its outer ring.</li>
+      <li><strong>v0.3, Oct 15.</strong> Buttons get a lit top edge and soft drop in both themes, primary and secondary. Stat tiles drop the small grey unit; units sit inline at full size, and changes get Nucleo arrows. Tables follow Medusa: no enclosure, a tinted header band ruled top and bottom, 48px rows. Headline down to 40px and the masthead is now a fixed format. An Author field with avatar is added to every details row automatically. The segmented control has a sliding thumb. All icons come from Nucleo.</li>
+      <li><strong>v0.2, Oct 15.</strong> Took labels, tables, controls and shape from Linear. Uppercase mono labels replaced by sentence-case sans. Stat numbers and table figures in sans with even-width digits. Tables get quiet headers and a rounded container. Soft radii (4/6/8/12), lighter borders, pill chips colored by their dot. Muted text darkened for legibility. Spread gauge replaced by a plain chart plate.</li>
+      <li><strong>v0.1, Oct 15.</strong> First cut from Market Press: palette, mono labels, square plates, 52px headline.</li>
+    </ol>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const roles = { page: "Page", card: "Plates, panels, tables", raised: "Buttons, inputs", sunk: "Table header, notes, code", strong: "Headlines, numbers", text: "Running text", muted: "Labels, captions", line: "Figure edges, legend", "line-2": "Plate frame, controls", "line-3": "Dividers, containers", green: "Yes, up", red: "No, down", blue: "Info, link, focus" };
+  document.querySelectorAll("[data-swatches]").forEach((g) => {
+    g.innerHTML = g.dataset.swatches.split(" ").map((t) => `<div class="sp-sw"><div class="sp-sw-chip" style="background:var(--b-${t})"></div><div class="sp-sw-meta"><code>--b-${t}</code><span class="b-small">${roles[t]}</span><span class="b-small b-num" data-hex="${t}"></span></div></div>`).join("");
+  });
+  const paint = () => requestAnimationFrame(() => {
+    const cs = getComputedStyle(root);
+    document.querySelectorAll("[data-hex]").forEach((el) => { el.textContent = cs.getPropertyValue("--b-" + el.dataset.hex).trim(); });
+  });
+  paint();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paint);
+  new MutationObserver(paint).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  const cs = getComputedStyle(root);
+  document.getElementById("space-scale").innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => {
+    const v = cs.getPropertyValue("--b-" + n).trim();
+    return `<div class="sp-space-row"><code>--b-${n}</code><span class="b-small b-num">${v}</span><span class="sp-space-bar" style="width:${v}"></span></div>`;
+  }).join("");
+})();
+</script>

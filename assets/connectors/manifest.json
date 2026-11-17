@@ -1,0 +1,174 @@
+{
+  "_readme": "Connector logos, sourced the same way claude.ai's connectors page sources them: Google's favicon service by domain (\"favicon\") or a direct image URL (\"url\"). Keys are the server name as `claude mcp list` prints it, minus any 'claude.ai ' prefix. Run scripts/fetch-mcp-logos.py to (re)download into Assets.xcassets/MCPLogos.",
+  "Amplitude": {
+    "favicon": "amplitude.com"
+  },
+  "Figma": {
+    "favicon": "figma.com"
+  },
+  "figma": {
+    "favicon": "figma.com"
+  },
+  "GitHub": {
+    "url": "https://github.githubassets.com/favicons/favicon.svg",
+    "template": true
+  },
+  "github": {
+    "url": "https://github.githubassets.com/favicons/favicon.svg",
+    "template": true
+  },
+  "Polymarket Github MCP": {
+    "url": "https://github.githubassets.com/favicons/favicon.svg",
+    "template": true
+  },
+  "Hex": {
+    "favicon": "hex.tech"
+  },
+  "Notion": {
+    "url": "https://www.notion.so/images/notion-logo-block-main.svg"
+  },
+  "Slack": {
+    "favicon": "slack.com"
+  },
+  "Supabase": {
+    "favicon": "supabase.com"
+  },
+  "Adobe for creativity": {
+    "favicon": "adobe.com"
+  },
+  "Airtable": {
+    "favicon": "airtable.com"
+  },
+  "Asana": {
+    "favicon": "asana.com"
+  },
+  "Ashby": {
+    "favicon": "ashbyhq.com"
+  },
+  "AWS Marketplace": {
+    "favicon": "amazon.com"
+  },
+  "Braze": {
+    "favicon": "braze.com"
+  },
+  "Calendly": {
+    "url": "https://calendly.com/favicon.ico"
+  },
+  "Campfire": {
+    "favicon": "campfire.ai"
+  },
+  "Canva": {
+    "favicon": "canva.com"
+  },
+  "ClickHouse": {
+    "url": "https://raw.githubusercontent.com/ClickHouse/ClickHouse/28d984fc85e6899b805bc16beb8b21ca0f687fa6/docker/server/README.src/logo.svg"
+  },
+  "Composio": {
+    "favicon": "composio.dev"
+  },
+  "Context7": {
+    "url": "https://context7.com/context7-icon-green.png"
+  },
+  "Customer.io": {
+    "url": "https://cdn.sanity.io/images/onirtmj2/production/e1ead94ff38d1ec15140dc0879661ed1b3bd1857-259x258.svg"
+  },
+  "Docusign": {
+    "url": "https://www.docusign.com/favicon.ico"
+  },
+  "Dub Partners": {
+    "favicon": "dub.sh"
+  },
+  "Exa": {
+    "favicon": "exa.ai"
+  },
+  "Excalidraw": {
+    "favicon": "excalidraw.com"
+  },
+  "Gamma": {
+    "favicon": "gamma.app"
+  },
+  "Gmail": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_48dp.png"
+  },
+  "Google Calendar": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_48dp.png"
+  },
+  "Google Docs": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/docs_2020q4_48dp.png"
+  },
+  "Google Drive": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png"
+  },
+  "Google Sheets": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png"
+  },
+  "Google Slides": {
+    "url": "https://www.gstatic.com/images/branding/product/2x/slides_2020q4_48dp.png"
+  },
+  "Granola": {
+    "favicon": "granola.ai"
+  },
+  "Groundcover": {
+    "favicon": "groundcover.com"
+  },
+  "groundcover": {
+    "favicon": "groundcover.com"
+  },
+  "Harmonic": {
+    "favicon": "harmonic.ai"
+  },
+  "higgsfield": {
+    "favicon": "higgsfield.ai"
+  },
+  "Intercom": {
+    "favicon": "intercom.com"
+  },
+  "Intuit QuickBooks": {
+    "url": "https://storage.googleapis.com/media-assets-299d7136-cb52-d546-ee02-34bc1307c35f/mcp-directory/icons/quickbooks.svg"
+  },
+  "Jam": {
+    "favicon": "jam.dev"
+  },
+  "launchdarkly": {
+    "favicon": "launchdarkly.com"
+  },
+  "Linear": {
+    "favicon": "linear.app"
+  },
+  "Mintlify": {
+    "favicon": "mintlify.com"
+  },
+  "Otter.ai": {
+    "favicon": "otter.ai"
+  },
+  "PagerDuty": {
+    "favicon": "pagerduty.com"
+  },
+  "Ramp": {
+    "favicon": "ramp.com"
+  },
+  "S&P Global": {
+    "favicon": "spglobal.com"
+  },
+  "claude-in-chrome": {
+    "favicon": "google.com/chrome"
+  },
+  "Salesforce - Beta": {
+    "url": "https://claude.ai/images/crochet/chips/salesforce.svg"
+  },
+  "Sentry": {
+    "favicon": "sentry.io"
+  },
+  "Superhuman Mail": {
+    "url": "https://mcp.mail.superhuman.com/favicon.ico"
+  },
+  "Vercel": {
+    "favicon": "vercel.com"
+  },
+  "Whimsical": {
+    "favicon": "whimsical.com"
+  },
+  "Zapier": {
+    "favicon": "zapier.com"
+  }
+}

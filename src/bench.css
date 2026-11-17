@@ -1,0 +1,390 @@
+/* Bench components v0.8. Every rule reads from tokens.css; no literal colors below this line.
+   v0.2 follows Linear's handling of UI elements: sentence-case labels, sans numerals, quiet tables,
+   soft radii, low-contrast borders, pills whose dot carries the color. */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{overflow-x:clip;background:var(--b-page);color:var(--b-text);font:400 var(--b-body)/1.6 var(--b-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:"cv11","ss01"}
+::selection{background:var(--b-blue-wash);color:var(--b-strong)}
+a{color:var(--b-strong);text-decoration:underline;text-decoration-color:var(--b-line-2);text-underline-offset:3px;transition:text-decoration-color var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){a:hover{text-decoration-color:var(--b-strong)}}
+:focus-visible{outline:2px solid var(--b-blue);outline-offset:2px;border-radius:var(--b-radius-sm)}
+
+/* ── page ───────────────────────────────────────────── */
+.b-page{width:100%;max-width:calc(var(--b-measure) + 2*max(16px,env(safe-area-inset-left,0px)));margin:0 auto;padding-block:var(--b-8) var(--b-9);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:var(--b-7)}
+.b-page[data-width="wide"]{max-width:calc(var(--b-wide) + 2*max(16px,env(safe-area-inset-left,0px)))}
+/* bleed: inside a read page, one wide block (a 6+ column table, a wide chart, tabs holding tables) breaks out
+   to the wide measure, centered on the column. The rest of the page keeps the read width. */
+.b-bleed{align-self:center;width:min(var(--b-wide),calc(100vw - 2*max(16px,env(safe-area-inset-left,0px))));max-width:none}
+.b-page[data-width="wide"] .b-bleed{width:100%}
+.b-page>*{min-width:0}
+
+/* ── type ───────────────────────────────────────────── */
+.b-display,.b-h1,.b-h2,.b-h3{color:var(--b-strong);margin:0;text-wrap:balance;font-family:var(--b-sans)}
+.b-display{font-size:var(--b-display);font-weight:600;line-height:1.08;letter-spacing:-.028em}
+.b-h1{font-size:var(--b-h1);font-weight:600;line-height:1.12;letter-spacing:-.024em}
+.b-h2{font-size:var(--b-h2);font-weight:600;line-height:1.25;letter-spacing:-.014em}
+.b-h3{font-size:var(--b-h3);font-weight:600;line-height:1.4;letter-spacing:-.006em}
+.b-lede{font-size:17px;line-height:1.55;color:var(--b-text);max-width:var(--b-prose);margin:0;text-wrap:pretty}
+.b-prose{max-width:var(--b-prose);display:flex;flex-direction:column;gap:var(--b-4)}
+.b-prose p,.b-prose ul,.b-prose ol{margin:0}
+.b-prose ul,.b-prose ol{padding-left:1.2em;display:flex;flex-direction:column;gap:var(--b-1)}
+.b-prose strong{color:var(--b-strong);font-weight:600}
+.b-small{font-size:var(--b-small);line-height:1.55;color:var(--b-muted)}
+/* label: small, medium weight, muted, sentence case. Never uppercase. */
+.b-label{font:500 var(--b-label)/1.4 var(--b-sans);letter-spacing:-.003em;color:var(--b-muted)}
+.b-num{font-variant-numeric:tabular-nums}
+code,.b-code{font-family:var(--b-mono);font-size:.86em;color:var(--b-strong)}
+:not(pre)>code{padding:1px 5px;border-radius:var(--b-radius-xs);background:var(--b-sunk)}
+.b-code .c{color:var(--b-muted)}
+.b-code .k{color:var(--b-blue)}
+.b-code .h{color:var(--b-strong);font-weight:600}
+pre.b-code{margin:0;padding:var(--b-4);border-radius:var(--b-radius);background:var(--b-sunk);overflow-x:auto;font-size:12.5px;line-height:1.6}
+
+/* ── icons: Nucleo UI outline, inlined by build.mjs from icon markers ── */
+/* sizes follow the text beside the icon: 12 grid for text up to 13px, 18 grid at 16px for 14-17px text,
+   18 grid at 18px beside headings and stat values (20px and up) */
+.b-icon{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px}
+.b-icon[data-size="12"]{width:12px;height:12px;vertical-align:-1px}
+:is(.b-h1,.b-h2,.b-display,.b-stat-v,.b-delta[data-size="18"]) .b-icon:not([data-size="12"]){width:18px;height:18px;vertical-align:-2px}
+
+/* ── status icons: the Polymarket Slack status reactions, inlined by build.mjs ──
+   written as a status marker or a chip with data-status (see references/components.md). Sized to the text beside them. */
+.b-status{display:inline-block;flex:none;width:16px;height:16px;vertical-align:-3px;background:var(--b-st) center/contain no-repeat}
+:is(.b-small,.b-label,.b-chip,.b-table,.b-caption) .b-status{width:14px;height:14px;vertical-align:-2px}
+:is(.b-h1,.b-h2,.b-display,.b-stat-v) .b-status{width:18px;height:18px}
+.b-chip[data-status]{padding-left:6px}
+.b-chip[data-status]::before{display:none}
+.b-chip[data-status] .b-status{width:14px;height:14px}
+
+/* figure numerals: condensed display numbers for interactive figures */
+.b-figure-num,.b-stat-v.b-figure-num{font-family:var(--b-figure);font-stretch:75%;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.005em;line-height:1}
+.b-stat-v.b-figure-num{font-size:calc(var(--b-stat) * 1.18)}
+
+/* ── masthead: eyebrow row, display headline, lede, meta ── */
+.b-masthead{display:flex;flex-direction:column;gap:var(--b-4)}
+.b-eyebrow{display:flex;flex-wrap:wrap;gap:var(--b-1) var(--b-2);align-items:center}
+.b-eyebrow>*+*::before{content:"/";margin-right:var(--b-2);color:var(--b-line-2)}
+/* details row: one line; when it runs out of room it scrolls sideways with a fade on the cut edge */
+.b-meta{display:flex;flex-wrap:nowrap;gap:var(--b-6);padding-top:var(--b-4);margin:var(--b-2) 0 0;border-top:1px solid var(--b-line-3);overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
+.b-meta::-webkit-scrollbar{display:none}
+.b-meta:not([data-overflow]){-webkit-mask-image:none;mask-image:none}
+.b-meta[data-overflow="end"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px);mask-image:linear-gradient(90deg,transparent,#000 40px)}
+.b-meta[data-overflow="both"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
+.b-meta>div{display:flex;flex-direction:column;gap:2px;flex:none}
+.b-meta dd{white-space:nowrap}
+.b-connectors{display:flex;align-items:center;gap:var(--b-2)}
+.b-connector{display:inline-flex}
+.b-logo{width:18px;height:18px;flex:none;border-radius:4px;object-fit:contain}
+.b-logo[data-mono]{filter:var(--b-logo-invert)}
+.b-meta dd,.b-meta .b-meta-v{margin:0;color:var(--b-strong);font-size:var(--b-small);font-weight:500;display:flex;align-items:center;gap:6px;min-height:20px}
+.b-avatar{width:20px;height:20px;border-radius:50%;flex:none;object-fit:cover;box-shadow:0 0 0 1px var(--b-ring);background:var(--b-sunk)}
+span.b-avatar{display:inline-grid;place-items:center;font:600 10px/1 var(--b-sans);color:var(--b-text)}
+
+/* ── section ────────────────────────────────────────── */
+.b-section{display:flex;flex-direction:column;gap:var(--b-5)}
+/* heading group: label 4px above the heading, description 6px below it, 16px from the group to the content */
+.b-section-head{display:flex;flex-direction:column;gap:var(--b-1)}
+.b-section-head>*{margin:0}
+.b-section-head>.b-h2+*,.b-section-head>.b-h3+*{margin-top:2px}
+.b-section-head .b-small{max-width:var(--b-prose)}
+.b-section-head+*{margin-top:calc(var(--b-2) * -1)}
+.b-panel>.b-h3+*{margin-top:calc(var(--b-1) * -1)}
+.b-panel>.b-h3{margin-top:2px}
+.b-rule{height:0;border:0;border-top:1px solid var(--b-line-3);margin:0}
+
+/* ── plate: the framed figure card from Market Press, softened ─ */
+.b-plate{position:relative;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:48px 24px 44px;overflow:hidden}
+.b-corners{position:absolute;inset:16px 20px;pointer-events:none}
+.b-corner{position:absolute;font:500 var(--b-label)/1 var(--b-sans);color:var(--b-muted);white-space:nowrap}
+.b-corner[data-corner="fig"]{top:0;left:0;color:var(--b-strong)}
+.b-corner[data-corner="title"]{top:0;right:0}
+.b-corner[data-corner="hint"]{bottom:0;left:0}
+.b-corner[data-corner="readout"]{bottom:0;right:0;color:var(--b-text);font-family:var(--b-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.b-caption{display:block;margin-top:var(--b-3);font-size:var(--b-small);line-height:1.6;color:var(--b-muted);max-width:var(--b-prose);text-wrap:pretty}
+.b-caption strong{color:var(--b-text);font-weight:500}
+@media (max-width:560px){.b-plate{padding:44px 12px 64px}.b-corner[data-corner="hint"]{bottom:18px}}
+
+/* linked block: stats that describe the chart right below them share one ring with it, split by a dashed line */
+.b-linked{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);overflow:hidden}
+.b-linked>.b-stats,.b-linked>.b-plate{box-shadow:none;border-radius:0}
+.b-linked>*+*{border-top:1px dashed var(--b-ring)}
+
+/* pair: boxes that share a row are always the same height. The taller one sets it; a plate centers its
+   chart in the extra room, a panel keeps content at the top and pins its .b-source line to the bottom.
+   A figure's caption goes inside its plate (.b-plate-caption) so both boxes end on the same line. */
+.b-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:var(--b-4);align-items:stretch}
+.b-pair>*{min-width:0}
+.b-pair>.b-plate{display:flex;flex-direction:column;justify-content:center;gap:var(--b-4)}
+.b-plate-caption{margin:0;font-size:var(--b-small);line-height:1.6;color:var(--b-muted);max-width:var(--b-prose)}
+.b-plate-caption strong{color:var(--b-text);font-weight:500}
+.b-source{margin-top:auto;padding-top:var(--b-2);font-size:var(--b-small);color:var(--b-muted)}
+
+/* ── panel: a grouped box ───────────────────────────── */
+/* container padding scales with the box: 16px for cards that share a row (grids, stat tiles),
+   24px for a panel that spans the full column. 8px between parts (12px in a full-width panel); 4px between list items */
+.b-panel{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:var(--b-4);display:flex;flex-direction:column;gap:var(--b-2);min-width:0}
+.b-panel[data-raised]{background:var(--b-raised);box-shadow:var(--b-lift)}
+/* concentric corners: a box inside a box takes the smaller radius */
+:is(.b-panel,.b-vtab-panel,.b-plate) .b-panel{border-radius:var(--b-radius)}
+:is(.b-page,.b-section)>.b-panel{padding:var(--b-5);gap:var(--b-3)}
+.b-panel[data-selected]{background:var(--b-raised);box-shadow:0 0 0 1.5px var(--b-strong)}
+/* panel tag: a label that belongs to the whole card (Recommended, New, Current). It sits centered on the
+   card's top edge (data-at="bottom" for the bottom edge), outlined like the selected card, outside the text flow */
+.b-panel:has(>.b-panel-tag){position:relative}
+.b-panel-tag{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--b-raised);box-shadow:0 0 0 1.5px var(--b-strong);font:500 12px/1 var(--b-sans);color:var(--b-strong);white-space:nowrap;pointer-events:none}
+.b-panel-tag[data-at="bottom"]{top:auto;bottom:0;transform:translate(-50%,50%)}
+.b-grid:has(.b-panel-tag:not([data-at="bottom"])){padding-top:12px}
+.b-grid:has(.b-panel-tag[data-at="bottom"]){padding-bottom:12px}
+.b-panel>ul,.b-panel>ol{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:var(--b-1);font-size:var(--b-small);line-height:1.55}
+
+/* media card: a card whose picture (a video still, a screenshot, a photo) runs to its edges. The card's corners
+   clip the picture, and only the text under it is padded. Make the card an <a> when it opens something. */
+.b-panel.b-media-card{padding:0;gap:0;overflow:hidden;text-decoration:none;color:inherit}
+.b-media{position:relative;display:block;aspect-ratio:16/9;max-width:100%;margin:0;background:var(--b-sunk);overflow:hidden}
+.b-media[data-shape="tall"]{aspect-ratio:9/16}
+.b-media[data-shape="square"]{aspect-ratio:1/1}
+.b-media>img,.b-media>svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.b-media-tag{position:absolute;left:var(--b-2);bottom:var(--b-2);z-index:2;display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border-radius:var(--b-radius-xs);background:var(--b-media-scrim);color:var(--b-media-ink);font:500 11.5px/1 var(--b-sans);font-variant-numeric:tabular-nums;pointer-events:none}
+.b-media-tag .b-icon{width:10px;height:10px}
+.b-media-body{display:flex;flex-direction:column;gap:2px;padding:var(--b-3) var(--b-3) var(--b-4);min-width:0}
+.b-media-body>.b-h3{margin:0 0 2px}
+:is(.b-page,.b-section)>.b-media-card>.b-media-body{padding:var(--b-4) var(--b-5) var(--b-5);gap:var(--b-1)}
+a.b-media-card:focus-visible{outline:2px solid var(--b-strong);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){
+  a.b-media-card>.b-media>img{transition:transform var(--b-slow) var(--b-ease)}
+  a.b-media-card:hover>.b-media>img{transform:scale(1.03)}
+}
+
+/* ── stats: sans numerals, label above, delta below ─── */
+.b-stats{--n:3;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-auto-rows:auto;gap:0;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);overflow:hidden}
+/* 2-4 stats per set: one row on wide screens, two columns on phones with an odd last cell spanning the width */
+.b-stats:has(>.b-stat:nth-child(2):last-child){--n:2}
+.b-stats:has(>.b-stat:nth-child(4)){--n:4}
+@media (max-width:600px){.b-stats:has(>.b-stat:nth-child(1)){--n:2}.b-stats>.b-stat:last-child:nth-child(odd){grid-column:1/-1}}
+/* one ring around the set; cells split by dashed lines in the ring color. Each cell draws its left and top
+   dash and shifts 1px under its neighbour, so the outer edge (clipped) never doubles up with the ring.
+   Each cell spans three subgrid rows (label, value, note) so parts line up across the row. */
+.b-stat{padding:var(--b-4);display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:var(--b-2);align-content:start;min-width:0;border-left:1px dashed var(--b-ring);border-top:1px dashed var(--b-ring);margin-left:-1px;margin-top:-1px}
+.b-stat>*{align-self:start}
+.b-stat .b-label{color:var(--b-text)}
+.b-stat-v{font:600 var(--b-stat)/1.1 var(--b-sans);font-variant-numeric:tabular-nums;letter-spacing:-.025em;color:var(--b-strong)}
+.b-delta{display:inline-flex;align-items:flex-start;gap:3px;font:500 var(--b-label)/1.3 var(--b-sans);font-variant-numeric:tabular-nums;color:var(--b-muted)}
+.b-delta[data-size="18"]{font-size:var(--b-h2);font-weight:600;gap:4px}
+.b-delta .b-icon{vertical-align:0;margin-top:calc((1.3em - 12px) / 2)}
+.b-delta[data-size="18"] .b-icon{margin-top:calc((1.3em - 18px) / 2)}
+.b-delta[data-dir="up"]{color:var(--b-green)}
+.b-delta[data-dir="down"]{color:var(--b-red)}
+
+/* ── table: Medusa-style. Dividers use line-3; the header band and rows have no outer ring. No enclosure; a tinted header band ruled top and bottom, 48px rows ruled below ── */
+.b-table-wrap{overflow-x:auto}
+.b-table{width:100%;border-collapse:collapse;font-size:var(--b-small);line-height:20px;color:var(--b-text)}
+.b-table thead tr{background:var(--b-sunk);border-block:1px solid var(--b-line-3)}
+.b-table th{font-weight:500;text-align:left;height:44px;padding:0 var(--b-5) 0 0;white-space:nowrap;color:var(--b-text)}
+.b-table td{height:48px;padding:0 var(--b-5) 0 0;vertical-align:middle}
+.b-table th:first-child,.b-table td:first-child{padding-left:var(--b-4)}
+.b-table th:last-child,.b-table td:last-child{padding-right:var(--b-4)}
+.b-table tbody tr{border-bottom:1px solid var(--b-line-3);transition:background var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-table tbody tr:hover{background:var(--b-sunk)}}
+.b-table [data-num]{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.b-table td[data-strong]{color:var(--b-strong);font-weight:500}
+.b-table td[data-tone="yes"]{color:var(--b-green);font-weight:600}
+.b-table td[data-tone="no"]{color:var(--b-red)}
+.b-table tr[data-selected] td{background:var(--b-sunk)}
+.b-table th[data-num]{text-align:right}
+.b-table[data-wrap] td{height:auto;padding-block:14px;vertical-align:top}
+/* wrapping-text tables (rows several lines tall) stripe every other row instead of ruling them, so the eye can
+   follow a row across. Group rows don't count toward the stripe. Short numeric tables keep plain dividers. */
+.b-table[data-wrap] tbody tr:not([data-group]){border-bottom-color:transparent}
+.b-table[data-wrap] tbody tr:nth-child(even of :not([data-group])){background:var(--b-zebra)}
+@media (hover:hover) and (pointer:fine){.b-table[data-wrap] tbody tr:not([data-group]):hover{background:var(--b-sunk)}}
+.b-table[data-wrap] tbody tr:last-child{border-bottom:1px solid var(--b-line-3)}
+.b-table[data-wrap] td .b-chip{margin-top:-2px}
+.b-table tr[data-group]{background:transparent;border-bottom:1px solid var(--b-line-3)}
+@media (hover:hover) and (pointer:fine){.b-table tr[data-group]:hover{background:transparent}}
+.b-table tr[data-group] td{height:auto;padding-top:var(--b-6);padding-bottom:var(--b-2);color:var(--b-strong);font-weight:600;font-size:var(--b-body)}
+.b-cell{display:flex;flex-direction:column;align-items:flex-start;gap:var(--b-2)}
+.b-cell .b-small{line-height:1.5}
+
+/* ── key / value list ───────────────────────────────── */
+.b-kv{display:grid;grid-template-columns:minmax(110px,max-content) 1fr;gap:var(--b-3) var(--b-5);margin:0;font-size:var(--b-small)}
+.b-kv dt{color:var(--b-muted);font-weight:500}
+.b-kv dd{margin:0;color:var(--b-strong);min-width:0;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.b-kv{grid-template-columns:1fr;gap:2px}.b-kv dd{margin-bottom:var(--b-3)}}
+
+/* ── chips: pill, neutral text, the dot carries the meaning ── */
+.b-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px 0 8px;border-radius:999px;background:var(--b-raised);box-shadow:inset 0 0 0 1px var(--b-ring);font:500 12px/1 var(--b-sans);color:var(--b-strong);white-space:nowrap;font-variant-numeric:tabular-nums}
+.b-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--b-muted)}
+.b-chip[data-plain]{padding:0 10px}
+.b-chip[data-plain]::before{display:none}
+.b-chip[data-tone="yes"]::before{background:var(--b-green)}
+.b-chip[data-tone="no"]::before{background:var(--b-red)}
+.b-chip[data-tone="info"]::before{background:var(--b-blue)}
+.b-chip[data-tone="warn"]::before{background:var(--b-amber)}
+.b-chip[data-tone="none"]::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--b-muted)}
+.b-chips{display:flex;flex-wrap:wrap;gap:var(--b-2)}
+
+/* ── note: a soft callout ───────────────────────────── */
+.b-note{display:grid;grid-template-columns:auto 1fr;gap:var(--b-3);align-items:start;padding:var(--b-3) var(--b-4);border-radius:var(--b-radius);background:var(--b-sunk);max-width:var(--b-prose);font-size:var(--b-small);line-height:1.55}
+.b-note::before{content:"";width:8px;height:8px;margin-top:6px;border-radius:50%;background:var(--b-muted)}
+.b-note[data-tone="yes"]::before{background:var(--b-green)}
+.b-note[data-tone="no"]::before{background:var(--b-red)}
+.b-note[data-tone="info"]::before{background:var(--b-blue)}
+.b-note[data-tone="warn"]::before{background:var(--b-amber)}
+.b-note p{margin:0}
+.b-note strong{color:var(--b-strong);font-weight:600}
+
+/* ── buttons and inputs ─────────────────────────────── */
+.b-btn{appearance:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:var(--b-radius-sm);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);color:var(--b-btn-fg);font:500 var(--b-small)/1 var(--b-sans);cursor:pointer;transition:transform var(--b-fast) var(--b-ease),filter var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-btn:hover{filter:var(--b-btn-hover)}}
+.b-btn:active{transform:scale(.97)}
+.b-btn .b-icon{width:14px;height:14px;margin-left:-2px}
+.b-btn[data-variant="solid"]{background:var(--b-btn-solid-bg);box-shadow:var(--b-btn-solid-shadow);color:var(--b-btn-solid-fg)}
+@media (hover:hover) and (pointer:fine){.b-btn[data-variant="solid"]:hover{filter:var(--b-btn-solid-hover)}}
+.b-btn[data-variant="ghost"]{background:transparent;box-shadow:none;color:var(--b-text)}
+@media (hover:hover) and (pointer:fine){.b-btn[data-variant="ghost"]:hover{filter:none;background:var(--b-sunk);color:var(--b-strong)}}
+.b-field{display:flex;flex-direction:column;gap:6px}
+.b-input{height:32px;padding:0 10px;border:0;border-radius:var(--b-radius-sm);background:var(--b-sunk);color:var(--b-strong);font:var(--b-small)/1 var(--b-sans);transition:box-shadow var(--b-fast) var(--b-ease)}
+.b-input:focus{outline:none;box-shadow:inset 0 0 0 1px var(--b-blue),0 0 0 3px var(--b-blue-wash)}
+
+/* ── segmented control: a raised thumb slides under the selected option (bench.js adds it) ── */
+.b-tabs{position:relative;display:inline-flex;background:var(--b-line-3);border-radius:var(--b-radius);padding:2px;gap:0;isolation:isolate}
+.b-tab{appearance:none;position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;height:28px;padding:0 12px;font:500 var(--b-label)/1 var(--b-sans);color:var(--b-muted);cursor:pointer;border-radius:var(--b-radius-sm);transition:color 200ms var(--b-ease)}
+.b-tab .b-icon{width:14px;height:14px}
+@media (hover:hover) and (pointer:fine){.b-tab:hover,.b-tab[aria-selected="true"]{color:var(--b-strong)}}
+.b-tabs-thumb{position:absolute;z-index:0;top:2px;bottom:2px;left:0;border-radius:var(--b-radius-sm);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);transition:transform 280ms var(--b-ease),width 280ms var(--b-ease);will-change:transform}
+.b-tabs:not([data-js]) .b-tab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+
+/* pill shape (theme toggle and icon-only segments) */
+.b-tabs[data-shape="pill"],.b-tabs[data-shape="pill"] .b-tab,.b-tabs[data-shape="pill"] .b-tabs-thumb{border-radius:999px}
+.b-tab[data-icon-only]{width:28px;padding:0;justify-content:center}
+.b-tabs[data-shape="pill"] .b-tab[data-icon-only]{width:30px;height:26px}
+
+/* theme toggle: fixed top right on every page, added by build.mjs */
+.b-theme{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 12px);right:max(12px,calc(env(safe-area-inset-right,0px) + 12px))}
+
+/* ── legend keys ────────────────────────────────────── */
+.b-keys{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:var(--b-small);color:var(--b-text)}
+.b-key{display:inline-flex;align-items:center;gap:7px}
+.b-key i{width:14px;height:0;border-top:2px solid var(--b-muted);border-radius:2px}
+.b-key i[data-tone="yes"]{border-color:var(--b-green)}
+.b-key i[data-tone="no"]{border-color:var(--b-red)}
+.b-key i[data-tone="info"]{border-color:var(--b-blue)}
+.b-key i[data-swatch]{width:10px;height:10px;border:0;border-radius:2px;background:var(--b-strong)}
+.b-key i[data-swatch="2"]{background:var(--b-line-2)}
+.b-key i[data-series]{width:14px;height:0;border-radius:2px;border-top:2.5px solid var(--b-series-1)}
+.b-key i[data-series="2"]{border-color:var(--b-series-2)}
+.b-key i[data-series="3"]{border-color:var(--b-series-3)}
+.b-key i[data-series="4"]{border-color:var(--b-series-4)}
+.b-key i[data-series][data-dash]{border-top-style:dashed}
+.b-key i[data-dash]{border-top-style:dashed}
+
+/* ── bar meter ──────────────────────────────────────── */
+.b-meter{position:relative;height:4px;min-width:60px;border-radius:999px;background:var(--b-line-3);overflow:hidden}
+.b-meter>span{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--b-strong)}
+.b-meter[data-tone="yes"]>span{background:var(--b-green)}
+.b-meter[data-tone="no"]>span{background:var(--b-red)}
+.b-meter[data-series="2"]>span{background:var(--b-line)}
+
+/* selectable panel: a <button class="b-panel"> that picks an option; data-selected marks the current one */
+button.b-panel{appearance:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:box-shadow var(--b-fast) var(--b-ease),background var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){button.b-panel:hover:not([data-selected]){background:var(--b-raised)}}
+button.b-panel p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.5}
+
+/* disclosure: <details class="b-details"><summary>Show detail</summary>…</details> */
+.b-details{border-top:1px solid var(--b-line-3);padding-top:var(--b-3)}
+.b-details>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font:500 var(--b-small)/1.4 var(--b-sans);color:var(--b-strong)}
+.b-details>summary::-webkit-details-marker{display:none}
+.b-details>summary::before{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;border-radius:var(--b-radius-xs);box-shadow:inset 0 0 0 1px var(--b-ring);color:var(--b-text);font-size:13px;line-height:1}
+.b-details[open]>summary::before{content:"\2212"}
+.b-details>:not(summary){margin-top:var(--b-4)}
+.b-details-body{display:flex;flex-direction:column;gap:var(--b-4)}
+
+/* range and checkbox */
+input[type="range"].b-range{width:100%;accent-color:var(--b-strong);margin:0}
+.b-check{display:inline-flex;align-items:center;gap:8px;font-size:var(--b-small);color:var(--b-text);cursor:pointer}
+.b-check input{accent-color:var(--b-strong);margin:0}
+
+/* options: one choice among N, drawn as one connected box (ring around, dashed dividers between).
+   Each option is a button.b-option; aria-pressed="true" marks the current one. Beside a figure,
+   the list stretches to the figure's height and the options share it. A .b-panel-tag sits on an option's top edge. */
+.b-options{display:flex;flex-direction:column;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);min-width:0}
+.b-option{appearance:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;gap:var(--b-2);padding:var(--b-4);background:transparent;border-top:1px dashed var(--b-ring);transition:background var(--b-fast) var(--b-ease)}
+.b-option:first-child{border-top:0;border-radius:var(--b-radius-lg) var(--b-radius-lg) 0 0}
+.b-option:last-child{border-radius:0 0 var(--b-radius-lg) var(--b-radius-lg)}
+@media (hover:hover) and (pointer:fine){.b-option:hover{background:var(--b-sunk)}}
+.b-option[aria-pressed="true"]{background:var(--b-raised);box-shadow:inset 0 0 0 1.5px var(--b-strong);border-top-color:transparent;z-index:1}
+.b-option[aria-pressed="true"]+.b-option{border-top-color:transparent}
+.b-option:not(:first-child)[aria-pressed="true"]{border-radius:0}
+.b-option:first-child[aria-pressed="true"]{border-radius:var(--b-radius-lg) var(--b-radius-lg) 0 0}
+.b-option:last-child[aria-pressed="true"]{border-radius:0 0 var(--b-radius-lg) var(--b-radius-lg)}
+.b-option p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.5}
+.b-option>.b-panel-tag{z-index:2}
+.b-option:has(>.b-panel-tag){padding-top:var(--b-5)}
+
+/* vertical tabs: a reference section where the reader picks one topic. Questions sit in a quiet list on the
+   left; the current one rides a raised thumb that slides between them; one answer panel shows on the right.
+   On phones the list becomes a sideways-scrolling row above the panel. bench.js wires it up. */
+.b-vtabs{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:var(--b-5);align-items:start}
+.b-vtabs-list{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);display:flex;flex-direction:column;gap:2px;isolation:isolate}
+.b-vtab{appearance:none;position:relative;z-index:1;border:0;background:transparent;text-align:left;cursor:pointer;padding:9px 12px;border-radius:var(--b-radius);font:500 var(--b-small)/1.4 var(--b-sans);color:var(--b-muted);transition:color 200ms var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-vtab:hover,.b-vtab[aria-selected="true"]{color:var(--b-strong)}}
+.b-vtabs-thumb{position:absolute;z-index:0;left:0;right:0;top:0;border-radius:var(--b-radius);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);transition:transform 280ms var(--b-ease),height 280ms var(--b-ease)}
+.b-vtabs-list:not([data-js]) .b-vtab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+.b-vtab-panel{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:var(--b-5);display:flex;flex-direction:column;gap:var(--b-3);min-width:0}
+.b-vtab-panel>.b-h2{font-size:var(--b-h2);line-height:1.3}
+.b-vtab-panel>p{margin:0;max-width:var(--b-prose)}
+@media (max-width:760px){
+  .b-vtabs{grid-template-columns:minmax(0,1fr);gap:var(--b-3)}
+  .b-vtabs-list{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:2px}
+  .b-vtab{white-space:nowrap;flex:none}
+  .b-vtabs-thumb{display:none}
+  .b-vtab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+}
+
+/* quote: a real message or draft shown as a specimen. Keeps its own line breaks. */
+.b-quote{margin:0;padding:var(--b-3) var(--b-4);background:var(--b-sunk);border-radius:var(--b-radius);font:400 var(--b-small)/1.6 var(--b-sans);color:var(--b-strong);white-space:pre-wrap;overflow-wrap:anywhere}
+.b-quote s,.b-table s{color:var(--b-muted);text-decoration-color:var(--b-red);text-decoration-thickness:1.5px}
+
+/* ── rows: a ruled list of numbered items with a trailing chip ── */
+.b-rows{display:flex;flex-direction:column;border-top:1px solid var(--b-line-3);margin:0;padding:0;list-style:none}
+.b-row{display:grid;grid-template-columns:28px 1fr auto;gap:var(--b-1) var(--b-4);padding:var(--b-4) 0;border-bottom:1px solid var(--b-line-3)}
+.b-row-n{color:var(--b-muted);font-size:var(--b-small);font-variant-numeric:tabular-nums;padding-top:1px}
+.b-row-body{display:flex;flex-direction:column;gap:var(--b-1);min-width:0}
+.b-row-body p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.6}
+@media (max-width:560px){.b-row{grid-template-columns:24px 1fr}.b-row>.b-chip{grid-column:2;justify-self:start}}
+
+/* ── grids ──────────────────────────────────────────── */
+.b-grid{display:grid;gap:var(--b-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+/* fixed column counts so a set never leaves one card alone in a row; one column on phones */
+.b-grid[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.b-grid[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.b-grid[data-cols]{grid-template-columns:minmax(0,1fr)}}
+.b-grid>*{min-width:0}
+
+/* ── chart marks (SVG inside a plate) ───────────────── */
+.b-chart{display:block;width:100%;height:auto;overflow:visible}
+.b-chart .grid{stroke:var(--b-line-3);stroke-width:1;fill:none}
+.b-chart .axis{fill:var(--b-muted);font:500 11px var(--b-sans);font-variant-numeric:tabular-nums}
+.b-chart .line{fill:none;stroke:var(--b-strong);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.b-chart .line[data-tone="yes"]{stroke:var(--b-green)}
+.b-chart .area{fill:var(--b-green-wash);stroke:none}
+.b-chart .dot{fill:var(--b-green);stroke:var(--b-card);stroke-width:2}
+.b-chart .bar{fill:var(--b-strong)}
+.b-chart .bar[data-series="2"]{fill:var(--b-line-2)}
+.b-chart .bar[data-tone="yes"]{fill:var(--b-green)}
+.b-chart .bar[data-tone="no"]{fill:var(--b-red)}
+.b-chart .bar[data-partial]{fill:url(#b-hatch)}
+.b-chart .hatch-bg{fill:var(--b-sunk)}
+.b-chart .hatch-line{stroke:var(--b-strong);stroke-width:1.5}
+.b-chart .marker{stroke:var(--b-muted);stroke-width:1;stroke-dasharray:3 3;fill:none}
+.b-chart .note{fill:var(--b-text);font:500 11px var(--b-sans)}
+.b-chart .value{fill:var(--b-strong);font:600 11px var(--b-sans);font-variant-numeric:tabular-nums}
+/* charts scale down with their plate; figures never scroll */
+.b-chart-wrap{overflow:visible}
+
+/* ── footer: sources and colophon ───────────────────── */
+.b-footer{display:flex;flex-direction:column;gap:var(--b-3);padding-top:var(--b-5);border-top:1px solid var(--b-line-3);font-size:var(--b-small);color:var(--b-muted)}
+.b-footer ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:var(--b-1)}
+.b-footer strong{color:var(--b-text);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}

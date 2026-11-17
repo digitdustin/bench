@@ -1,0 +1,130 @@
+/* Bench tokens v0.8. The single source of truth for every color, face, size, space and curve.
+   Values are lifted from "How a Polymarket market works" (Market Press) so isometric figures
+   from the anatomy kit sit on the page with no seam. Change a value here, rebuild, and every page follows. */
+:root{
+  /* ground: warm bench paper in light, workshop black in dark */
+  --b-page:#f2f2ef;
+  --b-card:#fbfbfa;
+  --b-raised:#ffffff;
+  --b-sunk:#ededea;
+
+  /* ink */
+  --b-strong:#18181a;   /* headlines, numbers */
+  --b-text:#57575a;     /* running text */
+  --b-muted:#7c7c80;    /* labels, captions */
+
+  /* hairlines, strongest to faintest */
+  --b-line:#8a8a8f;     /* strong hairline: figure edges, legend keys */
+  --b-line-2:#d0d0cd;   /* plate frame, controls */
+  --b-line-3:#e4e4e1;   /* dividers inside a container: table rows, rules */
+  --b-zebra:#18181a07;   /* faint stripe on every other row of a wrapping-text table */
+  --b-ring:#00000017;   /* the one border for containers on the page: plates, panels, stats, tables, chips. Alpha, so it takes the color of what's under it */
+  /* elevation for anything that floats above the page: modals, sheets, menus, popovers. An alpha edge plus layered shadow, never a grey ring */
+  --b-elev:0 0 0 1px #0000001f,0 2px 4px -1px #0000000f,0 10px 24px -6px #0000001f,0 24px 48px -16px #00000024;
+  --b-logo-invert:none; /* monochrome connector logos flip in dark */
+
+  /* signals: the only color on the page. green = YES / up / done, red = NO / down / blocked,
+     amber = partial / in progress, blue = info / link */
+  --b-green:#30a46c;
+  --b-red:#e5484d;
+  --b-blue:#3e63dd;
+  --b-amber:#b8720a;
+  --b-green-wash:#30a46c14;
+  --b-red-wash:#e5484d14;
+  --b-blue-wash:#3e63dd14;
+  --b-amber-wash:#b8720a14;
+
+  /* chart series, for charts that need more than two lines. 1 is the subject, 2 the comparison;
+     3 is the asset color (BTC orange) when a figure recreates the product chart; 4 is a fourth line */
+  --b-series-1:#18181a;
+  --b-series-2:#3e63dd;
+  --b-series-3:#e07b16;
+  --b-series-4:#0e9f9e;
+
+  /* type */
+  --b-sans:ui-sans-serif,system-ui,-apple-system,"SF Pro Text","Segoe UI",sans-serif;
+  --b-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  /* figure numerals: a condensed face for big numbers inside interactive figures and product recreations
+     (prices, timers, readouts). Illustrative only, never body text. build.mjs loads it when a page uses .b-figure-num */
+  --b-figure:"Instrument Sans",var(--b-sans);
+
+  --b-display:clamp(30px,4.6vw,40px);  /* page headline, once per page, always in the masthead */
+  --b-h1:clamp(26px,4vw,32px);         /* section that opens a part of the page */
+  --b-h2:20px;                         /* section heading */
+  --b-h3:15px;                         /* sub-heading, plate caption title */
+  --b-body:15px;
+  --b-small:13px;
+  --b-label:12.5px;                    /* sentence-case labels, plate corners, table headers */
+  --b-stat:clamp(24px,3.6vw,30px);     /* number in a stat tile, sans */
+
+  /* space: 4px base */
+  --b-1:4px;--b-2:8px;--b-3:12px;--b-4:16px;--b-5:24px;--b-6:32px;--b-7:48px;--b-8:64px;--b-9:96px;
+
+  /* measure */
+  --b-measure:780px;   /* default column, same as Market Press */
+  --b-wide:1080px;     /* readout and explainer variants */
+  --b-prose:62ch;
+
+  /* shape: soft corners, Linear-style */
+  --b-radius-xs:4px;   /* inline code */
+  --b-radius-sm:6px;   /* buttons, inputs, tabs */
+  --b-radius:8px;      /* notes, code blocks, tab track */
+  --b-radius-lg:12px;  /* plates, panels, tables, stat tiles */
+
+  /* motion */
+  --b-ease:cubic-bezier(.32,.72,0,1);
+  --b-fast:160ms;
+  --b-slow:420ms;
+
+  /* buttons: the only place a gradient is allowed; a lit top edge and a soft drop give them depth */
+  --b-btn-bg:linear-gradient(180deg,#ffffff,#f7f7f5);
+  --b-btn-fg:#18181a;
+  --b-btn-shadow:inset 0 -1px 0 0 #0000000a,0 0 0 1px #0000001c,0 1px 2px 0 #00000014,0 2px 4px -2px #0000000f;
+  --b-btn-hover:brightness(.985);
+  --b-btn-solid-bg:linear-gradient(180deg,#323236,#18181a);
+  --b-btn-solid-fg:#fbfbfa;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff2e,0 0 0 1px #0b0b0c,0 1px 2px 0 #00000033,0 3px 6px -3px #00000040;
+  --b-btn-solid-hover:brightness(1.18);
+
+  /* mockups: the soft halo under a device, the scrim behind a sheet, the near-black of hardware */
+  --b-halo:0 24px 30px -20px #0000003d,0 2px 6px -2px #0000001a;
+  --b-scrim:#18181a47;
+  /* a sheet rising from the bottom edge: no border, a soft upward shadow; dark adds a faint top highlight */
+  --b-sheet:0 -10px 28px -14px #0000002e;
+  --b-device:#141416;
+  /* a tag laid over a picture (a video length on a still). Same in both themes, since the picture under it doesn't change */
+  --b-media-scrim:#000000a3;
+  --b-media-ink:#ffffff;
+
+  --b-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --b-page:#0b0b0b;--b-card:#131313;--b-raised:#1b1b1b;--b-sunk:#0f0f0f;
+  --b-strong:#e6e6e6;--b-text:#a3a3a3;--b-muted:#85858a;
+  --b-line:#6a6a6a;--b-line-2:#333333;--b-line-3:#232323;--b-ring:#ffffff17;--b-elev:0 0 0 1px #ffffff1c,0 2px 4px -1px #00000066,0 10px 24px -6px #00000099,0 24px 48px -16px #000000b3;--b-zebra:#ffffff06;--b-halo:0 24px 30px -20px #000000cc,0 2px 6px -2px #00000080;--b-scrim:#000000a6;--b-sheet:inset 0 1px 0 0 #ffffff12,0 -10px 28px -14px #000000b3;--b-device:#000000;--b-logo-invert:invert(1);
+  --b-green:#6be0a0;--b-red:#ff6b6b;--b-blue:#6b9bff;--b-amber:#f0b14a;
+  --b-green-wash:#6be0a01a;--b-red-wash:#ff6b6b1a;--b-blue-wash:#6b9bff1a;--b-amber-wash:#f0b14a1a;--b-series-1:#e6e6e6;--b-series-2:#6b9bff;--b-series-3:#f59a3c;--b-series-4:#2cc4c2;
+  --b-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+  --b-btn-bg:linear-gradient(180deg,#202020,#191919);--b-btn-fg:#e6e6e6;
+  --b-btn-shadow:inset 0 1px 0 0 #ffffff0f,inset 0 0 0 1px #ffffff08,0 0 0 1px #000000,0 1px 2px 0 #00000066,0 3px 6px -3px #00000066;
+  --b-btn-hover:brightness(1.18);
+  --b-btn-solid-bg:linear-gradient(180deg,#f5f5f5,#d6d6d6);--b-btn-solid-fg:#111112;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff,inset 0 -1px 0 0 #00000024,0 0 0 1px #000000,0 1px 2px 0 #00000080,0 3px 6px -3px #00000080;
+  --b-btn-solid-hover:brightness(1.05);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --b-page:#0b0b0b;--b-card:#131313;--b-raised:#1b1b1b;--b-sunk:#0f0f0f;
+  --b-strong:#e6e6e6;--b-text:#a3a3a3;--b-muted:#85858a;
+  --b-line:#6a6a6a;--b-line-2:#333333;--b-line-3:#232323;--b-ring:#ffffff17;--b-elev:0 0 0 1px #ffffff1c,0 2px 4px -1px #00000066,0 10px 24px -6px #00000099,0 24px 48px -16px #000000b3;--b-zebra:#ffffff06;--b-halo:0 24px 30px -20px #000000cc,0 2px 6px -2px #00000080;--b-scrim:#000000a6;--b-sheet:inset 0 1px 0 0 #ffffff12,0 -10px 28px -14px #000000b3;--b-device:#000000;--b-logo-invert:invert(1);
+  --b-green:#6be0a0;--b-red:#ff6b6b;--b-blue:#6b9bff;--b-amber:#f0b14a;
+  --b-green-wash:#6be0a01a;--b-red-wash:#ff6b6b1a;--b-blue-wash:#6b9bff1a;--b-amber-wash:#f0b14a1a;--b-series-1:#e6e6e6;--b-series-2:#6b9bff;--b-series-3:#f59a3c;--b-series-4:#2cc4c2;
+  --b-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+  --b-btn-bg:linear-gradient(180deg,#202020,#191919);--b-btn-fg:#e6e6e6;
+  --b-btn-shadow:inset 0 1px 0 0 #ffffff0f,inset 0 0 0 1px #ffffff08,0 0 0 1px #000000,0 1px 2px 0 #00000066,0 3px 6px -3px #00000066;
+  --b-btn-hover:brightness(1.18);
+  --b-btn-solid-bg:linear-gradient(180deg,#f5f5f5,#d6d6d6);--b-btn-solid-fg:#111112;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff,inset 0 -1px 0 0 #00000024,0 0 0 1px #000000,0 1px 2px 0 #00000080,0 3px 6px -3px #00000080;
+  --b-btn-solid-hover:brightness(1.05);
+  color-scheme:dark;
+}

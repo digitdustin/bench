@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css">
+<style>
+  :root { --ground: #0E0E10; --chrome: rgba(22,22,24,.82); --chrome-text: #d6d6d6; --pane: #0E0E10; --bar-text: #8a8a90; --bar-focus: #ededed; --gap: 4px; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--ground); font: 13px -apple-system, system-ui, sans-serif; }
+  #ground { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  #title { position: fixed; left: 0; right: 0; top: 0; height: 44px; background: var(--chrome); backdrop-filter: blur(18px); display: flex; align-items: center; justify-content: center; color: var(--chrome-text); z-index: 3; }
+  #title .lights { position: absolute; left: 17px; top: 16px; display: flex; gap: 8px; } #title .lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; display: block; } #title .lights i:nth-child(2) { background: #febc2e; } #title .lights i:nth-child(3) { background: #28c840; }
+  #title .switch { display: grid; grid-template-columns: 1fr 1fr; background: color-mix(in srgb, var(--chrome-text) 8%, transparent); border-radius: 999px; padding: 2px; font-size: 12.5px; font-weight: 500; }
+  #title .switch span { padding: 3px 22px; border-radius: 999px; opacity: .65; } #title .switch span.on { background: color-mix(in srgb, var(--chrome-text) 16%, transparent); opacity: 1; }
+  #side { position: fixed; left: 0; top: 44px; bottom: 0; width: 248px; background: var(--chrome); backdrop-filter: blur(18px); color: var(--chrome-text); z-index: 3; padding: 10px 8px; box-sizing: border-box; }
+  #side div { padding: 6px 10px; border-radius: 7px; font-size: 13px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } #side div.on { background: color-mix(in srgb, var(--chrome-text) 12%, transparent); opacity: 1; }
+  #desk { position: fixed; left: 248px; top: 44px; right: 0; bottom: 0; z-index: 2; }
+  .pane { position: absolute; border-radius: 6px; overflow: hidden; background: var(--pane); }
+  .pane .bar { position: absolute; left: 0; right: 0; top: 0; height: 28px; display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--bar-text); font-size: 12.5px; font-weight: 500; }
+  .pane.focus .bar { color: var(--bar-focus); }
+  .pane .bar i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .7; }
+  .pane .host { position: absolute; right: 4px; bottom: 4px; }
+  .pane .host .xterm, .pane .host .xterm-viewport, .pane .host .xterm-screen { background: transparent !important; }
+  .pane .host .xterm-viewport { overflow: hidden !important; }
+  /* Phosphor */
+  body[data-theme="phosphor"] .host canvas { filter: drop-shadow(0 0 1.5px rgba(80,255,150,.55)) drop-shadow(0 0 5px rgba(80,255,150,.22)); }
+  body[data-theme="phosphor"] .pane::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0,0,0,.22) 0 1px, transparent 1px 3px), radial-gradient(120% 90% at 50% 50%, transparent 60%, rgba(0,0,0,.45)); mix-blend-mode: multiply; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+</style></head>
+<body>
+<canvas id="ground"></canvas>
+<div id="title"><div class="lights"><i></i><i></i><i></i></div><div class="switch"><span>Chat</span><span class="on">Desk</span></div></div>
+<div id="side"><div>Desk themes plan</div><div class="on">Fix flaky retry test</div><div>Search A/B readout</div><div>Amplitude dashboard</div><div>Flex combo prototypes</div><div>Slack thread analysis</div><div>Staggering 5m research</div></div>
+<div id="desk"></div>
+<script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
+<script src="node_modules/@xterm/addon-webgl/lib/addon-webgl.js"></script>
+<script src="lab.js"></script>
+</body></html>

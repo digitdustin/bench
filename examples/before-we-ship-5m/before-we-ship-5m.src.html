@@ -1,0 +1,255 @@
+<title>Before We Ship 5-Minute</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* Memo layout: one 780px column; the gate table scrolls on narrow screens. */
+.p-gates{min-width:720px}
+.p-gates td:first-child{width:24%}
+.p-gates td:nth-child(2){width:32%}
+</style>
+
+<main class="b-page" data-width="read">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">Polymarket US</span><span class="b-label">Crypto</span><span class="b-label">Decision memo</span><span class="b-label">Oct 15, 2026</span></div>
+    <h1 class="b-display">Before we ship 5-minute crypto on US</h1>
+    <p class="b-lede">We're approved to list 5-minute Up/Down markets on US. Kalshi has the bigger crypto book and could list the same product within days. This memo covers who actually gains if we go first, why Kalshi hasn't done it, and what we should have in place before we turn it on.</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Recommendation</dt><dd><span class="b-chip" data-status="paused">Hold 5m, ship as a package</span></dd></div>
+      <!--bench:connectors hex notion-->
+    </dl>
+  </header>
+
+  <section class="b-panel" data-raised>
+    <span class="b-label">The short version</span>
+    <div class="b-prose" style="max-width:none"><ol>
+      <li><strong>The instinct is mostly right.</strong> Kalshi's BTC 15-minute book is about 6× ours (~$127M vs ~$26M a day). On its own, a 5-minute series that Kalshi copies would add more dollars to Kalshi than to us. Listing a new contract is a self-certification filing, so their legal lag is about a day. Their real lag is market makers and settlement, which is still measured in weeks, not quarters.</li>
+      <li><strong>Our crypto growth so far hasn't come at Kalshi's expense.</strong> Since BTC 15m launched on US on 9/22, our 7-day share went from 0% to 12.4% against a Q4 goal of 50%, and Kalshi stayed flat at ~$1.16B a week. 87% of Up/Down traders traded sports first. Sports traders who picked up Up/Down grew their sports volume too.</li>
+      <li><strong>Our bottleneck is reach, and 5m mostly doesn't fix it.</strong> Dollars are up 32% week over week, but traders are down 6%. New-to-platform traders fell from 27.5% to 16% of Up/Down traders, and 85% of sports traders still haven't tried it. 5m mostly raises dollars per existing trader. The roadmap's "+50% notional?" estimate for 5m assumes Kalshi doesn't respond.</li>
+      <li><strong>DeFi showed that 5m spikes and then decays.</strong> Volume peaked in March, fell about 70% by August, and only 3.6% of February's players were still betting in August. The spike is the prize, and whoever has the bigger audience on the day both venues list it takes most of the spike.</li>
+      <li><strong>So we should launch it when it's hard to copy.</strong> Ship catch-up features first (more assets, liquidity parity, a faster re-entry loop). Kalshi already has the catch-up features, so shipping them gives Kalshi nothing new. Ship 5m last, bundled with things Kalshi can't match in a week.</li>
+    </ol></div>
+  </section>
+
+  <section class="b-section" id="stand">
+    <div class="b-section-head"><span class="b-label">Where we stand, 23 days after BTC 15m launched on US</span><h2 class="b-h2">We added share by growing, not by taking it from Kalshi</h2></div>
+    <figure style="margin:0">
+      <div class="b-linked">
+    <div class="b-stats">
+        <div class="b-stat"><span class="b-label">Up/Down notional, 10/14</span><span class="b-stat-v">$28.2M</span><span class="b-delta">15m, 60m and daily BTC</span></div>
+        <div class="b-stat"><span class="b-label">Share of all US volume</span><span class="b-stat-v">30%</span><span class="b-delta">Weekends 12–14%, as sports swells the total</span></div>
+        <div class="b-stat"><span class="b-label">7-day share vs Kalshi</span><span class="b-stat-v">12.4%</span><span class="b-delta">Q4 goal 50%. 15m alone 12.8%</span></div>
+        <div class="b-stat"><span class="b-label">Traders since 9/22</span><span class="b-stat-v">173K</span><span class="b-delta">36% new to US, 90% traded sports</span></div>
+      </div>
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">BTC 15-minute daily volume</span><span class="b-corner" data-corner="hint">Sep 15 – Oct 14, 2026</span><span class="b-corner" data-corner="readout">US share 15% on 10/14</span></div>
+        <div class="b-keys" style="margin-bottom:var(--b-4)"><span class="b-key"><i data-swatch></i>Polymarket US</span><span class="b-key"><i data-swatch="2"></i>Kalshi kxbtc15m (taker)</span><span class="b-key"><i data-dash></i>Coinbase starts routing Kalshi 15m (10/6)</span></div>
+        <div class="b-chart-wrap"><svg class="b-chart" id="shareChart" viewBox="0 0 680 280" role="img" aria-label="Stacked daily bars of US and Kalshi BTC 15-minute volume from Sept 15 to Oct 14, 2026. Kalshi holds near $127M a day while US grows from zero to about $26M."></svg></div>
+      </div>
+      </div>
+      <figcaption class="b-caption"><strong>Kalshi didn't move.</strong> Kalshi's BTC 15m averaged about $127M a day in the week before 10/6 and about $127M a day after it. Coinbase distribution didn't add visible volume, and our launch didn't take any away. Our jump on 10/6, from ~$14M to ~$21M a day, came from our own growth. Source: Hex, <code>mart.daily_us_market_volume</code> and <code>mart.daily_kalshi_market_volume</code>, US Eastern dates. BTC only against Kalshi's BTC 15m series, so the share (~15%) runs higher than the all-crypto 12.4%.</figcaption>
+    </figure>
+
+    <div class="b-prose">
+      <p>Who our Up/Down volume comes from:</p>
+      <ul>
+        <li><strong>Retail-heavy.</strong> ISV app and web are ~55% of crypto taker volume (iOS alone is 50%). PMX, which is likely market-maker and other-FCM flow, is 41%. ISV API is 3.5%. On DeFi 5m, bot-like wallets were ~86% of taker dollars.</li>
+        <li><strong>Not concentrated among ISV accounts.</strong> The top 10 accounts are 5.4% of volume, the top 100 are 19.5%, and the top 1,000 are 48.6%. The PMX share has no per-user data, so true concentration is higher.</li>
+        <li><strong>Cross-sold, not cannibalizing.</strong> 87% of this week's Up/Down traders traded sports first, and only 5% are crypto-only. Sports traders who picked up Up/Down grew their sports volume 3% and their sports active days 14% week over week. Cross-sold traders are stickier: 47% trade Up/Down on 2+ days, against 38% for crypto-only.</li>
+        <li><strong>Repeat is steady.</strong> 33% of first-time Up/Down traders trade again the next day and 51% within 7 days, flat across cohorts. Up/Down D7 for users new to Polymarket is 10.5%, against 9.3% for sports.</li>
+        <li><strong>Shorter is winning.</strong> 15m is now 95% of Up/Down volume. 1h fell to $5.1M a week, with 2–4K daily app traders against 19–26K on 15m. This points to real demand for 5m, and also means 5m will mostly pull from 15m. On DeFi, 5m peaked at $385M a week against $126M for 15m.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="b-section" id="reach">
+    <div class="b-section-head"><span class="b-label">From Crypto Growth Weekly, Oct 15</span><h2 class="b-h2">The constraint is reach, not dollars per trader</h2></div>
+    <div class="b-stats">
+      <div class="b-stat"><span class="b-label">Volume, trailing 7 days</span><span class="b-stat-v">$116.4M</span><span class="b-delta" data-dir="up">32% w/w</span></div>
+      <div class="b-stat"><span class="b-label">Traders, trailing 7 days</span><span class="b-stat-v">75.4K</span><span class="b-delta" data-dir="down">6% w/w</span></div>
+      <div class="b-stat"><span class="b-label">Estimated fees, 7 days</span><span class="b-stat-v">$2.8M</span><span class="b-delta">~2.4% of notional</span></div>
+    </div>
+    <div class="b-prose">
+      <p>Weekday daily traders fell from 24–25K to 19–21K. Growth is coming from existing traders putting more money in. New traders aren't growing.</p>
+      <ul>
+        <li>New-to-platform share of Up/Down traders: 27.5% in launch week, 19.5% last week, 16% this week.</li>
+        <li>Penetration is flat. 13.8% of weekly sports traders trade Up/Down, so 85% still haven't.</li>
+        <li>Game-night placements bring first trades, not habit. Starters trade more the next day but less by day 7.</li>
+      </ul>
+    </div>
+    <aside class="b-note" data-tone="info"><p><strong>5m adds windows for people already trading crypto.</strong> DeFi shows those extra windows skew toward bots and heavy traders. It does little for the 85% of sports traders who haven't tried crypto. The levers already on the roadmap that do reach them are placements, the Crypto &amp; RWA hub, signal-timed pushes, and new assets. That's a second reason to sequence 5m last.</p></aside>
+  </section>
+
+  <section class="b-section" id="defi">
+    <div class="b-section-head"><span class="b-label">The DeFi precedent</span><h2 class="b-h2">5-minute was a spike, and what's left is mostly bots</h2><p class="b-small">The <a href="https://x.com/Polymarket/status/2022343906168623112" target="_blank" rel="noopener">5-minute launch</a> in February was real. Bitquery's on-chain read of DeFi's fast crypto markets shows what happened after it.</p></div>
+    <div class="b-pair">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 2</span><span class="b-corner" data-corner="title">DeFi fast crypto, $M a month</span><span class="b-corner" data-corner="hint">Bitquery, 2026</span><span class="b-corner" data-corner="readout">−69% from March</span></div>
+        <svg class="b-chart" id="defiChart" viewBox="0 0 440 250" role="img" aria-label="Monthly matched volume Jan to Aug 2026: 625, 856, 1119, 877, 854, 500, 420, and an August pace of about 344 million dollars."></svg>
+        <p class="b-plate-caption">Matched volume across fast crypto markets. August is 1–18 ($199.8M) scaled to a month-long pace, shown hatched.</p>
+      </div>
+      <div class="b-panel">
+        <h3 class="b-h3">What the cohort data says</h3>
+        <ul>
+          <li><strong>3.6%</strong> of February's 5m players were still betting in August.</li>
+          <li>Week-4 retention for 5m wallets was <strong>20.5%</strong>, against <strong>48.4%</strong> for weekly products.</li>
+          <li>Bot-like wallets were <strong>86%</strong> of 5m taker dollars and sat on at least one side of 79% of volume.</li>
+          <li>About <strong>31%</strong> of wallets finished a measured week ahead after fees. Retention was highest among the biggest losers (7.2%), which is exactly the cohort regulators will point at.</li>
+          <li>The fee rate peaked at 4.22% in March. Volume kept falling after it was cut to about 1.1%.</li>
+        </ul>
+        <span class="b-source">Bitquery (Sep 2025–Aug 2026), Pantera/Ally "Crypto on the Clock."</span>
+      </div>
+    </div>
+    <div class="b-prose"><p>We should be clear about what this means. 5m is very good at creating a launch-week moment. It is weak at building durable retail habit. If Kalshi copies it within two weeks, the moment is shared, and most of it goes to the bigger audience.</p></div>
+  </section>
+
+  <section class="b-section" id="why">
+    <div class="b-section-head"><span class="b-label">Why hasn't Kalshi listed 5m?</span><h2 class="b-h2">Seven plausible reasons, most likely first</h2><p class="b-small">I found no on-record Kalshi statement on 5-minute contracts, and no X thread with a stated reason. As of a Sept 4 sweep, Kalshi had 274 crypto series and the shortest was 15 minutes. These reasons are inferred from the evidence cited for each. The chip is my confidence: green is high, amber is medium.</p></div>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">They don't need it</h3><p>Kalshi holds ~85% of US+Kalshi BTC 15m volume today, and by May it had passed Polymarket globally in crypto (60% vs 40% in the week of 5/17). A leader doesn't split its best book to answer a competitor that hasn't threatened it yet.</p></div><span class="b-chip" data-tone="yes">High</span></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">It would thin their best fee engine</h3><p>BTC 15m earned an estimated ~$60M in fees in September. Short-duration markets made 80% of Kalshi's non-sports fees in the week to Oct 5. Putting the same flow across 3× as many windows thins each book and widens spreads. Market makers, including Kalshi's affiliate Kalshi Trading, would have to quote 288 windows per asset per day.</p></div><span class="b-chip" data-tone="yes">High</span></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Second-mover option</h3><p>If we list it first on a regulated US venue, we take the headline and regulatory risk. If nothing happens, they copy it with a one-day self-certification. Press already frames it this way: "if Polymarket's product succeeds without a regulatory clampdown, competitors could launch similar products within months."</p></div><span class="b-chip" data-tone="yes">High</span></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Bad legal timing</h3><p>Kalshi lost in the 9th Circuit (Nevada, August) and the 6th Circuit (Ohio/Tennessee, Sept 25), so Supreme Court review looks likelier. The CFTC's public-interest proposal (June 10) drew at least one comment asking for a minimum one-trading-day time to settlement in major asset classes. Kalshi argues event contracts are financial swaps, and that argument is hardest to make for a 300-second BTC coin flip. Critics already compare 5m to the binary options ESMA banned for EU retail in 2018.</p></div><span class="b-chip" data-tone="warn">Medium-high</span></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Settlement design</h3><p>Kalshi settles on CF Benchmarks BRTI averaged over the final 60 seconds. On a 5-minute window, that average covers 20% of the window, so a 5m series probably needs a new benchmark spec and license. Polymarket settles on Chainlink Data Streams, which fits short windows better.</p></div><span class="b-chip" data-tone="warn">Medium</span></li>
+      <li class="b-row"><span class="b-row-n">6</span><div class="b-row-body"><h3 class="b-h3">Distribution partners set the pace</h3><p>Coinbase started routing Kalshi 15m and hourly on Oct 6, through its own FCM, in every state except Nevada. Robinhood is building its own exchange (MIAXdx). A 5-minute binary option inside a broker app is a separate compliance decision for each partner.</p></div><span class="b-chip" data-tone="warn">Medium</span></li>
+      <li class="b-row"><span class="b-row-n">7</span><div class="b-row-body"><h3 class="b-h3">They saw the DeFi decay</h3><p>The DeFi data is public on-chain: peak in March, ~70% down by August, 3.6% cohort survival, bot-dominated. On that evidence 5m is a headline product, not a retention product.</p></div><span class="b-chip" data-tone="warn">Medium</span></li>
+    </ol>
+    <div class="b-prose"><p>Reasons 1–3 together explain why they would copy fast once we list. Not needing it is a reason to wait, not a reason to refuse. Once a competitor lists 5m on a US exchange and the rival with the bigger book doesn't, that rival risks a "Kalshi doesn't have it" headline. Reasons 4–6 are the friction that could stretch their copy time from days to weeks.</p></div>
+  </section>
+
+  <section class="b-section" id="who">
+    <div class="b-section-head"><span class="b-label">Your core question</span><h2 class="b-h2">If both venues have 5m, who gains more?</h2></div>
+    <div class="b-prose">
+      <p><strong>In absolute dollars, Kalshi does.</strong> If 5m adds the same percentage to each venue's existing crypto book, Kalshi's base is about 6× larger. It also arrives on Coinbase (10 assets) and Robinhood/Webull distribution that we don't have.</p>
+      <p><strong>In share, it depends on how many traders use both venues, and we don't know that number yet.</strong> Our data says the crypto audience is largely our own sports audience. If Kalshi's crypto traders are similarly captive, 5m deepens each venue's own base and share barely moves. Share moves where traders can compare products side by side, so the question becomes what a crypto trader gets from us that they can't get on Kalshi.</p>
+    </div>
+    <pre class="b-code">our durable gain ≈ (days before Kalshi copies × our 5m incremental volume)
+                 + (lasting edge × traders who use both venues)</pre>
+    <div class="b-prose"><p>The first term is small because the copy window is short. Everything in the checklist below is about growing the second term before launch.</p></div>
+  </section>
+
+  <section class="b-section" id="gates">
+    <div class="b-section-head"><span class="b-label">The checklist</span><h2 class="b-h2">What we should have before 5m goes live</h2><p class="b-small">Status reflects what I could verify today. An empty ring means we haven't measured or started it yet, which isn't the same as bad.</p></div>
+    <div class="b-chips"><span class="b-chip" data-status="check">Met</span><span class="b-chip" data-status="ongoing">Underway</span><span class="b-chip" data-status="progress">Partly met</span><span class="b-chip" data-status="todo">Not started or unknown</span></div>
+    <div class="b-table-wrap"><table class="b-table p-gates" data-wrap>
+      <thead><tr><th>Gate</th><th>Why it matters</th><th>Bar to clear</th><th>Status today</th></tr></thead>
+      <tbody>
+        <tr data-group><td colspan="4">Data we should know first</td></tr>
+        <tr><td data-strong>15m has plateaued and has 4-week retention</td><td>15m is 23 days old and still climbing. A 5m launch now makes it impossible to tell 5m growth from 15m maturing, or from 5m cannibalizing 15m.</td><td>Two flat weeks of BTC 15m volume, plus D28 for the 9/22–9/28 cohort (available after 10/26)</td><td><div class="b-cell"><span class="b-chip" data-status="progress">Partly met</span><span class="b-small">Dollars still growing (+32% w/w) while traders have plateaued. Repeat holds at ~51% within 7 days. D28 not yet available</span></div></td></tr>
+        <tr><td data-strong>Where crypto volume comes from</td><td>Three possibilities: incremental money, money moved out of our own sports, or money taken from Kalshi. Each one changes how much 5m is worth.</td><td>Per-user check: did sports volume drop for crypto adopters? Weekly comparison against Kalshi</td><td><div class="b-cell"><span class="b-chip" data-status="check">Met</span><span class="b-small">Incremental. Kalshi is flat, and adopters' sports volume grew 3% and their active days 14% w/w (Sep 30 weekly)</span></div></td></tr>
+        <tr><td data-strong>How many traders use both venues</td><td>This is the main input to the share question. If few traders use both venues, 5m won't move share in either direction.</td><td>Estimate the % of our crypto traders who also use Kalshi (onboarding question, survey, bank-link descriptors)</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Unknown</span></div></td></tr>
+        <tr><td data-strong>Retail share of flow</td><td>Retail flow is what we keep. Bot flow follows whichever venue is cheapest. DeFi 5m was ~13% retail.</td><td>Model 5m retail share. Kill if it falls below 30%</td><td><div class="b-cell"><span class="b-chip" data-status="check">Met for 15m</span><span class="b-small">ISV app/web ~55% of crypto taker volume</span></div></td></tr>
+        <tr><td data-strong>Liquidity against Kalshi</td><td>Traders comparing venues pick the tighter book. 5m needs 3× the quoting to match 15m depth.</td><td>Our spread at 50¢ and depth at $100 / $1,000 no worse than kxbtc15m during US hours</td><td><div class="b-cell"><span class="b-chip" data-status="progress">Partly known</span><span class="b-small">The MM program is working: ~66% of notional comes from firms we onboarded or raised limits for, and FIX sessions are going to crypto MMs. There's no spread or depth comparison with Kalshi yet</span></div></td></tr>
+        <tr><td data-strong>All-in cost to the trader</td><td>Kalshi charges 0.07·P(1−P) per contract as taker, which is 1.75¢ (3.5% of stake) at 50¢. Fees plus spread decide price shopping.</td><td>Published side-by-side fee + spread at 50¢. Ours equal or better</td><td><div class="b-cell"><span class="b-chip" data-status="progress">Partly known</span><span class="b-small">Our fees run ~2.4% of notional ($2.8M on $116.4M; $2.18M on $89.0M the week before), against ~2.7% modeled for Kalshi. Spread not compared yet</span></div></td></tr>
+        <tr><td data-strong>Pent-up US demand</td><td>Sizes the launch-week moment. If US visitors already hit DeFi 5m and get geoblocked, that demand is ours to capture on day one.</td><td>Count of US-located visits to DeFi 5m pages (Amplitude geoblock events)</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Unknown</span><span class="b-small">Geoblock tracking is still a deferred TODO</span></div></td></tr>
+        <tr><td data-strong>Kalshi copy-lag estimate</td><td>Sets the size of the exclusive window.</td><td>Planning assumption: under 2 weeks. Self-certification is about 1 business day</td><td><div class="b-cell"><span class="b-chip" data-status="progress">Assumed short</span></div></td></tr>
+
+        <tr data-group><td colspan="4">Product reasons to trade crypto with us</td></tr>
+        <tr><td data-strong>Asset breadth</td><td>We're BTC-only. Kalshi lists 15m on BTC, ETH, SOL, XRP, DOGE, BNB, HYPE and gold, and Coinbase routes 10 tokens. Kalshi already has all of these, so shipping them gives Kalshi nothing new.</td><td>ETH, SOL, XRP on 15m/60m/daily before 5m</td><td><div class="b-cell"><span class="b-chip" data-status="ongoing">Shipping today</span><span class="b-small">ETH/SOL/XRP launch 10/15 at 3:30pm ET. Extra BTC market types are live (~1.5% of notional). Gold &amp; silver W/O Oct 19/26. NEAR, HYPE, DOGE, ZEC, BNB TBD</span></div></td></tr>
+        <tr><td data-strong>Fast re-entry loop</td><td>A short-window product is a repeat product. Taps-to-next-window is what traders feel.</td><td>One-tap next window, size presets, "same bet again," auto-roll option</td><td><div class="b-cell"><span class="b-chip" data-status="progress">Partly there</span><span class="b-small">Position cards already act as the loop: 61% of tappers trade again within 30 minutes. The leak is the buy sheet, where only 60% of openers submit. The updated trade component shipped W/O Oct 5</span></div></td></tr>
+        <tr><td data-strong>Live settlement view</td><td>Trust in a 5-minute outcome depends on seeing the oracle price, the price to beat, and the resolution source in real time.</td><td>Live reference chart with price-to-beat line and past results on all assets, web + mobile</td><td><div class="b-cell"><span class="b-chip" data-status="ongoing">In progress</span><span class="b-small">Crypto header, pills and chart work on web</span></div></td></tr>
+        <tr><td data-strong>Limit-order quality</td><td>Active traders compare limit order handling directly.</td><td>Self-cross auto-cancel (QW-03), fill pushes with amounts (QW-04)</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Specced</span><span class="b-small">Specced in September, not started</span></div></td></tr>
+        <tr><td data-strong>Funding speed</td><td>Kalshi accepts USDT on TRON, and Coinbase users trade from a funded USD/USDC balance.</td><td>Instant deposit on our fastest rail, same-day withdrawal</td><td><div class="b-cell"><span class="b-chip" data-status="todo">To check</span></div></td></tr>
+        <tr><td data-strong>Player-protection controls</td><td>This shields us on regulation and gives us a better story than Kalshi. DeFi's biggest losers retained best, and regulators will point at them.</td><td>Loss and deposit limits, cool-down, streak nudges, live before 5m</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Unknown</span></div></td></tr>
+
+        <tr data-group><td colspan="4">How we launch</td></tr>
+        <tr><td data-strong>Market-maker commitments for 5m</td><td>If we have committed depth on day one and Kalshi has a thin book on its first copy, traders who compare venues stay with us.</td><td>Signed quoting obligations across all 288 daily windows per asset, minimum size at 50¢</td><td><div class="b-cell"><span class="b-chip" data-status="ongoing">In progress</span><span class="b-small">This week's action items include "Prep 5min launch" and MM rate limits for new assets. Kalshi's playbook was 3–5 good makers focused only on BTC 15m. MMs told us 5m is "more forgiving for algo traders"</span></div></td></tr>
+        <tr><td data-strong>Bundle, not a single feature</td><td>A lone 5m BTC series is a one-day copy. 5m across 3–4 assets with the re-entry loop and streaks takes weeks to match.</td><td>5m ships with at least 2 features Kalshi can't list by filing</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Planned</span><span class="b-small">Candidates on the roadmap: Crypto &amp; RWA hub (W/O Oct 19), signal-timed pushes, live chat on the event page. Kalshi already has 15m crypto combos, so combos alone won't stand out</span></div></td></tr>
+        <tr><td data-strong>Regulatory pack</td><td>We become the test case on a US venue.</td><td>Legal memo on the public-interest and binary-options arguments, a press line, and a CFTC heads-up</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Planned</span></div></td></tr>
+        <tr><td data-strong>Measurement and kill criteria</td><td>We decide in advance what failure looks like.</td><td>Events instrumented. Roll back if retail share is under 30%, or if 15m drops more than 25% while total crypto stays flat</td><td><div class="b-cell"><span class="b-chip" data-status="todo">Planned</span></div></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="b-section" id="options">
+    <div class="b-section-head"><span class="b-label">Options</span><h2 class="b-h2">Three ways to play it</h2></div>
+    <div class="b-grid">
+      <div class="b-panel"><span class="b-label">A. Ship BTC 5m now</span><h3 class="b-h3">Take the moment</h3><ul><li>Fastest headline, and the brand already owns "5-minute"</li><li>Muddies the 15m read while it's still ramping</li><li>Hands Kalshi a validated, de-risked product to copy onto a 6× bigger book with broker distribution</li></ul></div>
+      <div class="b-panel" data-selected><span class="b-panel-tag">Recommended</span><span class="b-label">B. Parity first, 5m as a package</span><h3 class="b-h3">Make the copy expensive</h3><ul><li>Weeks 1–3: ETH/SOL/XRP on 15m/60m/daily, liquidity and fee parity, re-entry loop, protection controls</li><li>Meanwhile: measure how many traders use both venues, collect D28, line up MM commitments</li><li>Then: 5m across all listed assets in one launch</li></ul></div>
+      <div class="b-panel"><span class="b-label">C. Don't list 5m</span><h3 class="b-h3">Stay out of the coin-flip fight</h3><ul><li>Avoids regulatory exposure while the circuit split moves toward the Supreme Court</li><li>Leaves the opening to Kalshi if they decide to go first</li><li>Gives up the strongest launch moment we have</li></ul></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="gaps">
+    <div class="b-section-head"><span class="b-label">Gaps</span><h2 class="b-h2">What I couldn't verify</h2></div>
+    <div class="b-prose"><ul>
+      <li>No on-record Kalshi statement on 5m, and no X discussion surfaced through search. The "why" section is inference.</li>
+      <li>PMX flow (41% of crypto) has no per-user data, so concentration and trader counts cover ISV accounts only.</li>
+      <li>Kalshi volume is taker-only and isn't split by channel, so we can't isolate Coinbase-routed flow.</li>
+      <li>Still unmeasured: spread and depth against Kalshi, how many traders use both venues, and pent-up US demand from DeFi geoblocks. Those are the first three things to measure.</li>
+      <li>The Crypto Growth Weekly figures are the team's own read and the page is marked unverified in Notion. My Hex pull is BTC-only, so its share number runs higher than the weekly's all-crypto figure.</li>
+      <li>Web sources on Kalshi fees and asset lists are partly affiliate sites. Confirm against Kalshi's fee schedule PDF and market list before quoting externally.</li>
+    </ul></div>
+  </section>
+
+  <footer class="b-footer">
+    <span class="b-label">Sources</span>
+    <ol>
+      <li>Internal: Hex thread on U.S. (ISV) and DeFi ClickHouse DWHs, <a href="https://app.hex.tech/0196f12e-52f0-7000-883a-3ab514bacbb9/thread/01a1410a-3b43-713e-8673-2a7fe953ea75" target="_blank" rel="noopener">open in Hex</a></li>
+      <li>Internal: <a href="https://app.notion.com/p/polymarket/Crypto-Growth-Weekly-3d6d316c50d5809c985ffec5045cd621" target="_blank" rel="noopener">Crypto Growth Weekly</a> (Sep 9 – Oct 15 entries)</li>
+      <li><a href="https://www.bitquery.io/investigations/polymarket-five-minute-casino" target="_blank" rel="noopener">Bitquery, Polymarket five-minute markets (Sep 2025–Aug 2026)</a></li>
+      <li><a href="https://ally-pantera.github.io/crypto-on-the-clock/" target="_blank" rel="noopener">Crypto on the Clock: near-term crypto markets, two venues, two designs</a></li>
+      <li><a href="https://www.cryptopolitan.com/kalshi-polymarket-crypto-volume-market-share/" target="_blank" rel="noopener">Cryptopolitan: Kalshi's $454M crypto week (Artemis data)</a></li>
+      <li><a href="https://cointelegraph.com/news/kalshis-15-min-gold-markets-overtake-ether-just-weeks-after-launch" target="_blank" rel="noopener">Cointelegraph: Kalshi 15m gold overtakes ether; short-duration fee share</a></li>
+      <li><a href="https://thedefiant.io/news/defi/coinbase-launches-15-minute-and-hourly-crypto-price-markets" target="_blank" rel="noopener">The Defiant: Coinbase launches 15m and hourly crypto markets via Kalshi</a></li>
+      <li><a href="https://cryptobriefing.com/polymarket-15-minute-bitcoin-markets-us/" target="_blank" rel="noopener">Crypto Briefing: Polymarket launches 15m BTC on US app</a></li>
+      <li><a href="https://blog.predictefy.com/how-to-track-5-minute-bitcoin-markets" target="_blank" rel="noopener">Predictefy: Kalshi has no sub-15-minute series (Sept 4 sweep)</a></li>
+      <li><a href="https://www.theblock.co/news/regulation/2026-09-26-kalshi-loses-appeal-over-ohio-and-tennessee-sports-betting-laws-widening-circuit-split-416937" target="_blank" rel="noopener">The Block: Kalshi loses 6th Circuit appeal</a></li>
+      <li><a href="https://www.federalregister.gov/documents/2026/06/12/2026-11854/prediction-markets-public-interest-determinations" target="_blank" rel="noopener">Federal Register: CFTC Prediction Markets; Public Interest Determinations (proposed)</a></li>
+      <li><a href="https://thesynthesisai.substack.com/p/the-five-minute-line" target="_blank" rel="noopener">The Synthesis: The Five-Minute Line (ESMA binary-options comparison)</a></li>
+      <li><a href="https://www.aol.com/articles/15-minute-markets-cryptocurrency-prices-102000000.html" target="_blank" rel="noopener">15-minute markets are surging (Kalshi Trading, regulatory outlook)</a></li>
+      <li><a href="https://defirate.com/prediction-markets/fees/" target="_blank" rel="noopener">DeFi Rate: prediction market fees (Kalshi formula)</a></li>
+      <li><a href="https://fortune.com/2026/03/16/betting-on-5-minute-swings-on-bitcoin-price-are-the-hot-new-thing-on-prediction-markets" target="_blank" rel="noopener">Fortune: 5-minute bitcoin bets</a></li>
+    </ol>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent?.appendChild(e); return e; };
+  const label = (parent, x, y, s, anchor = "middle", cls = "axis") => { const t = el("text", { x, y, "text-anchor": anchor, class: cls }, parent); t.textContent = s; return t; };
+
+  // Fig 1: BTC 15m daily volume, US (primary) stacked under Kalshi (comparison), $M
+  const days = ["9/15","9/16","9/17","9/18","9/19","9/20","9/21","9/22","9/23","9/24","9/25","9/26","9/27","9/28","9/29","9/30","10/1","10/2","10/3","10/4","10/5","10/6","10/7","10/8","10/9","10/10","10/11","10/12","10/13","10/14"];
+  const us = [0,0,0,0,0,0,0,.16,1.77,3.35,5.03,5.80,6.09,9.26,11.54,10.80,13.50,15.44,8.86,9.72,13.79,20.60,21.04,21.73,25.21,15.38,18.06,22.69,24.07,26.30];
+  const ka = [121.16,112.85,107.53,130.73,106.40,108.43,133.40,123.69,115.08,112.24,122.13,105.63,115.64,135.37,130.82,127.29,120.53,145.56,111.82,113.57,129.31,125.09,126.27,128.25,133.54,107.69,110.43,124.35,135.41,149.83];
+  {
+    const svg = document.getElementById("shareChart");
+    const W = 680, H = 280, L = 44, R = 8, T = 22, B = 26, pw = W - L - R, ph = H - T - B, max = 180;
+    const y = (v) => T + ph - (v / max) * ph, bw = pw / days.length;
+    el("path", { class: "grid", d: [0, 45, 90, 135, 180].map((v) => `M${L} ${y(v)}H${W - R}`).join("") }, svg);
+    [0, 45, 90, 135, 180].forEach((v) => label(svg, L - 8, y(v) + 4, `$${v}M`, "end"));
+    days.forEach((d, i) => {
+      const x = L + i * bw + bw * 0.14, w = bw * 0.72;
+      el("rect", { class: "bar", "data-series": "2", x, y: y(us[i] + ka[i]), width: w, height: y(us[i]) - y(us[i] + ka[i]), rx: 1 }, svg);
+      if (us[i] > 0) el("rect", { class: "bar", x, y: y(us[i]), width: w, height: y(0) - y(us[i]), rx: 1 }, svg);
+      if (i % 3 === 0 || i === days.length - 1) label(svg, x + w / 2, H - 6, d);
+    });
+    const xm = L + days.indexOf("10/6") * bw;
+    el("path", { class: "marker", d: `M${xm} ${T - 10}V${y(0)}` }, svg);
+    label(svg, xm + 4, T - 2, "Coinbase × Kalshi", "start", "note");
+    const xl = L + days.indexOf("9/22") * bw;
+    label(svg, xl + 2, y(ka[7] + us[7]) - 6, "US 15m live", "start", "note");
+  }
+
+  // Fig 2: DeFi fast crypto by month, $M; August is a scaled pace
+  {
+    const svg = document.getElementById("defiChart");
+    const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"], v = [625, 856, 1119, 877, 854, 500, 420, 344];
+    const W = 440, H = 250, L = 44, R = 6, T = 30, B = 26, pw = W - L - R, ph = H - T - B, max = 1200;
+    const defs = el("defs", {}, svg), pat = el("pattern", { id: "b-hatch", width: 6, height: 6, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, defs);
+    el("rect", { class: "hatch-bg", width: 6, height: 6 }, pat); el("line", { class: "hatch-line", x1: 0, y1: 0, x2: 0, y2: 6 }, pat);
+    const y = (t) => T + ph - (t / max) * ph, bw = pw / m.length;
+    el("path", { class: "grid", d: [0, 400, 800, 1200].map((t) => `M${L} ${y(t)}H${W - R}`).join("") }, svg);
+    [0, 400, 800, 1200].forEach((t) => label(svg, L - 8, y(t) + 4, t >= 1000 ? `$${t / 1000}B` : `$${t}M`, "end"));
+    m.forEach((k, i) => {
+      const x = L + i * bw + bw * 0.2, w = bw * 0.6;
+      const r = el("rect", { class: "bar", x, y: y(v[i]), width: w, height: y(0) - y(v[i]), rx: 2 }, svg);
+      if (i === 7) r.setAttribute("data-partial", "");
+      label(svg, x + w / 2, H - 6, k);
+      label(svg, x + w / 2, y(v[i]) - 6, v[i], "middle", "value");
+    });
+    label(svg, L + 1 * bw + bw / 2, y(856) - 22, "5m launch", "middle", "note");
+  }
+})();
+</script>

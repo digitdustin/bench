@@ -1,0 +1,34 @@
+<title>{{Name}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* page-specific layout only */
+</style>
+<main class="b-page" data-width="wide">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">{{Team}}</span><span class="b-label">Readout</span><span class="b-label">{{Oct 15, 2026}}</span></div>
+    <h1 class="b-display">{{Headline that states the finding}}</h1>
+    <p class="b-lede">{{What the numbers say, in one to three sentences.}}</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Data through</dt><dd>{{Oct 14, 2026, only if it differs from the page date}}</dd></div>
+      <div><dt class="b-label">Source</dt><dd>{{Hex, Amplitude}}</dd></div>
+    </dl>
+  </header>
+
+  <div class="b-stats">
+    <div class="b-stat"><span class="b-label">{{Metric}}</span><span class="b-stat-v">{{$28.2M}}</span><span class="b-delta" data-dir="up">{{32% w/w}}</span></div>
+  </div>
+
+  <section class="b-section">
+    <div class="b-section-head"><h2 class="b-h2">{{Section}}</h2><p class="b-small">{{One line on what to look at.}}</p></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">{{Chart title}}</span><span class="b-corner" data-corner="hint">{{Source}}</span><span class="b-corner" data-corner="readout">{{Last value}}</span></div>
+        <div class="b-chart-wrap"><svg class="b-chart" viewBox="0 0 640 240" role="img" aria-label="{{Describe the chart}}"></svg></div>
+      </div>
+      <figcaption class="b-caption">{{Caption.}}</figcaption>
+    </figure>
+  </section>
+
+  <footer class="b-footer"><span class="b-label">Sources</span><ol><li>{{Source}}</li></ol></footer>
+</main>

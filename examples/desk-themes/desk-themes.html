@@ -1,0 +1,917 @@
+<title>Spool Desk Themes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Bench tokens v0.8. The single source of truth for every color, face, size, space and curve.
+   Values are lifted from "How a Polymarket market works" (Market Press) so isometric figures
+   from the anatomy kit sit on the page with no seam. Change a value here, rebuild, and every page follows. */
+:root{
+  /* ground: warm bench paper in light, workshop black in dark */
+  --b-page:#f2f2ef;
+  --b-card:#fbfbfa;
+  --b-raised:#ffffff;
+  --b-sunk:#ededea;
+
+  /* ink */
+  --b-strong:#18181a;   /* headlines, numbers */
+  --b-text:#57575a;     /* running text */
+  --b-muted:#7c7c80;    /* labels, captions */
+
+  /* hairlines, strongest to faintest */
+  --b-line:#8a8a8f;     /* strong hairline: figure edges, legend keys */
+  --b-line-2:#d0d0cd;   /* plate frame, controls */
+  --b-line-3:#e4e4e1;   /* dividers inside a container: table rows, rules */
+  --b-zebra:#18181a07;   /* faint stripe on every other row of a wrapping-text table */
+  --b-ring:#00000017;   /* the one border for containers on the page: plates, panels, stats, tables, chips. Alpha, so it takes the color of what's under it */
+  /* elevation for anything that floats above the page: modals, sheets, menus, popovers. An alpha edge plus layered shadow, never a grey ring */
+  --b-elev:0 0 0 1px #0000001f,0 2px 4px -1px #0000000f,0 10px 24px -6px #0000001f,0 24px 48px -16px #00000024;
+  --b-logo-invert:none; /* monochrome connector logos flip in dark */
+
+  /* signals: the only color on the page. green = YES / up / done, red = NO / down / blocked,
+     amber = partial / in progress, blue = info / link */
+  --b-green:#30a46c;
+  --b-red:#e5484d;
+  --b-blue:#3e63dd;
+  --b-amber:#b8720a;
+  --b-green-wash:#30a46c14;
+  --b-red-wash:#e5484d14;
+  --b-blue-wash:#3e63dd14;
+  --b-amber-wash:#b8720a14;
+
+  /* chart series, for charts that need more than two lines. 1 is the subject, 2 the comparison;
+     3 is the asset color (BTC orange) when a figure recreates the product chart; 4 is a fourth line */
+  --b-series-1:#18181a;
+  --b-series-2:#3e63dd;
+  --b-series-3:#e07b16;
+  --b-series-4:#0e9f9e;
+
+  /* type */
+  --b-sans:ui-sans-serif,system-ui,-apple-system,"SF Pro Text","Segoe UI",sans-serif;
+  --b-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  /* figure numerals: a condensed face for big numbers inside interactive figures and product recreations
+     (prices, timers, readouts). Illustrative only, never body text. build.mjs loads it when a page uses .b-figure-num */
+  --b-figure:"Instrument Sans",var(--b-sans);
+
+  --b-display:clamp(30px,4.6vw,40px);  /* page headline, once per page, always in the masthead */
+  --b-h1:clamp(26px,4vw,32px);         /* section that opens a part of the page */
+  --b-h2:20px;                         /* section heading */
+  --b-h3:15px;                         /* sub-heading, plate caption title */
+  --b-body:15px;
+  --b-small:13px;
+  --b-label:12.5px;                    /* sentence-case labels, plate corners, table headers */
+  --b-stat:clamp(24px,3.6vw,30px);     /* number in a stat tile, sans */
+
+  /* space: 4px base */
+  --b-1:4px;--b-2:8px;--b-3:12px;--b-4:16px;--b-5:24px;--b-6:32px;--b-7:48px;--b-8:64px;--b-9:96px;
+
+  /* measure */
+  --b-measure:780px;   /* default column, same as Market Press */
+  --b-wide:1080px;     /* readout and explainer variants */
+  --b-prose:62ch;
+
+  /* shape: soft corners, Linear-style */
+  --b-radius-xs:4px;   /* inline code */
+  --b-radius-sm:6px;   /* buttons, inputs, tabs */
+  --b-radius:8px;      /* notes, code blocks, tab track */
+  --b-radius-lg:12px;  /* plates, panels, tables, stat tiles */
+
+  /* motion */
+  --b-ease:cubic-bezier(.32,.72,0,1);
+  --b-fast:160ms;
+  --b-slow:420ms;
+
+  /* buttons: the only place a gradient is allowed; a lit top edge and a soft drop give them depth */
+  --b-btn-bg:linear-gradient(180deg,#ffffff,#f7f7f5);
+  --b-btn-fg:#18181a;
+  --b-btn-shadow:inset 0 -1px 0 0 #0000000a,0 0 0 1px #0000001c,0 1px 2px 0 #00000014,0 2px 4px -2px #0000000f;
+  --b-btn-hover:brightness(.985);
+  --b-btn-solid-bg:linear-gradient(180deg,#323236,#18181a);
+  --b-btn-solid-fg:#fbfbfa;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff2e,0 0 0 1px #0b0b0c,0 1px 2px 0 #00000033,0 3px 6px -3px #00000040;
+  --b-btn-solid-hover:brightness(1.18);
+
+  /* mockups: the soft halo under a device, the scrim behind a sheet, the near-black of hardware */
+  --b-halo:0 24px 30px -20px #0000003d,0 2px 6px -2px #0000001a;
+  --b-scrim:#18181a47;
+  /* a sheet rising from the bottom edge: no border, a soft upward shadow; dark adds a faint top highlight */
+  --b-sheet:0 -10px 28px -14px #0000002e;
+  --b-device:#141416;
+  /* a tag laid over a picture (a video length on a still). Same in both themes, since the picture under it doesn't change */
+  --b-media-scrim:#000000a3;
+  --b-media-ink:#ffffff;
+
+  --b-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --b-page:#0b0b0b;--b-card:#131313;--b-raised:#1b1b1b;--b-sunk:#0f0f0f;
+  --b-strong:#e6e6e6;--b-text:#a3a3a3;--b-muted:#85858a;
+  --b-line:#6a6a6a;--b-line-2:#333333;--b-line-3:#232323;--b-ring:#ffffff17;--b-elev:0 0 0 1px #ffffff1c,0 2px 4px -1px #00000066,0 10px 24px -6px #00000099,0 24px 48px -16px #000000b3;--b-zebra:#ffffff06;--b-halo:0 24px 30px -20px #000000cc,0 2px 6px -2px #00000080;--b-scrim:#000000a6;--b-sheet:inset 0 1px 0 0 #ffffff12,0 -10px 28px -14px #000000b3;--b-device:#000000;--b-logo-invert:invert(1);
+  --b-green:#6be0a0;--b-red:#ff6b6b;--b-blue:#6b9bff;--b-amber:#f0b14a;
+  --b-green-wash:#6be0a01a;--b-red-wash:#ff6b6b1a;--b-blue-wash:#6b9bff1a;--b-amber-wash:#f0b14a1a;--b-series-1:#e6e6e6;--b-series-2:#6b9bff;--b-series-3:#f59a3c;--b-series-4:#2cc4c2;
+  --b-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+  --b-btn-bg:linear-gradient(180deg,#202020,#191919);--b-btn-fg:#e6e6e6;
+  --b-btn-shadow:inset 0 1px 0 0 #ffffff0f,inset 0 0 0 1px #ffffff08,0 0 0 1px #000000,0 1px 2px 0 #00000066,0 3px 6px -3px #00000066;
+  --b-btn-hover:brightness(1.18);
+  --b-btn-solid-bg:linear-gradient(180deg,#f5f5f5,#d6d6d6);--b-btn-solid-fg:#111112;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff,inset 0 -1px 0 0 #00000024,0 0 0 1px #000000,0 1px 2px 0 #00000080,0 3px 6px -3px #00000080;
+  --b-btn-solid-hover:brightness(1.05);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --b-page:#0b0b0b;--b-card:#131313;--b-raised:#1b1b1b;--b-sunk:#0f0f0f;
+  --b-strong:#e6e6e6;--b-text:#a3a3a3;--b-muted:#85858a;
+  --b-line:#6a6a6a;--b-line-2:#333333;--b-line-3:#232323;--b-ring:#ffffff17;--b-elev:0 0 0 1px #ffffff1c,0 2px 4px -1px #00000066,0 10px 24px -6px #00000099,0 24px 48px -16px #000000b3;--b-zebra:#ffffff06;--b-halo:0 24px 30px -20px #000000cc,0 2px 6px -2px #00000080;--b-scrim:#000000a6;--b-sheet:inset 0 1px 0 0 #ffffff12,0 -10px 28px -14px #000000b3;--b-device:#000000;--b-logo-invert:invert(1);
+  --b-green:#6be0a0;--b-red:#ff6b6b;--b-blue:#6b9bff;--b-amber:#f0b14a;
+  --b-green-wash:#6be0a01a;--b-red-wash:#ff6b6b1a;--b-blue-wash:#6b9bff1a;--b-amber-wash:#f0b14a1a;--b-series-1:#e6e6e6;--b-series-2:#6b9bff;--b-series-3:#f59a3c;--b-series-4:#2cc4c2;
+  --b-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+  --b-btn-bg:linear-gradient(180deg,#202020,#191919);--b-btn-fg:#e6e6e6;
+  --b-btn-shadow:inset 0 1px 0 0 #ffffff0f,inset 0 0 0 1px #ffffff08,0 0 0 1px #000000,0 1px 2px 0 #00000066,0 3px 6px -3px #00000066;
+  --b-btn-hover:brightness(1.18);
+  --b-btn-solid-bg:linear-gradient(180deg,#f5f5f5,#d6d6d6);--b-btn-solid-fg:#111112;
+  --b-btn-solid-shadow:inset 0 1px 0 0 #ffffff,inset 0 -1px 0 0 #00000024,0 0 0 1px #000000,0 1px 2px 0 #00000080,0 3px 6px -3px #00000080;
+  --b-btn-solid-hover:brightness(1.05);
+  color-scheme:dark;
+}
+
+/* Bench components v0.8. Every rule reads from tokens.css; no literal colors below this line.
+   v0.2 follows Linear's handling of UI elements: sentence-case labels, sans numerals, quiet tables,
+   soft radii, low-contrast borders, pills whose dot carries the color. */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{overflow-x:clip;background:var(--b-page);color:var(--b-text);font:400 var(--b-body)/1.6 var(--b-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:"cv11","ss01"}
+::selection{background:var(--b-blue-wash);color:var(--b-strong)}
+a{color:var(--b-strong);text-decoration:underline;text-decoration-color:var(--b-line-2);text-underline-offset:3px;transition:text-decoration-color var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){a:hover{text-decoration-color:var(--b-strong)}}
+:focus-visible{outline:2px solid var(--b-blue);outline-offset:2px;border-radius:var(--b-radius-sm)}
+
+/* ── page ───────────────────────────────────────────── */
+.b-page{width:100%;max-width:calc(var(--b-measure) + 2*max(16px,env(safe-area-inset-left,0px)));margin:0 auto;padding-block:var(--b-8) var(--b-9);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:var(--b-7)}
+.b-page[data-width="wide"]{max-width:calc(var(--b-wide) + 2*max(16px,env(safe-area-inset-left,0px)))}
+/* bleed: inside a read page, one wide block (a 6+ column table, a wide chart, tabs holding tables) breaks out
+   to the wide measure, centered on the column. The rest of the page keeps the read width. */
+.b-bleed{align-self:center;width:min(var(--b-wide),calc(100vw - 2*max(16px,env(safe-area-inset-left,0px))));max-width:none}
+.b-page[data-width="wide"] .b-bleed{width:100%}
+.b-page>*{min-width:0}
+
+/* ── type ───────────────────────────────────────────── */
+.b-display,.b-h1,.b-h2,.b-h3{color:var(--b-strong);margin:0;text-wrap:balance;font-family:var(--b-sans)}
+.b-display{font-size:var(--b-display);font-weight:600;line-height:1.08;letter-spacing:-.028em}
+.b-h1{font-size:var(--b-h1);font-weight:600;line-height:1.12;letter-spacing:-.024em}
+.b-h2{font-size:var(--b-h2);font-weight:600;line-height:1.25;letter-spacing:-.014em}
+.b-h3{font-size:var(--b-h3);font-weight:600;line-height:1.4;letter-spacing:-.006em}
+.b-lede{font-size:17px;line-height:1.55;color:var(--b-text);max-width:var(--b-prose);margin:0;text-wrap:pretty}
+.b-prose{max-width:var(--b-prose);display:flex;flex-direction:column;gap:var(--b-4)}
+.b-prose p,.b-prose ul,.b-prose ol{margin:0}
+.b-prose ul,.b-prose ol{padding-left:1.2em;display:flex;flex-direction:column;gap:var(--b-1)}
+.b-prose strong{color:var(--b-strong);font-weight:600}
+.b-small{font-size:var(--b-small);line-height:1.55;color:var(--b-muted)}
+/* label: small, medium weight, muted, sentence case. Never uppercase. */
+.b-label{font:500 var(--b-label)/1.4 var(--b-sans);letter-spacing:-.003em;color:var(--b-muted)}
+.b-num{font-variant-numeric:tabular-nums}
+code,.b-code{font-family:var(--b-mono);font-size:.86em;color:var(--b-strong)}
+:not(pre)>code{padding:1px 5px;border-radius:var(--b-radius-xs);background:var(--b-sunk)}
+.b-code .c{color:var(--b-muted)}
+.b-code .k{color:var(--b-blue)}
+.b-code .h{color:var(--b-strong);font-weight:600}
+pre.b-code{margin:0;padding:var(--b-4);border-radius:var(--b-radius);background:var(--b-sunk);overflow-x:auto;font-size:12.5px;line-height:1.6}
+
+/* ── icons: Nucleo UI outline, inlined by build.mjs from icon markers ── */
+/* sizes follow the text beside the icon: 12 grid for text up to 13px, 18 grid at 16px for 14-17px text,
+   18 grid at 18px beside headings and stat values (20px and up) */
+.b-icon{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px}
+.b-icon[data-size="12"]{width:12px;height:12px;vertical-align:-1px}
+:is(.b-h1,.b-h2,.b-display,.b-stat-v,.b-delta[data-size="18"]) .b-icon:not([data-size="12"]){width:18px;height:18px;vertical-align:-2px}
+
+/* ── status icons: the Polymarket Slack status reactions, inlined by build.mjs ──
+   written as a status marker or a chip with data-status (see references/components.md). Sized to the text beside them. */
+.b-status{display:inline-block;flex:none;width:16px;height:16px;vertical-align:-3px;background:var(--b-st) center/contain no-repeat}
+:is(.b-small,.b-label,.b-chip,.b-table,.b-caption) .b-status{width:14px;height:14px;vertical-align:-2px}
+:is(.b-h1,.b-h2,.b-display,.b-stat-v) .b-status{width:18px;height:18px}
+.b-chip[data-status]{padding-left:6px}
+.b-chip[data-status]::before{display:none}
+.b-chip[data-status] .b-status{width:14px;height:14px}
+
+/* figure numerals: condensed display numbers for interactive figures */
+.b-figure-num,.b-stat-v.b-figure-num{font-family:var(--b-figure);font-stretch:75%;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.005em;line-height:1}
+.b-stat-v.b-figure-num{font-size:calc(var(--b-stat) * 1.18)}
+
+/* ── masthead: eyebrow row, display headline, lede, meta ── */
+.b-masthead{display:flex;flex-direction:column;gap:var(--b-4)}
+.b-eyebrow{display:flex;flex-wrap:wrap;gap:var(--b-1) var(--b-2);align-items:center}
+.b-eyebrow>*+*::before{content:"/";margin-right:var(--b-2);color:var(--b-line-2)}
+/* details row: one line; when it runs out of room it scrolls sideways with a fade on the cut edge */
+.b-meta{display:flex;flex-wrap:nowrap;gap:var(--b-6);padding-top:var(--b-4);margin:var(--b-2) 0 0;border-top:1px solid var(--b-line-3);overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
+.b-meta::-webkit-scrollbar{display:none}
+.b-meta:not([data-overflow]){-webkit-mask-image:none;mask-image:none}
+.b-meta[data-overflow="end"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px);mask-image:linear-gradient(90deg,transparent,#000 40px)}
+.b-meta[data-overflow="both"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
+.b-meta>div{display:flex;flex-direction:column;gap:2px;flex:none}
+.b-meta dd{white-space:nowrap}
+.b-connectors{display:flex;align-items:center;gap:var(--b-2)}
+.b-connector{display:inline-flex}
+.b-logo{width:18px;height:18px;flex:none;border-radius:4px;object-fit:contain}
+.b-logo[data-mono]{filter:var(--b-logo-invert)}
+.b-meta dd,.b-meta .b-meta-v{margin:0;color:var(--b-strong);font-size:var(--b-small);font-weight:500;display:flex;align-items:center;gap:6px;min-height:20px}
+.b-avatar{width:20px;height:20px;border-radius:50%;flex:none;object-fit:cover;box-shadow:0 0 0 1px var(--b-ring);background:var(--b-sunk)}
+span.b-avatar{display:inline-grid;place-items:center;font:600 10px/1 var(--b-sans);color:var(--b-text)}
+
+/* ── section ────────────────────────────────────────── */
+.b-section{display:flex;flex-direction:column;gap:var(--b-5)}
+/* heading group: label 4px above the heading, description 6px below it, 16px from the group to the content */
+.b-section-head{display:flex;flex-direction:column;gap:var(--b-1)}
+.b-section-head>*{margin:0}
+.b-section-head>.b-h2+*,.b-section-head>.b-h3+*{margin-top:2px}
+.b-section-head .b-small{max-width:var(--b-prose)}
+.b-section-head+*{margin-top:calc(var(--b-2) * -1)}
+.b-panel>.b-h3+*{margin-top:calc(var(--b-1) * -1)}
+.b-panel>.b-h3{margin-top:2px}
+.b-rule{height:0;border:0;border-top:1px solid var(--b-line-3);margin:0}
+
+/* ── plate: the framed figure card from Market Press, softened ─ */
+.b-plate{position:relative;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:48px 24px 44px;overflow:hidden}
+.b-corners{position:absolute;inset:16px 20px;pointer-events:none}
+.b-corner{position:absolute;font:500 var(--b-label)/1 var(--b-sans);color:var(--b-muted);white-space:nowrap}
+.b-corner[data-corner="fig"]{top:0;left:0;color:var(--b-strong)}
+.b-corner[data-corner="title"]{top:0;right:0}
+.b-corner[data-corner="hint"]{bottom:0;left:0}
+.b-corner[data-corner="readout"]{bottom:0;right:0;color:var(--b-text);font-family:var(--b-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.b-caption{display:block;margin-top:var(--b-3);font-size:var(--b-small);line-height:1.6;color:var(--b-muted);max-width:var(--b-prose);text-wrap:pretty}
+.b-caption strong{color:var(--b-text);font-weight:500}
+@media (max-width:560px){.b-plate{padding:44px 12px 64px}.b-corner[data-corner="hint"]{bottom:18px}}
+
+/* linked block: stats that describe the chart right below them share one ring with it, split by a dashed line */
+.b-linked{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);overflow:hidden}
+.b-linked>.b-stats,.b-linked>.b-plate{box-shadow:none;border-radius:0}
+.b-linked>*+*{border-top:1px dashed var(--b-ring)}
+
+/* pair: boxes that share a row are always the same height. The taller one sets it; a plate centers its
+   chart in the extra room, a panel keeps content at the top and pins its .b-source line to the bottom.
+   A figure's caption goes inside its plate (.b-plate-caption) so both boxes end on the same line. */
+.b-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:var(--b-4);align-items:stretch}
+.b-pair>*{min-width:0}
+.b-pair>.b-plate{display:flex;flex-direction:column;justify-content:center;gap:var(--b-4)}
+.b-plate-caption{margin:0;font-size:var(--b-small);line-height:1.6;color:var(--b-muted);max-width:var(--b-prose)}
+.b-plate-caption strong{color:var(--b-text);font-weight:500}
+.b-source{margin-top:auto;padding-top:var(--b-2);font-size:var(--b-small);color:var(--b-muted)}
+
+/* ── panel: a grouped box ───────────────────────────── */
+/* container padding scales with the box: 16px for cards that share a row (grids, stat tiles),
+   24px for a panel that spans the full column. 8px between parts (12px in a full-width panel); 4px between list items */
+.b-panel{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:var(--b-4);display:flex;flex-direction:column;gap:var(--b-2);min-width:0}
+.b-panel[data-raised]{background:var(--b-raised);box-shadow:var(--b-lift)}
+/* concentric corners: a box inside a box takes the smaller radius */
+:is(.b-panel,.b-vtab-panel,.b-plate) .b-panel{border-radius:var(--b-radius)}
+:is(.b-page,.b-section)>.b-panel{padding:var(--b-5);gap:var(--b-3)}
+.b-panel[data-selected]{background:var(--b-raised);box-shadow:0 0 0 1.5px var(--b-strong)}
+/* panel tag: a label that belongs to the whole card (Recommended, New, Current). It sits centered on the
+   card's top edge (data-at="bottom" for the bottom edge), outlined like the selected card, outside the text flow */
+.b-panel:has(>.b-panel-tag){position:relative}
+.b-panel-tag{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--b-raised);box-shadow:0 0 0 1.5px var(--b-strong);font:500 12px/1 var(--b-sans);color:var(--b-strong);white-space:nowrap;pointer-events:none}
+.b-panel-tag[data-at="bottom"]{top:auto;bottom:0;transform:translate(-50%,50%)}
+.b-grid:has(.b-panel-tag:not([data-at="bottom"])){padding-top:12px}
+.b-grid:has(.b-panel-tag[data-at="bottom"]){padding-bottom:12px}
+.b-panel>ul,.b-panel>ol{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:var(--b-1);font-size:var(--b-small);line-height:1.55}
+
+/* media card: a card whose picture (a video still, a screenshot, a photo) runs to its edges. The card's corners
+   clip the picture, and only the text under it is padded. Make the card an <a> when it opens something. */
+.b-panel.b-media-card{padding:0;gap:0;overflow:hidden;text-decoration:none;color:inherit}
+.b-media{position:relative;display:block;aspect-ratio:16/9;max-width:100%;margin:0;background:var(--b-sunk);overflow:hidden}
+.b-media[data-shape="tall"]{aspect-ratio:9/16}
+.b-media[data-shape="square"]{aspect-ratio:1/1}
+.b-media>img,.b-media>svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.b-media-tag{position:absolute;left:var(--b-2);bottom:var(--b-2);z-index:2;display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border-radius:var(--b-radius-xs);background:var(--b-media-scrim);color:var(--b-media-ink);font:500 11.5px/1 var(--b-sans);font-variant-numeric:tabular-nums;pointer-events:none}
+.b-media-tag .b-icon{width:10px;height:10px}
+.b-media-body{display:flex;flex-direction:column;gap:2px;padding:var(--b-3) var(--b-3) var(--b-4);min-width:0}
+.b-media-body>.b-h3{margin:0 0 2px}
+:is(.b-page,.b-section)>.b-media-card>.b-media-body{padding:var(--b-4) var(--b-5) var(--b-5);gap:var(--b-1)}
+a.b-media-card:focus-visible{outline:2px solid var(--b-strong);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){
+  a.b-media-card>.b-media>img{transition:transform var(--b-slow) var(--b-ease)}
+  a.b-media-card:hover>.b-media>img{transform:scale(1.03)}
+}
+
+/* ── stats: sans numerals, label above, delta below ─── */
+.b-stats{--n:3;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-auto-rows:auto;gap:0;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);overflow:hidden}
+/* 2-4 stats per set: one row on wide screens, two columns on phones with an odd last cell spanning the width */
+.b-stats:has(>.b-stat:nth-child(2):last-child){--n:2}
+.b-stats:has(>.b-stat:nth-child(4)){--n:4}
+@media (max-width:600px){.b-stats:has(>.b-stat:nth-child(1)){--n:2}.b-stats>.b-stat:last-child:nth-child(odd){grid-column:1/-1}}
+/* one ring around the set; cells split by dashed lines in the ring color. Each cell draws its left and top
+   dash and shifts 1px under its neighbour, so the outer edge (clipped) never doubles up with the ring.
+   Each cell spans three subgrid rows (label, value, note) so parts line up across the row. */
+.b-stat{padding:var(--b-4);display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:var(--b-2);align-content:start;min-width:0;border-left:1px dashed var(--b-ring);border-top:1px dashed var(--b-ring);margin-left:-1px;margin-top:-1px}
+.b-stat>*{align-self:start}
+.b-stat .b-label{color:var(--b-text)}
+.b-stat-v{font:600 var(--b-stat)/1.1 var(--b-sans);font-variant-numeric:tabular-nums;letter-spacing:-.025em;color:var(--b-strong)}
+.b-delta{display:inline-flex;align-items:flex-start;gap:3px;font:500 var(--b-label)/1.3 var(--b-sans);font-variant-numeric:tabular-nums;color:var(--b-muted)}
+.b-delta[data-size="18"]{font-size:var(--b-h2);font-weight:600;gap:4px}
+.b-delta .b-icon{vertical-align:0;margin-top:calc((1.3em - 12px) / 2)}
+.b-delta[data-size="18"] .b-icon{margin-top:calc((1.3em - 18px) / 2)}
+.b-delta[data-dir="up"]{color:var(--b-green)}
+.b-delta[data-dir="down"]{color:var(--b-red)}
+
+/* ── table: Medusa-style. Dividers use line-3; the header band and rows have no outer ring. No enclosure; a tinted header band ruled top and bottom, 48px rows ruled below ── */
+.b-table-wrap{overflow-x:auto}
+.b-table{width:100%;border-collapse:collapse;font-size:var(--b-small);line-height:20px;color:var(--b-text)}
+.b-table thead tr{background:var(--b-sunk);border-block:1px solid var(--b-line-3)}
+.b-table th{font-weight:500;text-align:left;height:44px;padding:0 var(--b-5) 0 0;white-space:nowrap;color:var(--b-text)}
+.b-table td{height:48px;padding:0 var(--b-5) 0 0;vertical-align:middle}
+.b-table th:first-child,.b-table td:first-child{padding-left:var(--b-4)}
+.b-table th:last-child,.b-table td:last-child{padding-right:var(--b-4)}
+.b-table tbody tr{border-bottom:1px solid var(--b-line-3);transition:background var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-table tbody tr:hover{background:var(--b-sunk)}}
+.b-table [data-num]{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.b-table td[data-strong]{color:var(--b-strong);font-weight:500}
+.b-table td[data-tone="yes"]{color:var(--b-green);font-weight:600}
+.b-table td[data-tone="no"]{color:var(--b-red)}
+.b-table tr[data-selected] td{background:var(--b-sunk)}
+.b-table th[data-num]{text-align:right}
+.b-table[data-wrap] td{height:auto;padding-block:14px;vertical-align:top}
+/* wrapping-text tables (rows several lines tall) stripe every other row instead of ruling them, so the eye can
+   follow a row across. Group rows don't count toward the stripe. Short numeric tables keep plain dividers. */
+.b-table[data-wrap] tbody tr:not([data-group]){border-bottom-color:transparent}
+.b-table[data-wrap] tbody tr:nth-child(even of :not([data-group])){background:var(--b-zebra)}
+@media (hover:hover) and (pointer:fine){.b-table[data-wrap] tbody tr:not([data-group]):hover{background:var(--b-sunk)}}
+.b-table[data-wrap] tbody tr:last-child{border-bottom:1px solid var(--b-line-3)}
+.b-table[data-wrap] td .b-chip{margin-top:-2px}
+.b-table tr[data-group]{background:transparent;border-bottom:1px solid var(--b-line-3)}
+@media (hover:hover) and (pointer:fine){.b-table tr[data-group]:hover{background:transparent}}
+.b-table tr[data-group] td{height:auto;padding-top:var(--b-6);padding-bottom:var(--b-2);color:var(--b-strong);font-weight:600;font-size:var(--b-body)}
+.b-cell{display:flex;flex-direction:column;align-items:flex-start;gap:var(--b-2)}
+.b-cell .b-small{line-height:1.5}
+
+/* ── key / value list ───────────────────────────────── */
+.b-kv{display:grid;grid-template-columns:minmax(110px,max-content) 1fr;gap:var(--b-3) var(--b-5);margin:0;font-size:var(--b-small)}
+.b-kv dt{color:var(--b-muted);font-weight:500}
+.b-kv dd{margin:0;color:var(--b-strong);min-width:0;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.b-kv{grid-template-columns:1fr;gap:2px}.b-kv dd{margin-bottom:var(--b-3)}}
+
+/* ── chips: pill, neutral text, the dot carries the meaning ── */
+.b-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px 0 8px;border-radius:999px;background:var(--b-raised);box-shadow:inset 0 0 0 1px var(--b-ring);font:500 12px/1 var(--b-sans);color:var(--b-strong);white-space:nowrap;font-variant-numeric:tabular-nums}
+.b-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--b-muted)}
+.b-chip[data-plain]{padding:0 10px}
+.b-chip[data-plain]::before{display:none}
+.b-chip[data-tone="yes"]::before{background:var(--b-green)}
+.b-chip[data-tone="no"]::before{background:var(--b-red)}
+.b-chip[data-tone="info"]::before{background:var(--b-blue)}
+.b-chip[data-tone="warn"]::before{background:var(--b-amber)}
+.b-chip[data-tone="none"]::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--b-muted)}
+.b-chips{display:flex;flex-wrap:wrap;gap:var(--b-2)}
+
+/* ── note: a soft callout ───────────────────────────── */
+.b-note{display:grid;grid-template-columns:auto 1fr;gap:var(--b-3);align-items:start;padding:var(--b-3) var(--b-4);border-radius:var(--b-radius);background:var(--b-sunk);max-width:var(--b-prose);font-size:var(--b-small);line-height:1.55}
+.b-note::before{content:"";width:8px;height:8px;margin-top:6px;border-radius:50%;background:var(--b-muted)}
+.b-note[data-tone="yes"]::before{background:var(--b-green)}
+.b-note[data-tone="no"]::before{background:var(--b-red)}
+.b-note[data-tone="info"]::before{background:var(--b-blue)}
+.b-note[data-tone="warn"]::before{background:var(--b-amber)}
+.b-note p{margin:0}
+.b-note strong{color:var(--b-strong);font-weight:600}
+
+/* ── buttons and inputs ─────────────────────────────── */
+.b-btn{appearance:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:var(--b-radius-sm);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);color:var(--b-btn-fg);font:500 var(--b-small)/1 var(--b-sans);cursor:pointer;transition:transform var(--b-fast) var(--b-ease),filter var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-btn:hover{filter:var(--b-btn-hover)}}
+.b-btn:active{transform:scale(.97)}
+.b-btn .b-icon{width:14px;height:14px;margin-left:-2px}
+.b-btn[data-variant="solid"]{background:var(--b-btn-solid-bg);box-shadow:var(--b-btn-solid-shadow);color:var(--b-btn-solid-fg)}
+@media (hover:hover) and (pointer:fine){.b-btn[data-variant="solid"]:hover{filter:var(--b-btn-solid-hover)}}
+.b-btn[data-variant="ghost"]{background:transparent;box-shadow:none;color:var(--b-text)}
+@media (hover:hover) and (pointer:fine){.b-btn[data-variant="ghost"]:hover{filter:none;background:var(--b-sunk);color:var(--b-strong)}}
+.b-field{display:flex;flex-direction:column;gap:6px}
+.b-input{height:32px;padding:0 10px;border:0;border-radius:var(--b-radius-sm);background:var(--b-sunk);color:var(--b-strong);font:var(--b-small)/1 var(--b-sans);transition:box-shadow var(--b-fast) var(--b-ease)}
+.b-input:focus{outline:none;box-shadow:inset 0 0 0 1px var(--b-blue),0 0 0 3px var(--b-blue-wash)}
+
+/* ── segmented control: a raised thumb slides under the selected option (bench.js adds it) ── */
+.b-tabs{position:relative;display:inline-flex;background:var(--b-line-3);border-radius:var(--b-radius);padding:2px;gap:0;isolation:isolate}
+.b-tab{appearance:none;position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;height:28px;padding:0 12px;font:500 var(--b-label)/1 var(--b-sans);color:var(--b-muted);cursor:pointer;border-radius:var(--b-radius-sm);transition:color 200ms var(--b-ease)}
+.b-tab .b-icon{width:14px;height:14px}
+@media (hover:hover) and (pointer:fine){.b-tab:hover,.b-tab[aria-selected="true"]{color:var(--b-strong)}}
+.b-tabs-thumb{position:absolute;z-index:0;top:2px;bottom:2px;left:0;border-radius:var(--b-radius-sm);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);transition:transform 280ms var(--b-ease),width 280ms var(--b-ease);will-change:transform}
+.b-tabs:not([data-js]) .b-tab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+
+/* pill shape (theme toggle and icon-only segments) */
+.b-tabs[data-shape="pill"],.b-tabs[data-shape="pill"] .b-tab,.b-tabs[data-shape="pill"] .b-tabs-thumb{border-radius:999px}
+.b-tab[data-icon-only]{width:28px;padding:0;justify-content:center}
+.b-tabs[data-shape="pill"] .b-tab[data-icon-only]{width:30px;height:26px}
+
+/* theme toggle: fixed top right on every page, added by build.mjs */
+.b-theme{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 12px);right:max(12px,calc(env(safe-area-inset-right,0px) + 12px))}
+
+/* ── legend keys ────────────────────────────────────── */
+.b-keys{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:var(--b-small);color:var(--b-text)}
+.b-key{display:inline-flex;align-items:center;gap:7px}
+.b-key i{width:14px;height:0;border-top:2px solid var(--b-muted);border-radius:2px}
+.b-key i[data-tone="yes"]{border-color:var(--b-green)}
+.b-key i[data-tone="no"]{border-color:var(--b-red)}
+.b-key i[data-tone="info"]{border-color:var(--b-blue)}
+.b-key i[data-swatch]{width:10px;height:10px;border:0;border-radius:2px;background:var(--b-strong)}
+.b-key i[data-swatch="2"]{background:var(--b-line-2)}
+.b-key i[data-series]{width:14px;height:0;border-radius:2px;border-top:2.5px solid var(--b-series-1)}
+.b-key i[data-series="2"]{border-color:var(--b-series-2)}
+.b-key i[data-series="3"]{border-color:var(--b-series-3)}
+.b-key i[data-series="4"]{border-color:var(--b-series-4)}
+.b-key i[data-series][data-dash]{border-top-style:dashed}
+.b-key i[data-dash]{border-top-style:dashed}
+
+/* ── bar meter ──────────────────────────────────────── */
+.b-meter{position:relative;height:4px;min-width:60px;border-radius:999px;background:var(--b-line-3);overflow:hidden}
+.b-meter>span{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--b-strong)}
+.b-meter[data-tone="yes"]>span{background:var(--b-green)}
+.b-meter[data-tone="no"]>span{background:var(--b-red)}
+.b-meter[data-series="2"]>span{background:var(--b-line)}
+
+/* selectable panel: a <button class="b-panel"> that picks an option; data-selected marks the current one */
+button.b-panel{appearance:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:box-shadow var(--b-fast) var(--b-ease),background var(--b-fast) var(--b-ease)}
+@media (hover:hover) and (pointer:fine){button.b-panel:hover:not([data-selected]){background:var(--b-raised)}}
+button.b-panel p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.5}
+
+/* disclosure: <details class="b-details"><summary>Show detail</summary>…</details> */
+.b-details{border-top:1px solid var(--b-line-3);padding-top:var(--b-3)}
+.b-details>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font:500 var(--b-small)/1.4 var(--b-sans);color:var(--b-strong)}
+.b-details>summary::-webkit-details-marker{display:none}
+.b-details>summary::before{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;border-radius:var(--b-radius-xs);box-shadow:inset 0 0 0 1px var(--b-ring);color:var(--b-text);font-size:13px;line-height:1}
+.b-details[open]>summary::before{content:"\2212"}
+.b-details>:not(summary){margin-top:var(--b-4)}
+.b-details-body{display:flex;flex-direction:column;gap:var(--b-4)}
+
+/* range and checkbox */
+input[type="range"].b-range{width:100%;accent-color:var(--b-strong);margin:0}
+.b-check{display:inline-flex;align-items:center;gap:8px;font-size:var(--b-small);color:var(--b-text);cursor:pointer}
+.b-check input{accent-color:var(--b-strong);margin:0}
+
+/* options: one choice among N, drawn as one connected box (ring around, dashed dividers between).
+   Each option is a button.b-option; aria-pressed="true" marks the current one. Beside a figure,
+   the list stretches to the figure's height and the options share it. A .b-panel-tag sits on an option's top edge. */
+.b-options{display:flex;flex-direction:column;background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);min-width:0}
+.b-option{appearance:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;gap:var(--b-2);padding:var(--b-4);background:transparent;border-top:1px dashed var(--b-ring);transition:background var(--b-fast) var(--b-ease)}
+.b-option:first-child{border-top:0;border-radius:var(--b-radius-lg) var(--b-radius-lg) 0 0}
+.b-option:last-child{border-radius:0 0 var(--b-radius-lg) var(--b-radius-lg)}
+@media (hover:hover) and (pointer:fine){.b-option:hover{background:var(--b-sunk)}}
+.b-option[aria-pressed="true"]{background:var(--b-raised);box-shadow:inset 0 0 0 1.5px var(--b-strong);border-top-color:transparent;z-index:1}
+.b-option[aria-pressed="true"]+.b-option{border-top-color:transparent}
+.b-option:not(:first-child)[aria-pressed="true"]{border-radius:0}
+.b-option:first-child[aria-pressed="true"]{border-radius:var(--b-radius-lg) var(--b-radius-lg) 0 0}
+.b-option:last-child[aria-pressed="true"]{border-radius:0 0 var(--b-radius-lg) var(--b-radius-lg)}
+.b-option p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.5}
+.b-option>.b-panel-tag{z-index:2}
+.b-option:has(>.b-panel-tag){padding-top:var(--b-5)}
+
+/* vertical tabs: a reference section where the reader picks one topic. Questions sit in a quiet list on the
+   left; the current one rides a raised thumb that slides between them; one answer panel shows on the right.
+   On phones the list becomes a sideways-scrolling row above the panel. bench.js wires it up. */
+.b-vtabs{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:var(--b-5);align-items:start}
+.b-vtabs-list{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);display:flex;flex-direction:column;gap:2px;isolation:isolate}
+.b-vtab{appearance:none;position:relative;z-index:1;border:0;background:transparent;text-align:left;cursor:pointer;padding:9px 12px;border-radius:var(--b-radius);font:500 var(--b-small)/1.4 var(--b-sans);color:var(--b-muted);transition:color 200ms var(--b-ease)}
+@media (hover:hover) and (pointer:fine){.b-vtab:hover,.b-vtab[aria-selected="true"]{color:var(--b-strong)}}
+.b-vtabs-thumb{position:absolute;z-index:0;left:0;right:0;top:0;border-radius:var(--b-radius);background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow);transition:transform 280ms var(--b-ease),height 280ms var(--b-ease)}
+.b-vtabs-list:not([data-js]) .b-vtab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+.b-vtab-panel{background:var(--b-card);box-shadow:0 0 0 1px var(--b-ring);border-radius:var(--b-radius-lg);padding:var(--b-5);display:flex;flex-direction:column;gap:var(--b-3);min-width:0}
+.b-vtab-panel>.b-h2{font-size:var(--b-h2);line-height:1.3}
+.b-vtab-panel>p{margin:0;max-width:var(--b-prose)}
+@media (max-width:760px){
+  .b-vtabs{grid-template-columns:minmax(0,1fr);gap:var(--b-3)}
+  .b-vtabs-list{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:2px}
+  .b-vtab{white-space:nowrap;flex:none}
+  .b-vtabs-thumb{display:none}
+  .b-vtab[aria-selected="true"]{background:var(--b-btn-bg);box-shadow:var(--b-btn-shadow)}
+}
+
+/* quote: a real message or draft shown as a specimen. Keeps its own line breaks. */
+.b-quote{margin:0;padding:var(--b-3) var(--b-4);background:var(--b-sunk);border-radius:var(--b-radius);font:400 var(--b-small)/1.6 var(--b-sans);color:var(--b-strong);white-space:pre-wrap;overflow-wrap:anywhere}
+.b-quote s,.b-table s{color:var(--b-muted);text-decoration-color:var(--b-red);text-decoration-thickness:1.5px}
+
+/* ── rows: a ruled list of numbered items with a trailing chip ── */
+.b-rows{display:flex;flex-direction:column;border-top:1px solid var(--b-line-3);margin:0;padding:0;list-style:none}
+.b-row{display:grid;grid-template-columns:28px 1fr auto;gap:var(--b-1) var(--b-4);padding:var(--b-4) 0;border-bottom:1px solid var(--b-line-3)}
+.b-row-n{color:var(--b-muted);font-size:var(--b-small);font-variant-numeric:tabular-nums;padding-top:1px}
+.b-row-body{display:flex;flex-direction:column;gap:var(--b-1);min-width:0}
+.b-row-body p{margin:0;font-size:var(--b-small);color:var(--b-text);line-height:1.6}
+@media (max-width:560px){.b-row{grid-template-columns:24px 1fr}.b-row>.b-chip{grid-column:2;justify-self:start}}
+
+/* ── grids ──────────────────────────────────────────── */
+.b-grid{display:grid;gap:var(--b-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+/* fixed column counts so a set never leaves one card alone in a row; one column on phones */
+.b-grid[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.b-grid[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.b-grid[data-cols]{grid-template-columns:minmax(0,1fr)}}
+.b-grid>*{min-width:0}
+
+/* ── chart marks (SVG inside a plate) ───────────────── */
+.b-chart{display:block;width:100%;height:auto;overflow:visible}
+.b-chart .grid{stroke:var(--b-line-3);stroke-width:1;fill:none}
+.b-chart .axis{fill:var(--b-muted);font:500 11px var(--b-sans);font-variant-numeric:tabular-nums}
+.b-chart .line{fill:none;stroke:var(--b-strong);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.b-chart .line[data-tone="yes"]{stroke:var(--b-green)}
+.b-chart .area{fill:var(--b-green-wash);stroke:none}
+.b-chart .dot{fill:var(--b-green);stroke:var(--b-card);stroke-width:2}
+.b-chart .bar{fill:var(--b-strong)}
+.b-chart .bar[data-series="2"]{fill:var(--b-line-2)}
+.b-chart .bar[data-tone="yes"]{fill:var(--b-green)}
+.b-chart .bar[data-tone="no"]{fill:var(--b-red)}
+.b-chart .bar[data-partial]{fill:url(#b-hatch)}
+.b-chart .hatch-bg{fill:var(--b-sunk)}
+.b-chart .hatch-line{stroke:var(--b-strong);stroke-width:1.5}
+.b-chart .marker{stroke:var(--b-muted);stroke-width:1;stroke-dasharray:3 3;fill:none}
+.b-chart .note{fill:var(--b-text);font:500 11px var(--b-sans)}
+.b-chart .value{fill:var(--b-strong);font:600 11px var(--b-sans);font-variant-numeric:tabular-nums}
+/* charts scale down with their plate; figures never scroll */
+.b-chart-wrap{overflow:visible}
+
+/* ── footer: sources and colophon ───────────────────── */
+.b-footer{display:flex;flex-direction:column;gap:var(--b-3);padding-top:var(--b-5);border-top:1px solid var(--b-line-3);font-size:var(--b-small);color:var(--b-muted)}
+.b-footer ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:var(--b-1)}
+.b-footer strong{color:var(--b-text);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+:root{--b-st-check:url(data:image/png;base64,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);--b-st-paused:url(data:image/png;base64,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);--b-st-todo:url(data:image/png;base64,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);}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--b-st-todo:url(data:image/png;base64,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);}}:root[data-theme="dark"]{--b-st-todo:url(data:image/png;base64,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);}.b-status[data-s="check"]{--b-st:var(--b-st-check)}.b-status[data-s="paused"]{--b-st:var(--b-st-paused)}.b-status[data-s="todo"]{--b-st:var(--b-st-todo)}</style><script>window.BENCH={icons:{"caret-up":"<svg class=\"b-icon\" data-size=\"12\" data-fill aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\"><g><path d=\"m7.248,2.52c-.559-.837-1.938-.837-2.496,0L1.653,7.168c-.308.461-.336,1.051-.074,1.54.262.489.769.792,1.322.792h6.197c.554,0,1.061-.303,1.322-.792.262-.488.233-1.079-.074-1.54l-3.099-4.648Z\" stroke-width=\"0\" fill=\"currentColor\"></path></g></svg>","caret-down":"<svg class=\"b-icon\" data-size=\"12\" data-fill aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\"><g><path d=\"m9.099,2.5H2.901c-.554,0-1.061.303-1.322.792-.262.488-.233,1.079.074,1.54l3.099,4.648c.279.418.745.668,1.248.668s.969-.25,1.248-.668l3.099-4.648c.308-.461.336-1.051.074-1.54-.262-.489-.769-.792-1.322-.792Z\" stroke-width=\"0\" fill=\"currentColor\"></path></g></svg>"},icon:(n)=>window.BENCH.icons[n]||"",status:(n,l)=>'<i class="b-status" data-s="'+n+'" role="img" aria-label="'+(l||n)+'"></i>'};</script>
+<link rel="stylesheet" href="./assets/proto.css">
+<style>
+/* page-specific layout only */
+#desk-proto{width:100%}
+.proto-controls{display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-3);margin-top:var(--b-3)}
+.proto-controls .b-label{margin-right:calc(var(--b-1) * -1)}
+.b-vtab-panel .b-media-card{margin-top:var(--b-4)}
+</style>
+<div class="b-tabs b-theme" data-shape="pill" role="tablist" aria-label="Color theme"><button class="b-tab" type="button" role="tab" data-icon-only data-theme-choice="light" aria-label="Light" title="Light" aria-selected="false"><svg class="b-icon" data-size="12" data-fill aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><g><circle cx="6" cy="6" r="3" stroke-width="0" fill="currentColor"></circle><path d="m6,2.25c-.414,0-.75-.336-.75-.75v-.75c0-.414.336-.75.75-.75s.75.336.75.75v.75c0,.414-.336.75-.75.75Z" fill="currentColor" stroke-width="0"></path><path d="m9.182,3.568c-.192,0-.384-.073-.53-.22-.293-.293-.293-.768,0-1.061l.53-.53c.293-.293.768-.293,1.061,0s.293.768,0,1.061l-.53.53c-.146.146-.338.22-.53.22Z" fill="currentColor" stroke-width="0"></path><path d="m11.25,6.75h-.75c-.414,0-.75-.336-.75-.75s.336-.75.75-.75h.75c.414,0,.75.336.75.75s-.336.75-.75.75Z" fill="currentColor" stroke-width="0"></path><path d="m9.712,10.462c-.192,0-.384-.073-.53-.22l-.53-.53c-.293-.293-.293-.768,0-1.061s.768-.293,1.061,0l.53.53c.293.293.293.768,0,1.061-.146.146-.338.22-.53.22Z" fill="currentColor" stroke-width="0"></path><path d="m6,12c-.414,0-.75-.336-.75-.75v-.75c0-.414.336-.75.75-.75s.75.336.75.75v.75c0,.414-.336.75-.75.75Z" fill="currentColor" stroke-width="0"></path><path d="m2.288,10.462c-.192,0-.384-.073-.53-.22-.293-.293-.293-.768,0-1.061l.53-.53c.293-.293.768-.293,1.061,0s.293.768,0,1.061l-.53.53c-.146.146-.338.22-.53.22Z" fill="currentColor" stroke-width="0"></path><path d="m1.5,6.75h-.75c-.414,0-.75-.336-.75-.75s.336-.75.75-.75h.75c.414,0,.75.336.75.75s-.336.75-.75.75Z" fill="currentColor" stroke-width="0"></path><path d="m2.818,3.568c-.192,0-.384-.073-.53-.22l-.53-.53c-.293-.293-.293-.768,0-1.061s.768-.293,1.061,0l.53.53c.293.293.293.768,0,1.061-.146.146-.338.22-.53.22Z" fill="currentColor" stroke-width="0"></path></g></svg></button><button class="b-tab" type="button" role="tab" data-icon-only data-theme-choice="dark" aria-label="Dark" title="Dark" aria-selected="false"><svg class="b-icon" data-size="12" data-fill aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><g><path d="m10.744,2.492l-.946-.315-.316-.947c-.102-.306-.609-.306-.711,0l-.316.947-.946.315c-.153.051-.257.194-.257.356s.104.305.257.356l.946.315.316.947c.051.153.194.256.355.256s.305-.104.355-.256l.316-.947.946-.315c.153-.051.257-.194.257-.356s-.104-.305-.257-.356h.001Z" fill="currentColor" stroke-width="0"></path><path d="m11.543,6.129c-.269-.154-.604-.125-.846.07-.642.524-1.402.801-2.197.801-1.93,0-3.5-1.57-3.5-3.5,0-.795.277-1.555.801-2.197.196-.24.224-.576.07-.846-.153-.269-.457-.416-.763-.37C2.148.532,0,3.019,0,6c0,3.309,2.691,6,6,6,2.981,0,5.468-2.148,5.913-5.108.046-.306-.101-.609-.37-.763Z" stroke-width="0" fill="currentColor"></path></g></svg></button></div>
+<main class="b-page" data-width="read">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">Spool</span><span class="b-label">Build plan</span><span class="b-label">Nov 13, 2026</span></div>
+    <h1 class="b-display">Themes for the Desk</h1>
+    <p class="b-lede">In the video you sent, Claude Code's desktop app gets a /theme tray of live ASCII wallpapers. This plan brings the idea to Spool's Desk, where every pane is a live Claude terminal. The choices I need from you are at the end.</p>
+    <dl class="b-meta"><div><dt class="b-label">Author</dt><dd><img class="b-avatar" alt="" src="data:image/jpeg;base64,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">Dustin Karp</dd></div>
+      <div><dt class="b-label">Status</dt><dd><span class="b-chip" data-status="check"><i class="b-status" data-s="check" role="img" aria-label="Done"></i>Built Nov 13</span></dd></div>
+      <div><dt class="b-label">Themes</dt><dd>8 built, 12 new ideas</dd></div>
+      <div><dt class="b-label">Tested on</dt><dd>xterm 6 in Electron 33, Claude Code 2.1.322</dd></div>
+      <div><dt class="b-label">Builds on</dt><dd>The Desk from Nov 12</dd></div>
+    </dl>
+  </header>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Prototype</span><h2 class="b-h2">The Desk with the theme tray open</h2><p class="b-small">Click a theme, or click the window and use the arrow keys.</p></div>
+    <figure style="margin:0" class="b-bleed">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true">
+          <span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">Spool at 72% of real size</span>
+          <span class="b-corner" data-corner="hint">T opens and closes the tray</span>
+        </div>
+        <div id="desk-proto"></div>
+      </div>
+      <div class="proto-controls">
+        <span class="b-label">Tray</span>
+        <div class="b-tabs" role="tablist" aria-label="Which themes the tray shows" id="proto-shelf"><button class="b-tab" role="tab" aria-selected="true" data-shelf="built" type="button">Built</button><button class="b-tab" role="tab" aria-selected="false" data-shelf="new" type="button">New ideas</button></div>
+        <span class="b-label">Wallpaper in panes</span>
+        <div class="b-tabs" role="tablist" aria-label="Wallpaper in panes" id="proto-mode"><button class="b-tab" role="tab" aria-selected="true" data-mode="clear" type="button">Around text</button><button class="b-tab" role="tab" aria-selected="false" data-mode="faint" type="button">Faint</button></div>
+        <button class="b-btn" type="button" id="proto-finish"><svg class="b-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><g><circle cx="9" cy="9" r="7.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></circle><polyline points="5.75 9.25 8 11.75 12.25 6.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline></g></svg>Finish a turn</button>
+        <button class="b-btn" data-variant="ghost" type="button" id="proto-layers" aria-pressed="false"><svg class="b-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><g><path d="M2.58,6.149L8.385,1.949c.367-.266,.864-.266,1.231,0l5.805,4.2c.579,.419,.579,1.282,0,1.701l-5.805,4.2c-.367,.266-.864,.266-1.231,0L2.58,7.851c-.579-.419-.579-1.282,0-1.701Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M15.746,10.533c.217,.439,.109,1.003-.326,1.317l-5.805,4.2c-.184,.133-.4,.199-.615,.199-.216,0-.432-.066-.615-.199L2.58,11.851c-.434-.314-.543-.878-.326-1.317" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></g></svg>Separate the layers</button>
+      </div>
+      <figcaption class="b-caption">The top-left pane is working, the top-right one is waiting on you, and the two below are done. Clicking a theme grows it out of the thumbnail, with the edge drawn in the new theme's material. The arrow keys preview with no animation, Return keeps the theme, and Escape puts back the one you started with. Finish a turn shows how each theme marks a pane that just finished. New ideas swaps the tray to the themes in the next section. The panes here are HTML text standing in for Spool's real terminals.</figcaption>
+    </figure>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Reference</span><h2 class="b-h2">Claude Code's /theme tray</h2></div>
+    <div class="b-prose">
+      <p>Typing /theme opens a tray above the composer with eight wallpapers: Claude Code, Cloud Drift, Honu Lagoon, Koi Pond, Jellyfish, Paper Boats, Fireflies and Moonlit. Each one is drawn in characters. Every pixel of a cloud or a koi is a glyph on a small tile, and the scenes move slowly.</p>
+      <p>These parts carry over to the Desk:</p>
+      <ul>
+        <li>The wallpaper runs behind the whole window. The chat list and title bar are tinted glass over it, so the window reads as one scene.</li>
+        <li>The chat column has a lighter lane behind it, so the text stays easy to read. On the Desk that becomes the choice of how much wallpaper shows inside panes.</li>
+        <li>Clicking a thumbnail applies it right away, with a circular reveal that starts at the thumbnail and an edge drawn in characters.</li>
+      </ul>
+      <p>On the Desk, terminals cover almost the whole window, so the wallpaper has to show through the panes. The text in each pane also comes from Claude Code, which picks its own colors, so Spool has to pass the theme on to Claude.</p>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Themes</span><h2 class="b-h2">The themes</h2><p class="b-small">Each one uses a single material in every layer and reacts in its own way to what Claude is doing.</p></div>
+    <div class="b-grid" data-cols="2">
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-spool.jpg" alt="The Spool theme" loading="lazy"><span class="b-media-tag">Still</span></span><span class="b-media-body"><span class="b-h3">Spool</span><span class="b-small">Today's look stays the default, with no wallpaper and solid panes.</span><span class="b-small">A waiting pane gets an amber ring.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-clay.jpg" alt="The Clay theme" loading="lazy"><span class="b-media-tag">Moves at 12 fps</span></span><span class="b-media-body"><span class="b-h3">Clay</span><span class="b-small">Claude's clay color on a warm dark ground of Claude's spinner glyphs, · ✢ ✳ ✶ ✻ ✽, laid on the terminal grid.</span><span class="b-small">Glyphs near a working pane spin faster. A finished pane throws off a ring of ✻.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-glass.jpg" alt="The Glass theme" loading="lazy"><span class="b-media-tag">Still</span></span><span class="b-media-body"><span class="b-h3">Glass</span><span class="b-small">Your desktop picture shows through macOS translucency. Panes are blurred glass with a fine light edge, and a soft highlight follows the pointer.</span><span class="b-small">A waiting pane gets an amber edge. A finished one gets a sweep of light.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-paper.jpg" alt="The Paper theme" loading="lazy"><span class="b-media-tag">Still</span></span><span class="b-media-body"><span class="b-h3">Paper</span><span class="b-small">The one light theme. Panes are sheets of paper on a green cutting mat, and rulers along the desk count terminal columns and rows.</span><span class="b-small">A waiting pane gets a sticky note and a finished one a pencil check. Hovering a pane marks its size on the rulers.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-blueprint.jpg" alt="The Blueprint theme" loading="lazy"><span class="b-media-tag">Still</span></span><span class="b-media-body"><span class="b-h3">Blueprint</span><span class="b-small">A drafting grid is laid on the terminal cells, and pane edges are drawn in fine white line.</span><span class="b-small">A waiting pane gets a revision cloud around its title. Resizing and Tidy show dimension lines in columns and rows.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-phosphor.jpg" alt="The Phosphor theme" loading="lazy"><span class="b-media-tag">Still, slow scan bar</span></span><span class="b-media-body"><span class="b-h3">Phosphor</span><span class="b-small">Panes are green CRT screens on a dark bezel, with scanlines and a soft glow on the text.</span><span class="b-small">A waiting screen turns amber. Switching to Phosphor powers the screens on like a CRT.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-snowfall.jpg" alt="The Snowfall theme" loading="lazy"><span class="b-media-tag">Moves at 15 fps</span></span><span class="b-media-body"><span class="b-h3">Snowfall</span><span class="b-small">Snow drawn in characters falls behind the panes on a night sky and settles in drifts on their top edges.</span><span class="b-small">A waiting pane casts warm light on the snow, and a finished one blows the flakes back.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/theme-contour.jpg" alt="The Contour theme" loading="lazy"><span class="b-media-tag">Moves at 12 fps</span></span><span class="b-media-body"><span class="b-h3">Contour</span><span class="b-small">A topographic map drifts slowly behind the panes.</span><span class="b-small">Panes where Claude works rise into hills, so the lines bunch up around them in amber. A finished pane sends a ripple through the lines.</span></span></div>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">New ideas</span><h2 class="b-h2">More themes to try</h2><p class="b-small">Switch the tray in Fig 1 to New ideas to try each one live, and press Finish a turn to see how it reacts.</p></div>
+    <div class="b-grid" data-cols="2">
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-departures.jpg" alt="The Departures theme" loading="lazy"><span class="b-media-tag">Still, flaps flip on change</span></span><span class="b-media-body"><span class="b-h3">Departures</span><span class="b-small">A split-flap board. Every pane title is a row of flaps, and the empty cells behind the text are blank flaps.</span><span class="b-small">When Claude needs you, the title flips to NEEDS YOU in yellow. A finished turn flips to DONE with its time, then settles on ARRIVED.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-thermal.jpg" alt="The Thermal theme" loading="lazy"><span class="b-media-tag">Moves at 10 fps</span></span><span class="b-media-body"><span class="b-h3">Thermal</span><span class="b-small">A heat camera. Each pane glows with how much Claude has done in it lately, with a reading in its title bar and the camera's scale in the corner.</span><span class="b-small">A working pane runs hot, a waiting pane holds warm, and a finished pane cools over about a minute. Hovering a pane puts the crosshair on it.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-greenhouse.jpg" alt="The Greenhouse theme" loading="lazy"><span class="b-media-tag">Moves at 8 fps</span></span><span class="b-media-body"><span class="b-h3">Greenhouse</span><span class="b-small">Vines grow up the right side of each pane, in the cells the text leaves empty.</span><span class="b-small">The vine grows while Claude works. A finished turn opens a flower at its tip, and a pane that waits on you starts to wilt. In a long session the desk fills up with the work that got done.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-stitch.jpg" alt="The Stitch theme" loading="lazy"><span class="b-media-tag">Still, the needle moves</span></span><span class="b-media-body"><span class="b-h3">Stitch</span><span class="b-small">Denim and gold thread, for an app called Spool. Each pane is a patch sewn onto the ground.</span><span class="b-small">While Claude works, a needle sews around the pane's edge. It stops and blinks when Claude needs you, and a finished pane's seam closes with a knot.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-riso.jpg" alt="The Riso theme" loading="lazy"><span class="b-media-tag">Still</span></span><span class="b-media-body"><span class="b-h3">Riso</span><span class="b-small">A two-ink risograph print in fluorescent pink and blue, a little out of register, with Claude's text in blue ink.</span><span class="b-small">A working pane gets a pink halftone in its corner and a waiting one a blue halftone. A finished pane is stamped DONE.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-sumi.jpg" alt="The Sumi theme" loading="lazy"><span class="b-media-tag">Moves at 6 fps</span></span><span class="b-media-body"><span class="b-h3">Sumi</span><span class="b-small">Ink on washi paper, with Claude's accent in vermilion.</span><span class="b-small">Ink spreads under a pane while Claude works on it. A pane that needs you gets an ensō, and a finished one is sealed with a hanko that reads 済.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-constellation.jpg" alt="The Constellation theme" loading="lazy"><span class="b-media-tag">Moves at 12 fps</span></span><span class="b-media-body"><span class="b-h3">Constellation</span><span class="b-small">A night sky where each chat has its own constellation, named after the chat in small caps.</span><span class="b-small">Every finished turn adds a star to its chat's constellation and draws a line to it. The next star glows faintly while Claude works, and the last one blinks amber when Claude needs you.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-rain.jpg" alt="The Rain theme" loading="lazy"><span class="b-media-tag">Moves every frame</span></span><span class="b-media-body"><span class="b-h3">Rain</span><span class="b-small">A city at night through a wet window. Drops run down the glass and go around the text.</span><span class="b-small">A pane you have left alone fogs over. A working pane stays clear, a waiting pane has a warm light behind it, and a finished turn wipes its pane clear.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-neon.jpg" alt="The Neon theme" loading="lazy"><span class="b-media-tag">Still, the tubes flicker</span></span><span class="b-media-body"><span class="b-h3">Neon</span><span class="b-small">Each pane is outlined by a neon tube on a dark brick wall.</span><span class="b-small">Work lights the tube pink. A question makes it buzz amber, a finished turn strikes it green with a stutter, and an idle pane is an unlit tube.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-greenbar.jpg" alt="The Greenbar theme" loading="lazy"><span class="b-media-tag">Still, feeds a line now and then</span></span><span class="b-media-body"><span class="b-h3">Greenbar</span><span class="b-small">Continuous-form printer paper, its green bands lined up with the terminal's rows, with sprocket holes down both edges.</span><span class="b-small">A working pane feeds a line every couple of seconds and shows ON LINE. A waiting pane blinks its ATTN lamp, and a finished one prints END OF JOB with its time.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-circuit.jpg" alt="The Circuit theme" loading="lazy"><span class="b-media-tag">Still, pulses move</span></span><span class="b-media-body"><span class="b-h3">Circuit</span><span class="b-small">A circuit board, with each pane wired to its own row in the chat list.</span><span class="b-small">Work sends pulses down the pane's trace to its chat. A question blinks the pane's LED amber, and a finished turn sends one bright pulse home.</span></span></div>
+      <div class="b-panel b-media-card"><span class="b-media"><img src="./assets/img/new-darkroom.jpg" alt="The Darkroom theme" loading="lazy"><span class="b-media-tag">Moves at 8 fps</span></span><span class="b-media-body"><span class="b-h3">Darkroom</span><span class="b-small">A darkroom under red safelight, with Claude's text in red and amber only.</span><span class="b-small">Behind a working pane a print slowly develops. A finished one is fixed with a white border, and a pane that needs you makes the safelight pulse.</span></span></div>
+    </div>
+    <div class="b-prose" style="margin-top:var(--b-6)">
+      <p>If you want a few to build next, I'd start with Departures, Constellation and Stitch. Each one draws something Spool already knows: a chat's title and state, its number of finished turns, and how long Claude has been working.</p>
+    </div>
+    <div class="b-bleed" style="margin-top:var(--b-5)">
+      <div class="b-table-wrap"><table class="b-table" data-wrap>
+        <thead><tr><th>Theme</th><th>How often the ground redraws</th><th>What Spool would need</th></tr></thead>
+        <tbody>
+          <tr><td data-strong>Departures</td><td>Still, and the title flaps redraw only while they flip</td><td>The worker draws over each pane's title bar, so Spool hands it the titles and hides its own</td></tr>
+          <tr><td data-strong>Thermal</td><td>10 fps, from a 130 by 80 field scaled up</td><td>A heat value per pane from the state history Spool already keeps</td></tr>
+          <tr><td data-strong>Greenhouse</td><td>8 fps</td><td>Vine growth saved per chat, so it survives a restart</td></tr>
+          <tr><td data-strong>Stitch</td><td>Still, with the needle on the effects layer</td><td>Nothing new</td></tr>
+          <tr><td data-strong>Riso</td><td>Still, redrawn when a state changes</td><td>A contrast check for pink and blue text on white</td></tr>
+          <tr><td data-strong>Sumi</td><td>6 fps while a pane works, still otherwise</td><td>Nothing new</td></tr>
+          <tr><td data-strong>Constellation</td><td>12 fps for the twinkle</td><td>The star count per chat, taken from its finished turns and saved with the chat</td></tr>
+          <tr><td data-strong>Rain</td><td>Every frame, above the panes, plus a blur under them</td><td>The heaviest of the twelve. I'd cap the drops at 30 fps and drop the blur on battery</td></tr>
+          <tr><td data-strong>Neon</td><td>Still, with the tubes on the effects layer</td><td>Nothing new</td></tr>
+          <tr><td data-strong>Greenbar</td><td>4 fps</td><td>The band offset tied to each terminal's scroll position, so the paper moves with the text</td></tr>
+          <tr><td data-strong>Circuit</td><td>Still, with pulses on the effects layer</td><td>Each chat row's position in the sidebar, sent with the pane rects</td></tr>
+          <tr><td data-strong>Darkroom</td><td>8 fps</td><td>Nothing new</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Structure</span><h2 class="b-h2">The layers, back to front</h2><p class="b-small">Every theme fills the same layers. Separate the layers, under Fig 1, pulls them apart.</p></div>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">Ground</h3><p>The ground is one canvas behind the whole window, drawn on the terminals' own cell grid of 7 by 16.5 points at Monaco 12. Each pane's first character is on that grid, so a glyph in the ground lines up with the text in front of it. It renders in a worker, away from terminal output.</p></div></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Chrome</h3><p>The title bar and chat list are tinted glass over the ground, so the window reads as one scene.</p></div></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Panes</h3><p>Panes are glass at one of three strengths. Solid shows no ground. Faint lets 12% of it through. Around text shows the ground in empty cells and fades it out under text. Gaps stay 4px and corners 6px.</p></div></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Claude's text</h3><p>xterm draws on a transparent background, so the pane's glass is the background. Its 16 colors come from the theme, and Claude Code's own colors come from a theme file Spool writes for it.</p></div></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Effects</h3><p>One canvas over the panes draws waiting and finished states, drop targets, dimension lines and the reveal edge. It stays empty while nothing is happening.</p></div></li>
+      <li class="b-row"><span class="b-row-n">6</span><div class="b-row-body"><h3 class="b-h3">Overlays</h3><p>Each theme restyles what floats over the panes, such as the &#8984; labels and drop zones.</p></div></li>
+    </ol>
+    <div class="b-prose">
+      <p>Rules that keep the layers out of each other's way:</p>
+      <ul>
+        <li>The ground fades under any cell that holds text, read from the terminal buffer four times a second. Each theme's text colors pass WCAG AA against its pane color.</li>
+        <li>Ambient motion stays in the ground, at 12 to 15 frames a second. Reactions to Claude's state play once and stop, and keyboard actions never animate.</li>
+        <li>Claude's state shows on the pane and in the ground around it, so a waiting Claude stands out from across the Desk.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Switching</span><h2 class="b-h2">Picking a theme</h2></div>
+    <div class="b-prose">
+      <ul>
+        <li>A brush button in the title bar, left of Tidy, opens the tray, and so does &#8997;&#8984;T. It rises from the bottom of the Desk with one live thumbnail per theme.</li>
+        <li>Clicking a thumbnail applies it. The new theme grows out of the thumbnail in about 0.7 seconds, and each theme draws the edge its own way: spinner glyphs for Clay, a compass line for Blueprint, ink for Paper, a CRT power-on for Phosphor.</li>
+        <li>The arrow keys preview each theme at once with no animation, the way VS Code's theme picker does. Return keeps it. Escape puts back the theme you had when the tray opened.</li>
+        <li>The terminals change in the same frame. Claude's own colors follow about half a second later, once Claude Code reloads its theme file.</li>
+        <li>Spool saves your theme along with the wallpaper and motion settings.</li>
+      </ul>
+    </div>
+    <div class="b-table-wrap"><table class="b-table">
+      <thead><tr><th>Key</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td data-strong>&#8997;&#8984;T</td><td>Open or close the tray</td></tr>
+        <tr><td data-strong>Arrow keys</td><td>Preview the next or previous theme</td></tr>
+        <tr><td data-strong>Return</td><td>Keep the previewed theme</td></tr>
+        <tr><td data-strong>Esc</td><td>Go back to the theme you had</td></tr>
+        <tr><td data-strong>Click</td><td>Apply with the reveal</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Research</span><h2 class="b-h2">Tests with real terminals</h2><p class="b-small">I ran each idea against xterm 6 with its WebGL renderer in Electron 33, the engine Spool uses, and against Claude Code 2.1.322 without sending it a message.</p></div>
+    <div class="b-bleed">
+      <div class="b-vtabs">
+        <div class="b-vtabs-list" role="tablist" aria-orientation="vertical" aria-label="Research results">
+          <button class="b-vtab" role="tab" id="q-1" aria-controls="p-1" aria-selected="true" type="button">Wallpaper behind a terminal</button>
+          <button class="b-vtab" role="tab" id="q-2" aria-controls="p-2" aria-selected="false" type="button">Claude's colors following the theme</button>
+          <button class="b-vtab" role="tab" id="q-3" aria-controls="p-3" aria-selected="false" type="button">Knowing each Claude's state</button>
+          <button class="b-vtab" role="tab" id="q-4" aria-controls="p-4" aria-selected="false" type="button">Switching speed</button>
+          <button class="b-vtab" role="tab" id="q-5" aria-controls="p-5" aria-selected="false" type="button">Glow and scanlines</button>
+          <button class="b-vtab" role="tab" id="q-6" aria-controls="p-6" aria-selected="false" type="button">The reveal with live terminals</button>
+          <button class="b-vtab" role="tab" id="q-7" aria-controls="p-7" aria-selected="false" type="button">Cursor trails</button>
+          <button class="b-vtab" role="tab" id="q-8" aria-controls="p-8" aria-selected="false" type="button">GPU limits</button>
+          <button class="b-vtab" role="tab" id="q-9" aria-controls="p-9" aria-selected="false" type="button">Electron 33</button>
+        </div>
+        <div>
+          <section class="b-vtab-panel" role="tabpanel" id="p-1" aria-labelledby="q-1">
+            <h3 class="b-h2">Works. xterm can draw on a transparent background.</h3>
+            <p>xterm 6's WebGL renderer paints its background as one rectangle in the theme's background color, alpha included. With a transparent theme the ground shows through, and glyphs keep their edges on a Retina screen. Spool has to create terminals with allowTransparency on, since it can't be switched on later.</p>
+            <div class="b-panel b-media-card"><span class="b-media" style="aspect-ratio:16/10"><img src="./assets/img/lab-clay.jpg" alt="Four real xterm panes over the Clay ground" loading="lazy"></span><span class="b-media-body"><span class="b-small">Four real xterm panes over the Clay ground, with Claude Code screens scripted in Clay's colors. The glyphs stay out of the text.</span></span></div>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-2" aria-labelledby="q-2" hidden>
+            <h3 class="b-h2">Works, per terminal and live.</h3>
+            <p>Claude Code reads custom themes from ~/.claude/themes, one JSON file per theme with a name, a base preset and color overrides, and theme is an ordinary settings key. I started Claude with --settings '{"theme":"custom:spool-probe"}' and it drew in the probe's colors instead of your dark-daltonized default. Then I rewrote the file while it ran, and its colors changed without a restart. Claude Code watches that folder, so Spool can recolor every Claude it started by rewriting one file.</p>
+            <details class="b-details"><summary>Show detail</summary><div class="b-details-body"><p>The folder has to exist before Claude starts, so Spool creates it at launch. The overrides cover about 70 tokens, including claude, text, inactive, permission, promptBorder, userMessageBackground, the diff colors and clawd_body. Clawd's eyes are painted as black cells through clawd_background, so each theme sets that too. Claude Code's issue tracker lists cases where some overrides were ignored, among them diff colors and markdown, so the first build checks each token on screen. The probe file was deleted afterwards and no transcript was created.</p></div></details>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-3" aria-labelledby="q-3" hidden>
+            <h3 class="b-h2">Possible through Claude's status signal, OSC 7501.</h3>
+            <p>Claude Code 2.1.295 and later asks the terminal about OSC 7501 when it starts. If the terminal answers, Claude reports its state as working, blocked, done, error or idle, along with the kind of block and a title. Spool's terminals can answer and listen, which gives each pane its state the moment it changes. That drives the waiting and finished reactions, and it can replace the waiting flag in ~/.claude/sessions, which we haven't seen fire.</p>
+            <details class="b-details"><summary>Show detail</summary><div class="b-details-body"><p>I found the question and the report format in the 2.1.322 binary and watched Claude ask the question. Claude reports only when its state changes, and changing it means sending a message, so I haven't seen a report arrive yet.</p></div></details>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-4" aria-labelledby="q-4" hidden>
+            <h3 class="b-h2">About 10 ms for four terminals.</h3>
+            <p>Setting a new palette on four WebGL terminals took 0.4 ms, and all four had redrawn within 8 to 12 ms. The ground's work per frame was 0.02 ms for Clay and Snowfall and 1.9 ms for Contour, which ran on the CPU in the test and moves into a shader in the real build.</p>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-5" aria-labelledby="q-5" hidden>
+            <h3 class="b-h2">Both work without touching xterm.</h3>
+            <p>On a transparent terminal, a CSS drop-shadow on xterm's canvas glows around the glyphs alone. Scanlines are a gradient laid over the pane. Phosphor uses both.</p>
+            <div class="b-panel b-media-card"><span class="b-media" style="aspect-ratio:16/10"><img src="./assets/img/lab-phosphor.jpg" alt="Phosphor on real xterm panes" loading="lazy"></span><span class="b-media-body"><span class="b-small">Phosphor on real xterm panes. The amber Clawd and the glow come from the same CSS on every pane.</span></span></div>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-6" aria-labelledby="q-6" hidden>
+            <h3 class="b-h2">Works in Electron 33.</h3>
+            <p>View Transitions capture xterm's WebGL canvases correctly. The old theme is a still frame and the new one stays live, so Claude keeps printing inside the circle while it grows.</p>
+            <div class="b-panel b-media-card"><span class="b-media" style="aspect-ratio:16/10"><img src="./assets/img/lab-reveal.jpg" alt="A reveal paused partway through" loading="lazy"></span><span class="b-media-body"><span class="b-small">A reveal from Spool to Clay paused partway. The arc at the bottom left and top right is the edge of the circle.</span></span></div>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-7" aria-labelledby="q-7" hidden>
+            <h3 class="b-h2">Left out. Claude hides the terminal cursor.</h3>
+            <p>Claude Code turns off the terminal's cursor and draws its own, which is why Ghostty's cursor-trail shaders stop working inside Claude Code. Two reports in Claude Code's issue tracker describe it. Spool's effects react to Claude's state instead of the cursor.</p>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-8" aria-labelledby="q-8" hidden>
+            <h3 class="b-h2">16 WebGL contexts per page.</h3>
+            <p>Chromium drops the oldest WebGL context once a page has 16. Each visible terminal holds one today, and themes add two, the ground and the effects layer. That makes 14 visible panes the most before a terminal falls back to xterm's slower DOM renderer.</p>
+          </section>
+          <section class="b-vtab-panel" role="tabpanel" id="p-9" aria-labelledby="q-9" hidden>
+            <h3 class="b-h2">Upgrade it first.</h3>
+            <p>Electron 33 reached end of life on Apr 28, 2025. It also predates the fix for the macOS 26 bug where Electron windows drove up WindowServer's GPU use, which shipped in Electron 36.9.2, 37.6.0 and 38.2.0. Animated themes would add to that load. The current release is Electron 45.</p>
+            <details class="b-details"><summary>Show detail</summary><div class="b-details-body"><p>Real Liquid Glass in Electron needs a third-party addon, electron-liquid-glass, which places Apple's glass view behind the page through a private API and needs a transparent window. Glass uses the vibrancy Spool already turns on, and the addon can come later if you want it.</p></div></details>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Plan</span><h2 class="b-h2">Build order</h2><p class="b-small">Each phase ends with typecheck, build and screenshots from the hidden test window. Nothing gets committed until you approve it.</p></div>
+    <div class="b-bleed">
+      <div class="b-table-wrap"><table class="b-table" data-wrap>
+        <thead><tr><th>Phase</th><th>You get</th><th>Main changes</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td data-strong>1. Electron upgrade</td><td>The same app on Electron 45, with the macOS 26 GPU fix</td><td>package.json, a check of node-pty's prebuilt binary, the webview and page-capture paths</td><td><span class="b-chip" data-status="paused"><i class="b-status" data-s="paused" role="img" aria-label="On hold"></i>Needs your OK</span></td></tr>
+          <tr><td data-strong>2. Theme engine and Claude's colors</td><td>Spool, Paper and Phosphor, switched from the menu</td><td>theme/themes.ts and theme/apply.ts, colors in app.css moved onto tokens, lib/terminals.ts for transparent terminals, palettes and OSC 7501, main/claude-theme.ts, the settings flag in pty.ts</td><td><span class="b-chip" data-status="todo"><i class="b-status" data-s="todo" role="img" aria-label="Not started"></i>Planned</span></td></tr>
+          <tr><td data-strong>3. Ground renderer</td><td>Clay, Glass and Blueprint, with wallpaper inside panes</td><td>ground/ with a WebGL2 worker on an OffscreenCanvas, a glyph atlas in the terminal font, one file per scene, text masks, frame caps and pausing when the window is hidden</td><td><span class="b-chip" data-status="todo"><i class="b-status" data-s="todo" role="img" aria-label="Not started"></i>Planned</span></td></tr>
+          <tr><td data-strong>4. Tray and reveal</td><td>The brush button, &#8997;&#8984;T, live thumbnails and the reveal</td><td>components/ThemeTray.tsx, theme/reveal.ts</td><td><span class="b-chip" data-status="todo"><i class="b-status" data-s="todo" role="img" aria-label="Not started"></i>Planned</span></td></tr>
+          <tr><td data-strong>5. Reactions</td><td>Snowfall and Contour, plus state reactions, drop zones and &#8984; labels in every theme</td><td>effects/ canvas, Desk.tsx hooks for drags, resizes and Tidy</td><td><span class="b-chip" data-status="todo"><i class="b-status" data-s="todo" role="img" aria-label="Not started"></i>Planned</span></td></tr>
+          <tr><td data-strong>6. Polish</td><td>Light and dark pairing and a settings panel</td><td>The battery rule, a contrast check over every palette, screenshots of each theme in each state</td><td><span class="b-chip" data-status="todo"><i class="b-status" data-s="todo" role="img" aria-label="Not started"></i>Planned</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="b-section">
+    <div class="b-section-head"><span class="b-label">Decisions</span><h2 class="b-h2">Choices before I start</h2><p class="b-small">My pick comes first in each.</p></div>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">Upgrade Electron first</h3><p>Move from 33 to 45 as its own step, before any theme work. The other choice is to build on 33 and upgrade later, with the macOS 26 GPU bug still in.</p></div></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Which themes, in which order</h3><p>Paper, Phosphor, Clay, Glass and Blueprint in phases 2 and 3, Snowfall and Contour in phase 5. Tell me any you'd cut or move up.</p></div></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">How much wallpaper shows inside panes</h3><p>Around text, with the ground at full strength in empty cells and faded under text. Or faint, at 12% everywhere. Or solid, so the wallpaper shows only in the chrome and the 4px gaps. Fig 1 has the first two.</p></div></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Claude's colors follow the theme</h3><p>Spool writes ~/.claude/themes/spool.json and starts its own Claudes with a theme setting. Your iTerm sessions keep dark-daltonized, and Spool shows up as one more theme in Claude Code's own /theme list. The other choice leaves Claude's colors alone, which clashes in Paper and Phosphor.</p></div></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">What a theme covers</h3><p>The Desk, the title bar and the chat list now, and the chat view in phase 6. Or the whole window from the start, which adds the transcript view to phase 2.</p></div></li>
+      <li class="b-row"><span class="b-row-n">6</span><div class="b-row-body"><h3 class="b-h3">Light and dark</h3><p>Follow macOS, with a light pick and a dark pick, Paper and Spool to start. Or one theme until you change it.</p></div></li>
+      <li class="b-row"><span class="b-row-n">7</span><div class="b-row-body"><h3 class="b-h3">Motion</h3><p>Moving grounds run at half speed on battery and hold still when Reduce Motion is on. The other choices are full speed all the time, or still on battery.</p></div></li>
+      <li class="b-row"><span class="b-row-n">8</span><div class="b-row-body"><h3 class="b-h3">Fonts</h3><p>Monaco 12 in every theme. Or a font per theme, such as Departure Mono for Phosphor, which changes the cell size, so every pane resizes when you switch.</p></div></li>
+    </ol>
+  </section>
+
+  <footer class="b-footer"><span class="b-label">Sources</span><ol>
+    <li><a href="https://x.com/handsher_NGU/status/2120912865658077388" target="_blank" rel="noopener">The video you sent, Nov 12, 2026</a></li>
+    <li><a href="https://code.claude.com/docs/en/terminal-config" target="_blank" rel="noopener">Claude Code docs: custom themes and the themes folder</a></li>
+    <li><a href="https://pkg.go.dev/tuios.dev/progstatus" target="_blank" rel="noopener">Program Status Protocol, OSC 7501</a></li>
+    <li><a href="https://endoflife.date/electron" target="_blank" rel="noopener">Electron release and end-of-life dates</a></li>
+    <li><a href="https://www.theregister.com/2025/10/02/macos_26_electron_slowdown/" target="_blank" rel="noopener">The Register on the macOS 26 Electron slowdown</a></li>
+    <li><a href="https://app.unpkg.com/electron-liquid-glass@1.0.1/files/README.md" target="_blank" rel="noopener">electron-liquid-glass README</a></li>
+    <li><a href="https://codereview.chromium.org/14217005/" target="_blank" rel="noopener">Chromium's limit of 16 WebGL contexts</a></li>
+    <li><a href="https://github.com/ghostty-org/ghostty/discussions/6901" target="_blank" rel="noopener">Ghostty cursor uniforms for custom shaders</a></li>
+    <li><a href="https://code.visualstudio.com/docs/configure/themes" target="_blank" rel="noopener">VS Code theme picker</a></li>
+    <li><a href="https://alexharri.com/blog/ascii-rendering" target="_blank" rel="noopener">Alex Harri on choosing characters for ASCII rendering</a></li>
+  </ol></footer>
+</main>
+<script src="./assets/proto.js"></script>
+<script src="./assets/proto-more.js"></script>
+<script>
+(() => {
+  const mount = document.getElementById('desk-proto')
+  if (!window.SpoolThemes || !mount) return
+  SpoolThemes.mount(mount)
+  const mode = document.getElementById('proto-mode')
+  mode.addEventListener('click', (e) => { const b = e.target.closest('.b-tab'); if (b) SpoolThemes.setMode(b.dataset.mode) })
+  const shelf = document.getElementById('proto-shelf')
+  shelf.addEventListener('click', (e) => { const b = e.target.closest('.b-tab'); if (!b) return; for (const x of shelf.children) x.setAttribute('aria-selected', String(x === b)); SpoolThemes.tray(true); SpoolThemes.setShelf(b.dataset.shelf) })
+  document.getElementById('proto-finish').addEventListener('click', () => SpoolThemes.finishTurn())
+  const layers = document.getElementById('proto-layers')
+  layers.addEventListener('click', () => { const on = layers.getAttribute('aria-pressed') !== 'true'; layers.setAttribute('aria-pressed', String(on)); layers.lastChild.textContent = on ? 'Put the layers back' : 'Separate the layers'; SpoolThemes.setExplode(on) })
+})()
+</script>
+<script>// Bench behaviors v0.5, inlined by build.mjs into every page.
+// Theme toggle: applies a saved choice before anything is measured, then follows the OS until the viewer picks.
+(() => {
+  const root = document.documentElement, toggle = document.querySelector(".b-theme");
+  const mq = matchMedia("(prefers-color-scheme: dark)");
+  let saved = null;
+  try { saved = localStorage.getItem("bench-theme"); } catch {}
+  if (saved === "light" || saved === "dark") root.dataset.theme = saved;
+  if (!toggle) return;
+  const sync = () => {
+    const current = root.dataset.theme || (mq.matches ? "dark" : "light");
+    for (const b of toggle.querySelectorAll("[data-theme-choice]")) b.setAttribute("aria-selected", String(b.dataset.themeChoice === current));
+    toggle.dispatchEvent(new Event("b-tabs:sync"));
+  };
+  toggle.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-theme-choice]");
+    if (!b) return;
+    root.dataset.theme = b.dataset.themeChoice;
+    try { localStorage.setItem("bench-theme", b.dataset.themeChoice); } catch {}
+  });
+  mq.addEventListener("change", () => { if (!root.dataset.theme) sync(); });
+  sync();
+})();
+
+// Segmented control: one raised thumb that slides to the selected option. Arrow keys move the selection.
+(() => {
+  for (const group of document.querySelectorAll(".b-tabs")) {
+    const thumb = document.createElement("span");
+    thumb.className = "b-tabs-thumb";
+    thumb.setAttribute("aria-hidden", "true");
+    group.prepend(thumb);
+    group.dataset.js = "";
+    const tabs = () => [...group.querySelectorAll(".b-tab")];
+    const place = (animate) => {
+      const sel = group.querySelector('.b-tab[aria-selected="true"]') || tabs()[0];
+      if (!sel) return;
+      if (!animate) thumb.style.transition = "none";
+      thumb.style.width = sel.offsetWidth + "px";
+      thumb.style.transform = `translateX(${sel.offsetLeft}px)`;
+      if (!animate) { thumb.getBoundingClientRect(); thumb.style.transition = ""; }
+    };
+    const select = (tab) => {
+      for (const t of tabs()) { t.setAttribute("aria-selected", String(t === tab)); t.tabIndex = t === tab ? 0 : -1; }
+      place(true);
+    };
+    group.addEventListener("b-tabs:sync", () => place(true));
+    group.addEventListener("click", (e) => { const t = e.target.closest(".b-tab"); if (t && group.contains(t)) select(t); });
+    group.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const list = tabs(), i = list.indexOf(document.activeElement);
+      if (i < 0) return;
+      const next = list[(i + (e.key === "ArrowRight" ? 1 : list.length - 1)) % list.length];
+      next.focus(); next.click(); e.preventDefault();
+    });
+    for (const t of tabs()) t.tabIndex = t.getAttribute("aria-selected") === "true" ? 0 : -1;
+    place(false);
+    new ResizeObserver(() => place(false)).observe(group);
+    document.fonts?.ready.then(() => place(false));
+  }
+})();
+
+// Details row: mark which edges are cut off so the fade only shows where there is more to scroll to.
+(() => {
+  for (const row of document.querySelectorAll(".b-meta")) {
+    const mark = () => {
+      const more = row.scrollWidth - row.clientWidth;
+      if (more <= 1) { delete row.dataset.overflow; return; }
+      const atStart = row.scrollLeft <= 1, atEnd = row.scrollLeft >= more - 1;
+      row.dataset.overflow = atStart ? "start" : atEnd ? "end" : "both";
+    };
+    row.addEventListener("scroll", mark, { passive: true });
+    new ResizeObserver(mark).observe(row);
+    mark();
+  }
+})();
+
+// Vertical tabs: one raised thumb slides to the chosen question; the matching panel shows. Arrow keys move.
+(() => {
+  for (const box of document.querySelectorAll(".b-vtabs")) {
+    const list = box.querySelector(".b-vtabs-list");
+    const tabs = [...list.querySelectorAll(".b-vtab")];
+    const thumb = document.createElement("span");
+    thumb.className = "b-vtabs-thumb"; thumb.setAttribute("aria-hidden", "true");
+    list.prepend(thumb); list.dataset.js = "";
+    const place = (animate) => {
+      const sel = tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0];
+      if (!animate) thumb.style.transition = "none";
+      thumb.style.height = sel.offsetHeight + "px";
+      thumb.style.transform = `translateY(${sel.offsetTop}px)`;
+      if (!animate) { thumb.getBoundingClientRect(); thumb.style.transition = ""; }
+    };
+    const select = (tab, focus) => {
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
+      }
+      if (focus) tab.focus();
+      place(true);
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => select(t));
+      t.addEventListener("keydown", (e) => {
+        const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
+      });
+    });
+    select(tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0]);
+    place(false);
+    new ResizeObserver(() => place(false)).observe(list);
+  }
+})();
+</script>

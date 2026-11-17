@@ -1,0 +1,208 @@
+<title>Dustin's Voice Skill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* Read-width reference doc; the scenario table and the field guide break out to the wide measure. Layout only. */
+.dv-wide{min-width:820px}
+.dv-bars{min-width:620px}
+.dv-bars td:nth-child(2),.dv-bars td:nth-child(4){width:26%}
+.dv-tells{min-width:640px}
+.dv-tells td:first-child{width:30%}
+.dv-spec{display:flex;flex-direction:column;gap:var(--b-2)}
+.dv-pair-quotes{display:flex;flex-direction:column;gap:var(--b-2)}
+</style>
+
+<main class="b-page" data-width="read">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">Skill proposal</span><span class="b-label">dustin-voice</span><span class="b-label">Oct 15, 2026</span></div>
+    <h1 class="b-display">How Dustin types, and how Claude doesn't</h1>
+    <p class="b-lede">A measured profile of your writing in Claude Code and Slack, a side-by-side with my own replies, a named catalogue of the sentence shapes that give AI away, and a plan for a skill that drafts messages in your voice.</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Status</dt><dd><span class="b-chip" data-status="todo">Awaiting your decisions</span></dd></div>
+      <div><dt class="b-label">Corpus</dt><dd>Jun 2025 to Oct 2026</dd></div>
+      <!--bench:connectors slack-->
+    </dl>
+  </header>
+
+  <section class="b-section" id="corpus">
+    <div class="b-section-head"><span class="b-label">The corpus</span><h2 class="b-h2">What I read</h2></div>
+    <div class="b-stats">
+      <div class="b-stat"><span class="b-label">Typed prompts to Claude Code</span><span class="b-stat-v">344</span><span class="b-delta">14.8k words</span></div>
+      <div class="b-stat"><span class="b-label">Slack messages</span><span class="b-stat-v">686</span><span class="b-delta">Jun 2025 to Oct 2026</span></div>
+      <div class="b-stat"><span class="b-label">Dictated prompts (Wispr)</span><span class="b-stat-v">25</span><span class="b-delta">Analyzed separately</span></div>
+      <div class="b-stat"><span class="b-label">My replies, as contrast</span><span class="b-stat-v">973</span><span class="b-delta">110k words</span></div>
+    </div>
+    <p class="b-small" style="margin:0;max-width:var(--b-prose)">Slack: 168 DMs, 155 group DMs, 363 channel posts. Collection was read-only. Quotes below swap names for @X and avoid anything sensitive. The Slack sample comes in bursts of a few days per month, so treat per-scenario numbers as directional.</p>
+  </section>
+
+  <section class="b-section" id="findings">
+    <div class="b-section-head"><span class="b-label">What the data says</span><h2 class="b-h2">Findings</h2></div>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">You write in lowercase and stop without punctuation</h3><p>92% of typed Claude Code prompts start lowercase and 77% end with no punctuation at all. You end with a period 5% of the time. I end with one 94% of the time.</p></div></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Your register shifts by audience, mostly in capitalization</h3><p>In Slack about half your messages start with a capital, and in threads with execs it rises to 70%. Apostrophes stay dropped everywhere (<code>dont</code>, <code>im</code>, <code>thats</code>, about 9 to 1 against keeping them).</p></div></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Dictation looks like a different person</h3><p>Wispr messages are capitalized, fully punctuated, and keep apostrophes. The skill should learn word choice from them but never punctuation.</p></div></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">You ask, I declare</h3><p>You use 13 question marks per 1,000 words, and I use 1. You hedge with <code>i think</code> and <code>maybe</code> and close with <code>no?</code> or <code>or no</code>. I open with labels like <code>Short answer:</code> and announce counts (<code>Two things:</code> opens 33 of my sentences).</p></div></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Your punctuation joins ideas, mine builds structure</h3><p>You join ideas with <code> / </code>, <code> + </code> and a spaced hyphen. I use 4x your colons, 28x your semicolons, bold on almost every reply, arrows, and the <code>X, not Y</code> contrast at 7x your Slack rate. You have never typed an em dash in this corpus.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="b-section" id="mechanics">
+    <div class="b-section-head"><span class="b-label">Layer 1, mechanics</span><h2 class="b-h2">Capitals, punctuation and length by scenario</h2><p class="b-small">The surface layer: what changes depending on where you're typing and who's reading. The skill picks one column and uses its numbers as targets.</p></div>
+    <div class="b-table-wrap b-bleed"><table class="b-table dv-wide"><thead><tr><th>Measure</th><th data-num>Claude Code typed</th><th data-num>Slack DM</th><th data-num>Slack group DM</th><th data-num>Slack channel</th><th data-num>With execs</th><th data-num>Dictated</th><th data-num>Claude</th></tr></thead><tbody><tr><td data-strong>Starts lowercase</td><td data-num>92%</td><td data-num>57%</td><td data-num>43%</td><td data-num>52%</td><td data-num>27%</td><td data-num>4%</td><td data-num>0%</td></tr><tr><td data-strong>Ends with no punctuation</td><td data-num>77%</td><td data-num>91%</td><td data-num>87%</td><td data-num>86%</td><td data-num>91%</td><td data-num>0%</td><td data-num>1%</td></tr><tr><td data-strong>Ends with a period</td><td data-num>5%</td><td data-num>1%</td><td data-num>1%</td><td data-num>1%</td><td data-num>0%</td><td data-num>80%</td><td data-num>94%</td></tr><tr><td data-strong>"i" lowercase (share of I/im/ive)</td><td data-num>96%</td><td data-num>69%</td><td data-num>54%</td><td data-num>59%</td><td data-num>39%</td><td data-num>5%</td><td data-num>7%</td></tr><tr><td data-strong>Apostrophes dropped : kept</td><td data-num>178 : 9</td><td data-num>11 : 2</td><td data-num>22 : 1</td><td data-num>45 : 12</td><td data-num>7 : 4</td><td data-num>1 : 53</td><td data-num>302 : 683</td></tr><tr><td data-strong>Median words per message</td><td data-num>28</td><td data-num>4</td><td data-num>6</td><td data-num>8</td><td data-num>6</td><td data-num>74</td><td data-num>29</td></tr><tr><td data-strong>Exclamation marks per 1k words</td><td data-num>0</td><td data-num>1.8</td><td data-num>0.8</td><td data-num>1.4</td><td data-num>0</td><td data-num>0</td><td data-num>0.1</td></tr><tr><td data-strong>Em dashes</td><td data-num>0</td><td data-num>0</td><td data-num>0</td><td data-num>0</td><td data-num>0</td><td data-num>0</td><td data-num>0.7 per 1k</td></tr><tr><td data-strong>Messages with emoji</td><td data-num>0%</td><td colspan="3">8% across Slack: 🙏 😭 🙂 :beggar: 👍 😂</td><td data-num>Rare</td><td data-num>0%</td><td data-num>0%</td></tr></tbody></table></div>
+    <div class="b-pair">
+      <div class="b-panel">
+        <h3 class="b-h3">Rules the skill takes from this</h3>
+        <ul>
+          <li>Short Slack replies are one line, 3 to 8 words, no ending punctuation.</li>
+          <li>Capital at the start is a coin flip in Slack, mostly lowercase in DMs, usually capital with execs. Mid-message <code>i</code> stays lowercase about 60% of the time.</li>
+          <li>A question gets a <code>?</code>. Statements end bare. Never a closing period on a one-liner.</li>
+          <li>Paragraph breaks over long sentences. About a quarter of your longer prompts are multi-paragraph, one idea per block.</li>
+          <li>Emoji go at the end of a line, one at most, and only in Slack.</li>
+        </ul>
+      </div>
+      <div class="b-panel">
+        <h3 class="b-h3">Typos: measured, not copied</h3>
+        <p class="b-small" style="margin:0">Your typed prompts have real typos, mostly transposed letters (<code>cna</code>, <code>abotu</code>, <code>hwo</code>, <code>htese</code>, <code>liek</code>) and misplaced spaces (<code>weirdlyi n</code>, <code>ont he</code>). Fake typos read as fake fast. The proposal is to keep them off by default and allow only the ones that are really a style choice: dropped apostrophes, <code>tho</code>, <code>pls</code>, stretched words like <code>muchhhh</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-section" id="structure">
+    <div class="b-section-head"><span class="b-label">Layer 2, structure</span><h2 class="b-h2">How you build a message</h2><p class="b-small">Separate from punctuation: the order you put ideas in, how you hedge, how you join clauses. These shapes come up again and again.</p></div>
+    <div class="b-grid" data-cols="2">
+      <div class="b-panel"><h3 class="b-h3">Ask, then the context</h3><p class="b-quote">can you show a loading indicator in the background when the stream is loading. i like the fade in when it loads, but i wanna know its loading</p><span class="b-source">The request comes first and the reason follows as a plain clause. <code>can you</code> opens 67 of 344 prompts, and <code>i want</code> or <code>we should</code> covers most of the rest.</span></div>
+      <div class="b-panel"><h3 class="b-h3">Opinion, softened, then an invitation to disagree</h3><p class="b-quote">remove the scope to do the dialog to cancel limit order - it should just cancel the order no? i dont think theres much concern here but feel free to push back</p><span class="b-source">Tag questions (<code>no?</code>, <code>or no</code>, <code>right?</code>) and <code>i think</code> (25 times in prompts, 22 in Slack) carry a firm view without sounding final.</span></div>
+      <div class="b-panel"><h3 class="b-h3">Slash and plus as conjunctions</h3><div class="dv-pair-quotes"><p class="b-quote">at the very least a more balanced / perspective shift on the sneaks would be good</p><p class="b-quote">should show candidate names + images</p></div><span class="b-source"><code> / </code> means "or, roughly". <code> + </code> means "and, together". In Slack you use them 4 to 5x as often as I do.</span></div>
+      <div class="b-panel"><h3 class="b-h3">Short verdicts, all lowercase</h3><div class="dv-pair-quotes"><p class="b-quote">thats not a very good check</p><p class="b-quote">it needs work. UX and visually, etc. but nothing crazy major</p></div><span class="b-source">Judgments are short and plain, and often trail off with <code>etc</code> (29 times in prompts).</span></div>
+    </div>
+    <div class="b-panel">
+      <h3 class="b-h3">The longer channel post template</h3>
+      <p class="b-quote">Heads up on this: URL
+
+Im playing around on preprod and noticed two things:
+1. Pinned politics markets show democratic and republican party on the homepage carousel (should show candidate names + images)
+2. ...
+
+LMK if already aware / addressed, just thought I'd call it out
+
+cc @X</p>
+      <span class="b-source">For a channel you shift into a clear structure: a greeting or "heads up" line, one sentence of context, a numbered or • list with expected behavior in parentheses, then <code>LMK</code> and a <code>cc</code>. You still say "two things" and then list three. Keep that.</span>
+    </div>
+    <div class="b-table-wrap"><table class="b-table dv-tells" data-wrap>
+      <thead><tr><th>Shape</th><th>You</th><th>Claude</th></tr></thead>
+      <tbody>
+        <tr><td data-strong>Clauses chained with commas, few full stops</td><td>9 words between punctuation marks on average</td><td>Short declaratives. 534 of 7,675 sentences are four words or fewer ("Done." "Build passes.")</td></tr>
+        <tr><td data-strong>Hedge words</td><td><code>maybe</code> 30, <code>i think</code> 25, <code>or something</code> 7, <code>i guess</code></td><td>Certainty markers: <code>only</code>, <code>every</code>, <code>exactly</code>, <code>nothing</code></td></tr>
+        <tr><td data-strong>Questions</td><td>13 per 1k words, often several in one message</td><td>1 per 1k, nearly always "Want me to…?" at the end</td></tr>
+        <tr><td data-strong>Openers</td><td><code>can you</code>, <code>ok</code>, <code>ok cool</code>, <code>also</code>, <code>hey all</code>, <code>yeah</code></td><td><code>Done.</code>, <code>Two things</code>, <code>Let me</code>, <code>What I</code>, <code>One thing</code>, <code>Short answer:</code></td></tr>
+        <tr><td data-strong>Asides</td><td>Parenthetical for context: "(should show red + blue which are the market colors)"</td><td>Parentheses at 8 per 1k words, plus colons and semicolons for sub-points</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="b-section" id="words">
+    <div class="b-section-head"><span class="b-label">Layer 3, words</span><h2 class="b-h2">Your vocabulary vs mine</h2><p class="b-small">Ranked by how much more one side uses a word than the other (log-odds across both corpora, minimum 8 uses).</p></div>
+    <div class="b-pair">
+      <div class="b-panel"><h3 class="b-h3">Yours</h3>
+        <div class="b-chips"><span class="b-chip" data-plain>im</span><span class="b-chip" data-plain>dont</span><span class="b-chip" data-plain>wanna</span><span class="b-chip" data-plain>gonna</span><span class="b-chip" data-plain>cool</span><span class="b-chip" data-plain>ok</span><span class="b-chip" data-plain>yeah / yea</span><span class="b-chip" data-plain>nice</span><span class="b-chip" data-plain>etc</span><span class="b-chip" data-plain>maybe</span><span class="b-chip" data-plain>just</span><span class="b-chip" data-plain>stuff</span><span class="b-chip" data-plain>a bit / tad bit</span><span class="b-chip" data-plain>pretty</span><span class="b-chip" data-plain>super</span><span class="b-chip" data-plain>weird</span><span class="b-chip" data-plain>clean</span><span class="b-chip" data-plain>vibe</span><span class="b-chip" data-plain>feel</span><span class="b-chip" data-plain>slop</span><span class="b-chip" data-plain>cooked</span><span class="b-chip" data-plain>crazy</span><span class="b-chip" data-plain>idk</span><span class="b-chip" data-plain>imo</span><span class="b-chip" data-plain>lol</span><span class="b-chip" data-plain>def</span><span class="b-chip" data-plain>bro</span><span class="b-chip" data-plain>pls</span><span class="b-chip" data-plain>ty</span><span class="b-chip" data-plain>lmk</span><span class="b-chip" data-plain>hill to die on</span><span class="b-chip" data-plain>crash out</span><span class="b-chip" data-plain>rip (ship fast)</span><span class="b-chip" data-plain>pixel perfect</span><span class="b-chip" data-plain>1000/10</span><span class="b-chip" data-plain>hey yall / hey all</span></div>
+        <span class="b-source">Concrete UI nouns too: tooltip, padding, borders, darker, larger, underneath, progressive blur. You describe visuals by adjusting them ("a little more rounded", "push it up a pixel").</span></div>
+      <div class="b-panel"><h3 class="b-h3">Mine</h3>
+        <div class="b-chips"><span class="b-chip" data-plain>i'll</span><span class="b-chip" data-plain>verified</span><span class="b-chip" data-plain>passes</span><span class="b-chip" data-plain>carries</span><span class="b-chip" data-plain>holds</span><span class="b-chip" data-plain>sits</span><span class="b-chip" data-plain>lands</span><span class="b-chip" data-plain>surfaces</span><span class="b-chip" data-plain>load-bearing</span><span class="b-chip" data-plain>shape</span><span class="b-chip" data-plain>band</span><span class="b-chip" data-plain>rail</span><span class="b-chip" data-plain>layer</span><span class="b-chip" data-plain>baseline</span><span class="b-chip" data-plain>whether</span><span class="b-chip" data-plain>itself</span><span class="b-chip" data-plain>exact</span><span class="b-chip" data-plain>nothing</span><span class="b-chip" data-plain>every</span><span class="b-chip" data-plain>only</span><span class="b-chip" data-plain>plain</span><span class="b-chip" data-plain>the real X</span><span class="b-chip" data-plain>rather than</span><span class="b-chip" data-plain>two / three / four</span></div>
+        <span class="b-source">My distinctive words are status verbs ("passes", "verified"), spatial metaphors for abstract things ("sits", "lands", "carries", "holds"), and counting. None of them show up in your writing.</span></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="tells">
+    <div class="b-section-head"><span class="b-label">Layer 4, reference</span><h2 class="b-h2">A field guide to how AI builds sentences</h2><p class="b-small">Each pattern has its common name (from the Wikipedia guide and the tropes.fyi catalogue where they exist), a real example from my replies to you, how often it shows up in my writing vs yours, and the rewrite the skill applies. The lint script checks for all of them.</p></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">Rate per 1,000 words</span><span class="b-corner" data-corner="hint">Claude replies vs your Slack + typed prompts</span></div>
+        <div class="b-keys" style="margin-bottom:var(--b-3)"><span class="b-key"><i data-swatch="2"></i>Claude</span><span class="b-key"><i data-swatch></i>You</span></div>
+        <div class="b-table-wrap"><table class="b-table dv-bars"><thead><tr><th>Pattern, per 1,000 words</th><th>Claude</th><th data-num></th><th>You</th><th data-num></th></tr></thead><tbody><tr><td data-strong>Bold spans</td><td><div class="b-meter" data-series="2"><span style="width:86.8%"></span></div></td><td data-num>13.66</td><td><div class="b-meter"><span style="width:0.0%"></span></div></td><td data-num>0</td></tr><tr><td data-strong>Colons</td><td><div class="b-meter" data-series="2"><span style="width:100.0%"></span></div></td><td data-num>15.74</td><td><div class="b-meter"><span style="width:22.9%"></span></div></td><td data-num>3.6</td></tr><tr><td data-strong>Parentheses</td><td><div class="b-meter" data-series="2"><span style="width:51.7%"></span></div></td><td data-num>8.13</td><td><div class="b-meter"><span style="width:21.6%"></span></div></td><td data-num>3.4</td></tr><tr><td data-strong>Rule of three</td><td><div class="b-meter" data-series="2"><span style="width:19.7%"></span></div></td><td data-num>3.1</td><td><div class="b-meter"><span style="width:5.1%"></span></div></td><td data-num>0.8</td></tr><tr><td data-strong>Semicolons</td><td><div class="b-meter" data-series="2"><span style="width:12.3%"></span></div></td><td data-num>1.93</td><td><div class="b-meter"><span style="width:0.3%"></span></div></td><td data-num>0.04</td></tr><tr><td data-strong>Arrows (→)</td><td><div class="b-meter" data-series="2"><span style="width:8.1%"></span></div></td><td data-num>1.27</td><td><div class="b-meter"><span style="width:1.6%"></span></div></td><td data-num>0.25</td></tr><tr><td data-strong>"X, not Y"</td><td><div class="b-meter" data-series="2"><span style="width:7.1%"></span></div></td><td data-num>1.12</td><td><div class="b-meter"><span style="width:1.8%"></span></div></td><td data-num>0.28</td></tr><tr><td data-strong>Em dashes</td><td><div class="b-meter" data-series="2"><span style="width:4.3%"></span></div></td><td data-num>0.67</td><td><div class="b-meter"><span style="width:0.0%"></span></div></td><td data-num>0</td></tr><tr><td data-strong>Question marks</td><td><div class="b-meter" data-series="2"><span style="width:6.2%"></span></div></td><td data-num>0.97</td><td><div class="b-meter"><span style="width:77.5%"></span></div></td><td data-num>12.2</td></tr><tr><td data-strong>" / " connector</td><td><div class="b-meter" data-series="2"><span style="width:4.8%"></span></div></td><td data-num>0.76</td><td><div class="b-meter"><span style="width:21.0%"></span></div></td><td data-num>3.3</td></tr><tr><td data-strong>" - " spaced hyphen</td><td><div class="b-meter" data-series="2"><span style="width:3.8%"></span></div></td><td data-num>0.6</td><td><div class="b-meter"><span style="width:17.8%"></span></div></td><td data-num>2.8</td></tr><tr><td data-strong>" + " connector</td><td><div class="b-meter" data-series="2"><span style="width:3.7%"></span></div></td><td data-num>0.58</td><td><div class="b-meter"><span style="width:10.2%"></span></div></td><td data-num>1.6</td></tr></tbody></table></div>
+      </div>
+    </figure>
+    <div class="b-vtabs b-bleed">
+      <div class="b-vtabs-list" role="tablist" aria-orientation="vertical" aria-label="Pattern groups">
+        <button class="b-vtab" role="tab" id="tq-1" aria-controls="tp-1" aria-selected="true" type="button">Contrast and reveal frames <span class="b-small">(6)</span></button><button class="b-vtab" role="tab" id="tq-2" aria-controls="tp-2" aria-selected="false" type="button">Counting and announcing <span class="b-small">(4)</span></button><button class="b-vtab" role="tab" id="tq-3" aria-controls="tp-3" aria-selected="false" type="button">Punctuation and formatting <span class="b-small">(5)</span></button><button class="b-vtab" role="tab" id="tq-4" aria-controls="tp-4" aria-selected="false" type="button">Word choice <span class="b-small">(5)</span></button>
+      </div>
+      <div>
+        <section class="b-vtab-panel" role="tabpanel" id="tp-1" aria-labelledby="tq-1"><h3 class="b-h2">Contrast and reveal frames</h3><div class="b-table-wrap"><table class="b-table dv-tells" data-wrap><thead><tr><th>Pattern</th><th>Example</th><th>Rewrite</th></tr></thead><tbody><tr><td><div class="b-cell"><span class="b-h3">Negative parallelism ("X, not Y")</span><span class="b-small">Claude 1.12 · you 0.15 to 0.4</span></div></td><td><s>The shape, not the D1, is the story.</s></td><td>Say the positive claim alone: "the shape of the curve matters more than D1." Drop the "not" half unless someone actually believed it.</td></tr><tr><td><div class="b-cell"><span class="b-h3">"It's not X, it's Y" / "not just X, but Y"</span><span class="b-small">The best-known AI tic. Barron's counted it 4x more in Fortune 500 filings from 2023 to 2025</span></div></td><td><s>It's not a styling bug, it's a structural one.</s></td><td>"its a structural issue" is enough.</td></tr><tr><td><div class="b-cell"><span class="b-h3">"Not X. Not Y. Just Z."</span><span class="b-small">Tripled negation for suspense</span></div></td><td><s>Not a flag. Not a config. A hardcoded string.</s></td><td>"its hardcoded"</td></tr><tr><td><div class="b-cell"><span class="b-h3">Rhetorical question, instant answer</span><span class="b-small">Rare in my replies, common in AI marketing copy</span></div></td><td><s>The result? A 40% drop.</s></td><td>"it dropped 40%"</td></tr><tr><td><div class="b-cell"><span class="b-h3">Colon reveal / label-first sentence</span><span class="b-small">Claude 15.7 colons per 1k · you 3 to 4</span></div></td><td><s>Short answer: yes, but only on preprod.</s></td><td>"yes but only on preprod". Drop the label and answer.</td></tr><tr><td><div class="b-cell"><span class="b-h3">"Y rather than X"</span><span class="b-small">Claude 0.55 · you 0.07 to 0.3</span></div></td><td><s>So the pass removes and tightens rather than adds.</s></td><td>"mostly removing stuff"</td></tr></tbody></table></div></section><section class="b-vtab-panel" role="tabpanel" id="tp-2" aria-labelledby="tq-2" hidden><h3 class="b-h2">Counting and announcing</h3><div class="b-table-wrap"><table class="b-table dv-tells" data-wrap><thead><tr><th>Pattern</th><th>Example</th><th>Rewrite</th></tr></thead><tbody><tr><td><div class="b-cell"><span class="b-h3">Compulsive counting</span><span class="b-small">"Two things" opens 33 of my sentences. You: 0 as an opener in prompts</span></div></td><td><s>Two things to know:</s></td><td>Say the first thing. If there are two, use "also".</td></tr><tr><td><div class="b-cell"><span class="b-h3">Rule of three</span><span class="b-small">Claude 3.1 · you 0.8</span></div></td><td><s>fast, readable, and easy to extend</s></td><td>Keep the one that matters. You list two things plus "etc".</td></tr><tr><td><div class="b-cell"><span class="b-h3">Preamble (announce, then answer)</span><span class="b-small">"Here's / Here is", "What I found", "Let me"</span></div></td><td><s>Here's what I found after digging in.</s></td><td>Start with the finding.</td></tr><tr><td><div class="b-cell"><span class="b-h3">Tie-back and signposted ending</span><span class="b-small">"So, to answer your question…", "Bottom line"</span></div></td><td><s>So the net is: ship it behind the flag.</s></td><td>"lets ship behind the flag"</td></tr></tbody></table></div></section><section class="b-vtab-panel" role="tabpanel" id="tp-3" aria-labelledby="tq-3" hidden><h3 class="b-h2">Punctuation and formatting</h3><div class="b-table-wrap"><table class="b-table dv-tells" data-wrap><thead><tr><th>Pattern</th><th>Example</th><th>Rewrite</th></tr></thead><tbody><tr><td><div class="b-cell"><span class="b-h3">Em dash</span><span class="b-small">Claude 0.67 · you 0, ever</span></div></td><td><s>The fix is small — one token swap.</s></td><td>Use " - " (spaced hyphen) or a comma, the way you do.</td></tr><tr><td><div class="b-cell"><span class="b-h3">Semicolon</span><span class="b-small">Claude 1.93 · you 0.07 typed, 0 in Slack</span></div></td><td><s>The flag is on; the cache is stale.</s></td><td>Two lines, or a comma plus "but".</td></tr><tr><td><div class="b-cell"><span class="b-h3">Unicode arrows (→)</span><span class="b-small">Claude 1.27 · you 0.07 typed</span></div></td><td><s>42 → 48</s></td><td>"42 to 48", or <code>-&gt;</code> if it must be an arrow (that's what you type).</td></tr><tr><td><div class="b-cell"><span class="b-h3">Bold-first bullets, headers, bold</span><span class="b-small">Claude 13.7 bold spans per 1k · you 0</span></div></td><td><s>- **Status dots, not paragraphs**, on the pod rows</s></td><td>Plain • bullets with no bold. No headers in Slack, ever.</td></tr><tr><td><div class="b-cell"><span class="b-h3">Clean, closed sentences</span><span class="b-small">Claude ends with a period 94% · you 1 to 5%</span></div></td><td><s>Done. Build passes.</s></td><td>"done, build passes"</td></tr></tbody></table></div></section><section class="b-vtab-panel" role="tabpanel" id="tp-4" aria-labelledby="tq-4" hidden><h3 class="b-h2">Word choice</h3><div class="b-table-wrap"><table class="b-table dv-tells" data-wrap><thead><tr><th>Pattern</th><th>Example</th><th>Rewrite</th></tr></thead><tbody><tr><td><div class="b-cell"><span class="b-h3">AI vocabulary</span><span class="b-small">Kobak et al. found "delves" 25x above trend in 2024 PubMed abstracts</span></div></td><td><s>delve, crucial, robust, leverage, showcase, underscore, seamless, tapestry, landscape</s></td><td>These never appear in your writing. Hard ban.</td></tr><tr><td><div class="b-cell"><span class="b-h3">My own house words</span><span class="b-small">Specific to how Claude writes in 2026</span></div></td><td><s>load-bearing, lands, sits, carries, surfaces, the real X, worth noting, one catch, genuinely, quietly</s></td><td>Use the plain verb: "is", "shows", "has", "matters".</td></tr><tr><td><div class="b-cell"><span class="b-h3">"Serves as" dodge</span><span class="b-small">A fancy verb where "is" works</span></div></td><td><s>This flag serves as the kill switch.</s></td><td>"this flag is the kill switch"</td></tr><tr><td><div class="b-cell"><span class="b-h3">Invented concept labels</span><span class="b-small">Coined terms in scare quotes</span></div></td><td><s>the "supervision paradox"</s></td><td>Describe the thing in normal words.</td></tr><tr><td><div class="b-cell"><span class="b-h3">Certainty stacking</span><span class="b-small">"only", "every", "exactly", "nothing" at 1 to 3.5 per 1k in my replies</span></div></td><td><s>Nothing else changes; every other screen is exactly the same.</s></td><td>"nothing else changes". You'd add "i think" before claiming more.</td></tr></tbody></table></div></section>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-section" id="illustration">
+    <div class="b-section-head"><span class="b-label">Illustration</span><h2 class="b-h2">One message, two writers</h2><p class="b-small">I wrote the AI draft on purpose to show the tells. The rewrite applies the rules above. Neither is a real message.</p></div>
+    <div class="b-pair">
+      <div class="b-panel"><span class="b-label">Claude default</span><p class="b-quote">Quick heads-up — the hero carousel regression isn't a design issue, it's a token issue. Two things:
+• **Dark mode** uses the wrong border token
+• **Light mode** is fine
+
+Short version: one-line fix, no visual change. Want me to put up the PR?</p></div>
+      <div class="b-panel"><span class="b-label">dustin-voice, #channel register</span><p class="b-quote">heads up the hero carousel border regression is just the wrong token on dark mode, light mode looks fine
+
+should be a one line fix, ill put up a PR today. lmk if anyone already has it</p></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="proposal">
+    <div class="b-section-head"><span class="b-label">The proposal</span><h2 class="b-h2">How the skill works</h2><p class="b-small">Name: <code>dustin-voice</code>. It triggers when you ask for a draft you'll send as yourself ("draft a reply", "write this for slack", "say this how i would") and stays out of artifacts, docs and code comments unless you ask. It only drafts. It never sends.</p></div>
+    <pre class="b-code">~/.claude/skills/dustin-voice/
+├── SKILL.md                 trigger, workflow, the hard rules (about 120 lines)
+├── references/
+│   ├── registers.md         one profile per scenario: the Layer 1 numbers as targets
+│   ├── structure.md         Layer 2 shapes, each with 2 to 3 real examples
+│   ├── lexicon.md           your words, words to avoid, swaps (serves as -&gt; is)
+│   ├── ai-tells.md          the Layer 4 field guide with rewrite moves
+│   └── examples/            60 to 80 real messages per register, names scrubbed
+├── scripts/
+│   ├── lint_voice.py        scores a draft against a register and flags tells
+│   └── refresh_corpus.py    rebuilds stats + examples from transcripts and Slack
+└── corpus/                  local only, gitignored: raw extracts + stats.json</pre>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">Pick the register</h3><p>From where the text is going and who's reading it: Slack DM, group DM, channel post, exec thread, PR comment, or a doc in your voice. If it isn't clear, it asks once.</p></div></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Write the content</h3><p>Work out what to say before applying any style: the ask, the facts, the one opinion. It aims for your length for that register, so a DM reply is 4 to 8 words.</p></div></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Render it in your voice</h3><p>Apply the register's casing and punctuation, your openers and connectors (<code>/</code>, <code>+</code>, <code> - </code>), hedges where you'd hedge, and pull 5 matching real examples from <code>examples/</code> as few-shot.</p></div></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Lint</h3><p><code>lint_voice.py</code> blocks em dashes, semicolons, bold, headers, banned words and contrast frames. It warns on closing periods, kept apostrophes in casual registers, Unicode arrows, counted lists, threes, and length more than 2x your median. The draft is rewritten until there are no blocks.</p></div></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Show the draft</h3><p>One draft, plus a shorter alternative when the register allows it. You edit or send. Your edits can be saved as new examples, so it learns from corrections.</p></div></li>
+    </ol>
+    <div class="b-pair">
+      <div class="b-panel"><h3 class="b-h3">What it considers</h3><ul>
+        <li>Audience seniority (exec threads: more capitals, fewer jokes, still no periods)</li>
+        <li>Channel vs DM vs thread reply</li>
+        <li>Message job: ask, update, feedback, pushback, ack, announcement</li>
+        <li>Your length distribution for that job</li>
+        <li>Whether a list is warranted (only channel posts with 3+ items)</li>
+        <li>Emoji: Slack only, at most one, from your actual set</li></ul></div>
+      <div class="b-panel"><h3 class="b-h3">How we'll know it works</h3><ul>
+        <li>A blind test: 10 real messages mixed with 10 skill drafts on the same prompts. It passes if you can't beat 65% at telling them apart.</li>
+        <li>Drafts score inside your own range on every Layer 1 measure for the target register.</li>
+        <li>Zero hard tells across a 30-draft eval set.</li>
+        <li>Re-run <code>refresh_corpus.py</code> monthly so it tracks how your writing changes.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="b-section" id="decisions">
+    <div class="b-section-head"><span class="b-label">Your call</span><h2 class="b-h2">Decisions before I build it</h2></div>
+    <ol class="b-rows">
+      <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">Typos</h3><p>Off by default with style-only quirks allowed (my recommendation), or a "light" mode that adds an occasional transposition in DMs.</p></div><span class="b-chip" data-status="todo">Open</span></li>
+      <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Scope</h3><p>Slack and short-form only, or also longer docs in your voice (strategy sections, PRDs). Long-form needs its own register built from your Notion and Google Docs writing, which this corpus barely covers.</p></div><span class="b-chip" data-status="todo">Open</span></li>
+      <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Should I talk to you this way?</h3><p>The skill could also change how I reply to you in Claude Code: fewer labels, no bold, shorter. Separate from drafting, but it's the same data.</p></div><span class="b-chip" data-status="todo">Open</span></li>
+      <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Sending</h3><p>Draft-only (recommended), or let it post a Slack draft with <code>slack_send_message_draft</code> so it's ready in the composer.</p></div><span class="b-chip" data-status="todo">Open</span></li>
+      <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Where examples live</h3><p>The examples file has real DMs. Keep it in <code>~/.claude/skills</code> only, never committed or shared, with names scrubbed to @X.</p></div><span class="b-chip" data-status="todo">Open</span></li>
+    </ol>
+  </section>
+
+  <footer class="b-footer">
+    <span class="b-label">Method and sources</span>
+    <ol>
+      <li>Claude Code: every top-level user and assistant message in <code>~/.claude/projects/*/*.jsonl</code> (subagents, tool output, system text, pasted content and subagent prompts removed). Dictated messages were separated by a heuristic: more than 80% of sentences capitalized and at least two full stops.</li>
+      <li>Slack: 686 of your messages found through search (Jun 2025 to Oct 2026), with mentions, links, quotes and code removed before counting. Exec threads are those with Shayne or Travis (n=33, small).</li>
+      <li>Rates are per 1,000 words. Regex detectors catch most instances but not all, so read them as relative.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing" target="_blank" rel="noopener">Wikipedia: Signs of AI writing</a></li>
+      <li><a href="https://tropes.fyi/directory" target="_blank" rel="noopener">tropes.fyi directory</a></li>
+      <li><a href="https://arxiv.org/abs/2406.07016" target="_blank" rel="noopener">Kobak et al., Delving into LLM-assisted writing through excess vocabulary</a></li>
+      <li><a href="https://aiweekly.co/alerts/atlantic-ais-its-not-x-its-y-tic-proves-hardest-to-shake" target="_blank" rel="noopener">The Atlantic on the "It's not X, it's Y" tic (summary)</a></li>
+    </ol>
+  </footer>
+</main>

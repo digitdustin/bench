@@ -1,0 +1,262 @@
+<title>Suggest a Feature Flows</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* Wide: most of the page is device flows side by side. Layout only. */
+.sf-diagram{grid-template-columns:200px 220px 200px minmax(0,1fr)}
+.sf-entry{grid-column:1;display:flex;flex-direction:column;gap:56px}
+.sf-feedback{grid-column:2}
+.sf-api{grid-column:3}
+.sf-fb{grid-column:4}
+</style>
+
+<main class="b-page" data-width="wide">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">Polymarket US</span><span class="b-label">PRD companion</span><span class="b-label">Oct 15, 2026</span></div>
+    <h1 class="b-display">Suggest a feature: user flows</h1>
+    <p class="b-lede">Phase 1 is a single feedback form. Signed-in users open it from Settings in the app or from the account menu on polymarket.us. Every submission lands on a private Featurebase board with the user's account attached. There are no pop-ups and no public board. Phase 2, sketched at the bottom, adds user-facing "What's new" release notes.</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Phase 1</dt><dd>Feedback form</dd></div>
+      <div><dt class="b-label">Phase 2</dt><dd>What's new, a sketch</dd></div>
+      <!--bench:connectors notion-->
+    </dl>
+  </header>
+
+  <section class="b-section" id="app">
+    <div class="b-section-head"><span class="b-label">Phase 1, feedback form</span><h2 class="b-h2">In the app, from Settings to a sheet</h2></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">iOS and Android</span><span class="b-corner" data-corner="hint">Low-fidelity, for flow and placement</span><span class="b-corner" data-corner="readout">3 steps</span></div>
+        <div class="bm-flow">
+          <div class="bm-step">
+            <div class="bm-phone" id="a1"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-nav"><!--icon:chevron-left:12-->Settings</div>
+              <div class="bm-section">Account</div>
+              <div class="bm-group"><div class="bm-row"><span class="bm-skel" data-w="m"></span><!--icon:chevron-right:12--></div><div class="bm-row"><span class="bm-skel" data-w="l"></span><!--icon:chevron-right:12--></div><div class="bm-row"><span class="bm-skel" data-w="s"></span><!--icon:chevron-right:12--></div></div>
+              <div class="bm-section">Support</div>
+              <div class="bm-group"><div class="bm-row"><span>Invite friends</span><!--icon:chevron-right:12--></div><div class="bm-row"><span>FAQ / Help</span><!--icon:chevron-right:12--></div><div class="bm-row" data-focus data-wire="a2"><span>Suggest a feature</span><!--icon:chevron-right:12--><span class="bm-tap"></span></div><div class="bm-row"><span>Contact support</span><!--icon:chevron-right:12--></div></div>
+              <div class="bm-section">About</div>
+              <div class="bm-group"><div class="bm-row"><span class="bm-skel" data-w="s"></span><!--icon:chevron-right:12--></div><div class="bm-row"><span>Version</span><span>2.9.4</span></div></div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Step 1</span><strong>Entry</strong><span>A new row in Settings, directly below FAQ / Help (<code>ProfileSettingsViewModel</code>).</span></div>
+          </div>
+          <div class="bm-step">
+            <div class="bm-phone" id="a2"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-scrim"></div>
+              <div class="bm-sheet">
+                <div class="bm-grab"></div>
+                <div class="bm-head"><span>Suggest a feature</span><!--icon:xmark:12--></div>
+                <div class="bm-form">
+                  <div class="bm-field"><span>Title</span><div class="bm-input">Show P&amp;L on my profile</div></div>
+                  <div class="bm-field"><span>What would you like, and why?</span><div class="bm-input" data-multiline>I'd like my squad to see how I'm doing this month. Right now I screenshot my portfolio…</div><div class="bm-count">142 / 2000</div></div>
+                </div>
+                <div class="bm-actions"><div class="bm-btn" data-focus data-wire="a3">Send<span class="bm-tap"></span></div><div class="bm-fine">Something broken? <u>Contact support</u> instead.</div></div>
+              </div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Step 2</span><strong>Form</strong><span>Opens as a new <code>feedback</code> microsite: a signed-in webview at <code>myaccount.polymarket.us/feedback/mobile</code>. Auth comes from the native auth grant, the same way onboarding gets it.</span></div>
+          </div>
+          <div class="bm-step">
+            <div class="bm-phone" id="a3"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-scrim"></div>
+              <div class="bm-sheet">
+                <div class="bm-grab"></div>
+                <div class="bm-head"><span></span><!--icon:xmark:12--></div>
+                <div class="bm-done"><span class="bm-lead-icon"><!--icon:circle-check:fill--></span><span class="bm-title">Thanks, we got it</span><span class="bm-fine" style="max-width:160px">The product team reads every suggestion. We'll let you know if yours ships.</span></div>
+                <div class="bm-actions"><div class="bm-btn" data-focus>Done<span class="bm-tap"></span></div></div>
+              </div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Step 3</span><strong>Confirmation</strong><span>Done calls <code>PolyBridge.v1.close({status:'success'})</code>. Swiping down sends <code>cancel</code>.</span></div>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </section>
+
+  <section class="b-section" id="web">
+    <div class="b-section-head"><span class="b-label">Phase 1, feedback form</span><h2 class="b-h2">On the web, from the account menu to a modal</h2></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 2</span><span class="b-corner" data-corner="title">polymarket.us</span><span class="b-corner" data-corner="hint">Low-fidelity, for flow and placement</span><span class="b-corner" data-corner="readout">2 steps</span></div>
+        <div class="bm-flow" data-gap="tight">
+          <div class="bm-step">
+            <div class="bm-browser" id="w1">
+              <div class="bm-chrome"><i></i><i></i><i></i><span class="bm-url"><!--icon:lock:12:fill-->polymarket.us</span></div>
+              <div class="bm-viewport">
+                <div class="bm-topbar"><span class="bm-logo">Polymarket</span><div><span class="bm-pill">$1,240.18</span><span class="bm-pill">Deposit</span><span class="bm-avatar"></span></div></div>
+                <div class="bm-tiles"><div class="bm-tile"><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="s"></span></div><div class="bm-tile"><span class="bm-skel" data-w="m"></span><span class="bm-skel" data-w="s"></span></div><div class="bm-tile"><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="s"></span></div><div class="bm-tile"><span class="bm-skel" data-w="m"></span><span class="bm-skel" data-w="s"></span></div><div class="bm-tile"><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="s"></span></div><div class="bm-tile"><span class="bm-skel" data-w="m"></span><span class="bm-skel" data-w="s"></span></div></div>
+                <div class="bm-menu">
+                  <div>Odds format</div><div>Theme</div><hr>
+                  <div>FAQ / Help</div><div data-focus data-wire="w2">Suggest a feature<span class="bm-tap"></span></div><div>Trust &amp; Safety Hub</div><div>Join the Discord</div><hr><div>Log out</div>
+                </div>
+              </div>
+            </div>
+            <div class="bm-step-cap" style="max-width:460px"><span class="b-label">Step 1</span><strong>Entry</strong><span>One new item in the signed-in account menu, below FAQ / Help (<code>navbar-menu.tsx</code> <code>footerRows</code>). Signed-out visitors don't see it.</span></div>
+          </div>
+          <div class="bm-step">
+            <div class="bm-browser" id="w2">
+              <div class="bm-chrome"><i></i><i></i><i></i><span class="bm-url"><!--icon:lock:12:fill-->polymarket.us</span></div>
+              <div class="bm-viewport">
+                <div class="bm-topbar"><span class="bm-logo">Polymarket</span><div><span class="bm-pill">$1,240.18</span><span class="bm-pill">Deposit</span><span class="bm-avatar"></span></div></div>
+                <div class="bm-tiles"><div class="bm-tile"></div><div class="bm-tile"></div><div class="bm-tile"></div><div class="bm-tile"></div><div class="bm-tile"></div><div class="bm-tile"></div></div>
+                <div class="bm-scrim"></div>
+                <div class="bm-modal" data-layout="split">
+                  <div class="bm-intro"><span class="bm-title">Suggest a feature</span><span class="bm-fine">The product team reads every suggestion. We'll let you know if yours ships.</span></div>
+                  <span class="bm-close"><!--icon:xmark:12--></span>
+                  <div class="bm-form">
+                    <div class="bm-field"><span>Title</span><div class="bm-input">Price alerts on markets I follow</div></div>
+                    <div class="bm-field"><span>What would you like, and why?</span><div class="bm-input" data-multiline style="min-height:52px">Ping me when a market I watch moves 10% so I don't have to keep checking.</div></div>
+                    <div class="bm-btn" data-focus>Send<span class="bm-tap"></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bm-step-cap" style="max-width:460px"><span class="b-label">Step 2</span><strong>Modal</strong><span>The same form ships as a <code>&lt;Feedback&gt;</code> export of <code>@polymarket/myaccount</code>. It mounts in a shadow root inside the polykit Sheet, exactly like <code>&lt;Onboarding&gt;</code>, and reports back through <code>onComplete</code> and <code>onClose</code>. The confirmation step matches the app's.</span></div>
+          </div>
+        </div>
+      </div>
+    </figure>
+  </section>
+
+  <section class="b-section" id="system">
+    <div class="b-section-head"><span class="b-label">Phase 1, feedback form</span><h2 class="b-h2">How it connects</h2></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 3</span><span class="b-corner" data-corner="title">System</span><span class="b-corner" data-corner="hint">Outlined nodes are ours</span></div>
+        <div>
+          <div class="bm-diagram sf-diagram">
+            <div class="sf-entry">
+              <div class="bm-cluster"><span class="b-label">Entry points, signed in only</span>
+                <div class="bm-node" data-wire="n-fb"><strong>App, Settings row</strong><span>Microsite with auth_grant</span></div>
+              </div>
+              <div class="bm-node" data-wire="n-fb"><strong>Web, account menu</strong><span>Shadow-DOM embed, cookie</span></div>
+            </div>
+            <div class="bm-node sf-feedback" id="n-fb" data-lit data-wire="n-api"><strong>apps/myaccount, Feedback</strong><span>One form, two outputs</span><code>/feedback/mobile · &lt;Feedback&gt;</code></div>
+            <div class="bm-node sf-api" id="n-api" data-lit data-wire="n-feat"><strong>POST /api/feedback</strong><span>Same-origin JSON, Bearer to /me</span><code>userId · version · origin</code></div>
+            <div class="bm-cluster sf-fb"><span class="b-label">Internal only</span>
+              <div class="bm-node" id="n-feat" data-wire="n-slack n-linear n-notion"><strong>Featurebase</strong><span>Private board, written with an API key</span><code>votes · status · dedupe</code></div>
+              <div class="bm-cluster-row" style="margin-top:40px">
+                <div class="bm-node" id="n-slack" data-dashed><strong>Slack</strong></div>
+                <div class="bm-node" id="n-linear" data-dashed><strong>Linear</strong></div>
+                <div class="bm-node" id="n-notion" data-dashed><strong>Notion</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption class="b-caption"><strong>Dashed nodes</strong> are Featurebase's built-in integrations, configured in their dashboard with no code from us.</figcaption>
+    </figure>
+  </section>
+
+  <section class="b-section" id="form">
+    <div class="b-section-head"><span class="b-label">Phase 1, feedback form</span><h2 class="b-h2">The form</h2></div>
+    <div class="b-table-wrap"><table class="b-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Rule</th><th>Maps to (Featurebase post)</th></tr></thead>
+      <tbody>
+        <tr><td data-strong>Title</td><td>Single line</td><td>Required, 5–80 characters</td><td><code>title</code></td></tr>
+        <tr><td data-strong>Details</td><td>Multiline</td><td>Required, 20–2000 characters</td><td><code>content</code></td></tr>
+      </tbody>
+    </table></div>
+    <aside class="b-note" data-tone="info"><p><strong>Attached automatically, never shown as fields:</strong> user ID, username, platform (ios, android or web), app or web build version, the entry point (settings, account_menu or direct), locale, and timestamp. These go into the post's author and custom fields.</p></aside>
+    <div class="b-prose"><p>Bug reports stay out of this form. The footer sends people to support, so CX volume doesn't land in the product inbox. Market ideas are parked for now and still go through Discord. Screenshots, a public board, voting, and status updates sent to users are also left out of phase 1.</p></div>
+  </section>
+
+  <section class="b-section" id="whats-new">
+    <div class="b-section-head"><span class="b-label">Phase 2, brain dump</span><h2 class="b-h2">What's new</h2><p class="b-small">The same pattern of a hosted page plus a native or web container can show users release notes. Each release gets one entry with a level that sets how loud it is. This is a rough sketch for discussion, not a spec.</p></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 4</span><span class="b-corner" data-corner="title">App surfaces by release level</span><span class="b-corner" data-corner="hint">Three options, not a sequence</span></div>
+        <div class="bm-flow" data-gap="tight">
+          <div class="bm-step">
+            <div class="bm-phone"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-nav">What's new in 2.10<span class="bm-end"><!--icon:xmark:12--></span></div>
+              <div class="bm-media" style="margin:0 12px;min-height:110px"></div>
+              <div class="bm-list"><div><span><strong>Squad leaderboards.</strong> See who's up this week.</span></div><div><span><strong>P&amp;L on profiles.</strong> Share your month.</span></div><div><span><strong>Faster search.</strong> Prices as you type.</span></div></div>
+              <div class="bm-fine" style="padding:0 16px">Also: 14 fixes, including order book flicker on iPad.</div>
+              <div class="bm-actions"><div class="bm-btn" data-focus>Try squad leaderboards</div><div class="bm-fine" style="text-align:center">Got an idea? <u>Suggest a feature</u>. It's always in Settings.</div></div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Major release</span><strong>Takeover</strong><span>Shown once on the first launch after the user updates. Same webview template as the feedback sheet. The footer links to the phase 1 form and says where to find it in Settings.</span></div>
+          </div>
+          <div class="bm-step">
+            <div class="bm-phone"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-nav">Notifications</div>
+              <div class="bm-banner" data-focus><span>New in 2.10: squad leaderboards</span><!--icon:chevron-right:12--></div>
+              <div class="bm-group" style="padding:12px;display:flex;flex-direction:column;gap:6px"><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="m"></span><span class="bm-skel" data-w="s"></span></div>
+              <div class="bm-group" style="padding:12px;display:flex;flex-direction:column;gap:6px"><span class="bm-skel" data-w="m"></span><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="s"></span></div>
+              <div class="bm-group" style="padding:12px;display:flex;flex-direction:column;gap:6px"><span class="bm-skel" data-w="l"></span><span class="bm-skel" data-w="s"></span></div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Minor release</span><strong>Quiet</strong><span>A dismissible card or an inbox item opens the same page. No interruption.</span></div>
+          </div>
+          <div class="bm-step">
+            <div class="bm-phone"><div class="bm-screen">
+              <div class="bm-status"><span>9:41</span><span class="bm-island"></span><span class="bm-battery"></span></div>
+              <div class="bm-nav">Update available</div>
+              <div class="bm-done"><span class="bm-lead-icon"><!--icon:download:fill--></span><span class="bm-title">Version 2.10 is out</span><span class="bm-fine" style="max-width:170px">Squad leaderboards, P&amp;L on profiles and faster search.</span></div>
+              <div class="bm-actions"><div class="bm-btn" data-focus>Update</div><div class="bm-btn">Not now</div><div class="bm-fine" style="text-align:center">Below the minimum version, "Not now" is hidden.</div></div>
+            </div></div>
+            <div class="bm-step-cap"><span class="b-label">Update prompt</span><strong>Reworked</strong><span>Below <code>iosAppCurrentVersion</code>, a skippable sheet with the release notes. Today that case only gets a small banner. Below <code>iosAppMinVersion</code>, the same screen with no skip. Today that case gets the full-screen <code>ForceUpdateViewController</code>.</span></div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 5</span><span class="b-corner" data-corner="title">Web, "Just shipped"</span><span class="b-corner" data-corner="hint">Low-fidelity</span></div>
+        <div class="bm-flow">
+          <div class="bm-step">
+            <div class="bm-browser" data-size="wide">
+              <div class="bm-chrome"><i></i><i></i><i></i><span class="bm-url"><!--icon:lock:12:fill-->polymarket.us</span></div>
+              <div class="bm-viewport" style="height:380px">
+                <div class="bm-topbar"><span class="bm-logo">Polymarket</span><div><span class="bm-pill">$1,240.18</span><span class="bm-avatar"></span></div></div>
+                <div class="bm-tiles"><div class="bm-tile"></div><div class="bm-tile"></div><div class="bm-tile"></div></div>
+                <div class="bm-scrim"></div>
+                <div class="bm-modal" data-size="wide">
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <span class="bm-fine">Just shipped</span>
+                    <span class="bm-title">Squad leaderboards are live</span>
+                    <div class="bm-group" style="margin:6px 0 0"><div class="bm-row" data-focus><span>Squad leaderboards</span><!--icon:chevron-right:12--></div><div class="bm-row"><span>P&amp;L on profiles</span><!--icon:chevron-right:12--></div><div class="bm-row"><span>Faster search</span><!--icon:chevron-right:12--></div></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px"><div class="bm-btn">Try it</div><div class="bm-btn">Later</div></div>
+                    <span class="bm-fine">Got an idea? <u>Suggest a feature</u>. It's also in your account menu.</span>
+                  </div>
+                  <div class="bm-media"></div>
+                </div>
+              </div>
+            </div>
+            <div class="bm-step-cap" style="max-width:620px"><span class="b-label">Web</span><strong>A Notion-style "Just shipped" modal</strong><span>Shown on the next visit after a release is published. Selecting a row swaps the art on the right. It's keyed by release ID and seen once per user.</span></div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="b-grid" data-cols="3">
+      <div class="b-panel"><h3 class="b-h3">Release record, one per release</h3><ul>
+        <li><code>id</code>, <code>platforms</code> (ios, android, web), and the <code>min_version</code> it applies to</li>
+        <li><code>level</code>: <code>major</code> is a takeover or modal, <code>minor</code> a card plus inbox, <code>fixes</code> inbox only</li>
+        <li><code>title</code>, <code>hero</code> (image or video), <code>items[]</code> (title, body, image, deep link)</li>
+        <li><code>publish_at</code>. Authored in Mission Control next to the version gates, or in Featurebase Changelog if we stay on their stack</li></ul></div>
+      <div class="b-panel"><h3 class="b-h3">Surfaces</h3><ul>
+        <li><code>polymarket.us/whats-new/[id]</code>: one template that renders in the app sheet, the web modal and as a full page</li>
+        <li>App: on launch, compare the installed version with the last seen release and pick a surface by level</li>
+        <li>Inbox: every release creates a notification whose <code>actionUrl</code> points at the page. The admin UI's bulk send already supports this</li>
+        <li>Update gate: <code>GET v1/integrity-check/config</code> already returns current and min versions, set by env vars on go-gateway-us (<code>IOS_CURRENT_VERSION</code>, <code>IOS_MIN_VERSION</code> and the Android equivalents). Current gives a skippable prompt, min a blocking one, and both show the notes</li></ul></div>
+      <div class="b-panel"><h3 class="b-h3">Closes the loop with phase 1</h3><ul>
+        <li>A release item can link the Featurebase posts it addresses</li>
+        <li>People who suggested or upvoted it get "You asked, we shipped" in their inbox</li>
+        <li>Every What's new surface has a "Suggest a feature" link that opens the phase 1 form in place, and tells people the form lives in Settings and the account menu, so phase 1's quiet entry points get found without pop-ups</li>
+        <li>That gives users a reason to keep sending ideas, without needing a public board</li></ul></div>
+    </div>
+  </section>
+
+  <footer class="b-footer">
+    <span class="b-label">Notes</span>
+    <ol>
+      <li>Mockups are low-fidelity wireframes for flow and placement only. Final visuals come from design.</li>
+      <li>Source PRD: PRD: User-Suggested Product Idea UI (Notion).</li>
+    </ol>
+  </footer>
+</main>

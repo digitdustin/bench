@@ -1,0 +1,929 @@
+<title>Settlement Glide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<!--bench:css-->
+<style>
+/* Tool layout, 1080px: toolbars over plates; the playground pairs a chart plate with a column of rule cards. Layout only. */
+.sg-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-2) var(--b-3)}
+.sg-spacer{flex:1}
+.sg-tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--b-5)}
+.sg-col{display:flex;flex-direction:column;gap:var(--b-2);min-width:0}
+.sg-vals{display:flex;align-items:baseline;gap:var(--b-3);flex-wrap:wrap;min-height:36px}
+.sg-both{display:flex;align-items:baseline;gap:var(--b-4);flex-wrap:wrap;min-height:36px}
+.sg-both .b-figure-num{font-size:20px}
+.sg-tri canvas,.sg-pg canvas,.sg-below canvas{display:block;width:100%}
+.sg-c-tri{height:200px}
+.sg-c-pg{height:300px}
+.sg-c-sens{height:220px}
+.sg-c-strip{height:14px}
+.sg-pg{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:var(--b-4);align-items:stretch}
+.sg-pg>.b-plate{display:flex;flex-direction:column;justify-content:center}
+.sg-body{display:flex;flex-direction:column;gap:var(--b-4);min-width:0}
+.sg-head{display:flex;flex-wrap:wrap;gap:var(--b-3) var(--b-6);align-items:flex-end}
+.sg-head>div{display:flex;flex-direction:column;gap:var(--b-1)}
+.sg-cap{display:flex;align-items:center;gap:var(--b-2);flex-wrap:wrap}
+.sg-transport{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:var(--b-3);align-items:center}
+.sg-scrub{min-width:0}
+.sg-marks{position:relative;height:20px}
+.sg-marks span{position:absolute;top:6px;transform:translateX(-50%);white-space:nowrap}
+.sg-marks span:first-child{transform:none}
+.sg-marks span:last-child{transform:translateX(-100%)}
+.sg-row{display:flex;justify-content:space-between;gap:var(--b-2);flex-wrap:wrap}
+.sg-opts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-2) var(--b-4)}
+.sg-below{grid-template-columns:minmax(0,4fr) minmax(0,7fr)}
+.sg-outcome{display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-2) var(--b-4);font-size:var(--b-small)}
+.sg-cmp{min-width:520px}
+.sg-method{display:flex;flex-direction:column;gap:var(--b-2)}
+@media (max-width:900px){
+  .sg-tri,.sg-pg,.sg-below{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .sg-transport{grid-template-columns:auto auto minmax(0,1fr)}
+  .sg-transport>.b-tabs{grid-column:1/-1;justify-self:start}
+  .sg-c-pg{height:260px}
+}
+</style>
+
+<main class="b-page" data-width="wide">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">BTC Up/Down</span><span class="b-label">US web chart proposal</span><span class="b-label">Oct 8, 2026</span></div>
+    <h1 class="b-display">Settlement glide</h1>
+    <p class="b-lede">Keep the chart on the live BRTI print, then, in the final 60 seconds, glide the line and the headline price onto the number that actually settles the market. At 0:00 the screen shows the settlement price exactly, and before that it shows the best estimate of it. Watch the charts first. The formula and the build notes are further down.</p>
+    <dl class="b-meta">
+      <div><dt class="b-label">Status</dt><dd><span class="b-chip" data-tone="warn">Proposal</span></dd></div>
+      <div><dt class="b-label">Data</dt><dd>Mocked, in the real wire format</dd></div>
+      <!--bench:connectors github launchdarkly-->
+    </dl>
+  </header>
+
+  <section class="b-section" id="side-by-side">
+    <div class="b-section-head"><span class="b-label">Side by side</span><h2 class="b-h2">The same five minutes, three ways</h2><p class="b-small">These charts recreate the US event chart: the asset-colored line, the dashed price to beat with its target pill, the fill on the side away from the target, the dimmed line across it, and the pulse at the tip. All three play the same mocked run. The live view trails 30 seconds, as desktop does.</p></div>
+    <div class="sg-toolbar">
+      <button class="b-btn" data-variant="solid" id="tri-play" type="button">Pause</button>
+      <div class="b-tabs" id="tri-speed" role="tablist" aria-label="Playback speed"><button class="b-tab" role="tab" data-v="1" aria-selected="true">1×</button><button class="b-tab" role="tab" data-v="3" aria-selected="false">3×</button><button class="b-tab" role="tab" data-v="10" aria-selected="false">10×</button></div>
+      <div class="b-tabs" id="tri-view" role="tablist" aria-label="Chart range"><button class="b-tab" role="tab" data-v="live" aria-selected="true">Live, 30s</button><button class="b-tab" role="tab" data-v="full" aria-selected="false">Whole run</button></div>
+      <button class="b-btn" id="tri-final" type="button">Jump to final minute</button>
+    </div>
+    <div class="sg-toolbar"><span class="b-label">Run</span><div class="b-tabs" id="tri-scn" role="tablist" aria-label="Run"></div></div>
+    <figure style="margin:0">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 1</span><span class="b-corner" data-corner="title">Spot, rolling TWAP, and both</span><span class="b-corner" data-corner="hint">Mocked BRTI run</span><span class="b-corner" data-corner="readout" id="tri-readout">05:00 left</span></div>
+        <div class="sg-tri">
+          <div class="sg-col">
+            <span class="b-key b-h3"><i data-series="3"></i>Spot</span>
+            <span class="b-small">The raw BRTI print, as the chart showed it before Oct 7.</span>
+            <div class="sg-vals"><span class="b-stat-v b-figure-num" id="t1-v">$0.00</span><span class="b-delta" id="t1-d"></span></div>
+            <canvas class="sg-c-tri" id="t1" aria-label="Spot price chart"></canvas>
+          </div>
+          <div class="sg-col">
+            <span class="b-key b-h3"><i data-series="2"></i>60s rolling TWAP</span>
+            <span class="b-small">What production streams today, behind a gateway flag. On the site it's drawn in BTC orange.</span>
+            <div class="sg-vals"><span class="b-stat-v b-figure-num" id="t2-v">$0.00</span><span class="b-delta" id="t2-d"></span></div>
+            <canvas class="sg-c-tri" id="t2" aria-label="Rolling TWAP chart"></canvas>
+          </div>
+          <div class="sg-col">
+            <span class="b-h3">Both</span>
+            <span class="b-small">The gap between the lines is lag: the average trails spot by about 30 seconds.</span>
+            <div class="sg-both b-small"><span class="b-key"><i data-series="3"></i>Spot <strong class="b-figure-num" id="t3-a">$0.00</strong></span><span class="b-key"><i data-series="2"></i>TWAP <strong class="b-figure-num" id="t3-b">$0.00</strong></span><span>Gap <strong class="b-figure-num" id="t3-g">$0.00</strong></span></div>
+            <canvas class="sg-c-tri" id="t3" aria-label="Spot and TWAP overlaid"></canvas>
+          </div>
+        </div>
+      </div>
+      <figcaption class="b-caption" id="tri-note"></figcaption>
+    </figure>
+  </section>
+
+  <section class="b-section" id="playground">
+    <div class="b-section-head"><span class="b-label">Playground</span><h2 class="b-h2">Scrub a 5-minute market and watch the last 60 seconds</h2><p class="b-small">Pick a run and one of four display rules, then play it or drag the timer. The header, line, change and strip all follow the selected rule. Turn on the spot ghost to see what's underneath. Every number is computed the way settlement computes it: cent-rounded 1 Hz prints, equal weight, half-up.</p></div>
+    <div class="sg-toolbar"><span class="b-label">Run</span><div class="b-tabs" id="pg-scn" role="tablist" aria-label="Run"></div><button class="b-btn" id="pg-reroll" type="button">New random run</button></div>
+    <div class="sg-pg">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 2</span><span class="b-corner" data-corner="title">Playground</span><span class="b-corner" data-corner="hint">Space plays or pauses</span><span class="b-corner" data-corner="readout" id="pg-readout">05:00 left</span></div>
+        <div class="sg-body">
+          <div class="sg-head">
+            <div><span class="b-label">Price to beat</span><span class="b-stat-v b-figure-num" id="pg-ptb">$0.00</span></div>
+            <div><span class="sg-cap"><span class="b-label">Current price</span><span class="b-delta" id="pg-delta"></span><span class="b-chip" data-plain id="pg-mode">Spot</span></span><span class="b-stat-v b-figure-num" id="pg-now">$0.00</span></div>
+          </div>
+          <canvas class="sg-c-pg" id="pgc" aria-label="Playground chart"></canvas>
+          <div class="sg-col">
+            <div class="sg-row b-small"><span>Final minute. Did the screen show the side that wins?</span><span id="pg-truth-sum"></span></div>
+            <canvas class="sg-c-strip" id="pg-strip" aria-hidden="true"></canvas>
+          </div>
+          <div class="sg-transport">
+            <button class="b-btn" data-variant="solid" id="pg-play" type="button">Play</button>
+            <span class="b-stat-v b-figure-num" id="pg-timer" aria-live="off">05:00</span>
+            <div class="sg-scrub">
+              <input class="b-range" type="range" id="pg-scrub" min="0" max="303" step="0.05" value="232" aria-label="Market timer">
+              <div class="sg-marks b-small" id="pg-marks"></div>
+            </div>
+            <div class="b-tabs" id="pg-speed" role="tablist" aria-label="Playback speed"><button class="b-tab" role="tab" data-v="0.5" aria-selected="false">½×</button><button class="b-tab" role="tab" data-v="1" aria-selected="true">1×</button><button class="b-tab" role="tab" data-v="2" aria-selected="false">2×</button><button class="b-tab" role="tab" data-v="5" aria-selected="false">5×</button><button class="b-tab" role="tab" data-v="20" aria-selected="false">20×</button></div>
+          </div>
+          <div class="sg-opts">
+            <button class="b-btn" id="pg-final" type="button">Jump to 1:05 left</button>
+            <label class="b-check" for="pg-ghost"><input type="checkbox" id="pg-ghost" checked>Spot ghost line</label>
+            <label class="b-check" for="pg-others"><input type="checkbox" id="pg-others">Draw every rule</label>
+            <div class="b-tabs" id="pg-view" role="tablist" aria-label="Chart range"><button class="b-tab" role="tab" data-v="full" aria-selected="true">Whole run</button><button class="b-tab" role="tab" data-v="live" aria-selected="false">Live, 30s</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="b-options sg-side" id="pg-methods" role="group" aria-label="Display rule"></div>
+    </div>
+
+    <div class="b-pair sg-below">
+      <div class="b-plate">
+        <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Fig 3</span><span class="b-corner" data-corner="title">Share of a spot move on screen</span><span class="b-corner" data-corner="hint">Final minute</span></div>
+        <canvas class="sg-c-sens" id="sens" aria-label="Sensitivity by rule"></canvas>
+        <div class="b-keys" id="sens-legend"></div>
+        <p class="b-plate-caption"><strong>The excitement budget.</strong> The share of a $1 spot move that shows up in the displayed price, second by second. The projected line spends it evenly, falling from 100% at T−60 to about 2% in the last second.</p>
+      </div>
+      <div class="b-panel">
+        <h3 class="b-h3">Every rule on this run</h3>
+        <div class="sg-outcome" id="pg-outcome"></div>
+        <div class="b-table-wrap"><table class="b-table sg-cmp" id="cmp"></table></div>
+        <span class="b-source">"Feels live" is the average 1-second move of the displayed price as a share of spot's. "Losing side" counts the seconds in the final minute where the screen showed the side that ends up losing. "Off at 0:00" is the last displayed value minus the settlement price. Green is the best on this run, red the worst.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-section" id="approach">
+    <div class="b-section-head"><span class="b-label">The approach</span><h2 class="b-h2">One formula, three phases</h2><p class="b-small">Settlement averages the 60 one-second prints before close. Partway through that minute, some of those prints are already fixed and the rest haven't printed yet. The projection keeps the fixed ones as they are and fills each second still to come with the current price. The result is the settlement price if spot doesn't move again from here.</p></div>
+    <pre class="b-code">D(t) = ( Σ P[T−60 … t] + (T−1−t) · P(t) ) / 60</pre>
+    <div class="b-grid">
+      <div class="b-panel"><span class="b-label">Until 1:00 left</span><h3 class="b-h3">Spot</h3><p class="b-small" style="margin:0">D = P(t). The chart stays exactly as live as it was before the flag.</p></div>
+      <div class="b-panel"><span class="b-label">1:00 to 0:01 left</span><h3 class="b-h3">The glide</h3><p class="b-small" style="margin:0">Each print that lands is fixed in the average. A spot move moves the screen by its share of the seconds left: all of it at 1:00, half at 0:30, a sixth at 0:10.</p></div>
+      <div class="b-panel"><span class="b-label">0:00</span><h3 class="b-h3">Settlement, exactly</h3><p class="b-small" style="margin:0">All 60 prints are in, so D equals the settlement price to the cent. The display can't disagree with the result.</p></div>
+    </div>
+    <p class="b-small" style="margin:0">Every Up/Down window closes on a whole minute, so one projection per asset covers 5m, 15m, 1h and longer markets alike.</p>
+  </section>
+
+  <section class="b-section" id="implementation">
+    <div class="b-section-head"><span class="b-label">Implementation</span><h2 class="b-h2">Building it</h2><p class="b-small">Reference for engineering questions. Pick a question. Each answer starts with the short version, and the code and sources are under Show detail.</p></div>
+    <div class="b-vtabs">
+      <div class="b-vtabs-list" role="tablist" aria-orientation="vertical" aria-label="Implementation questions">
+      <button class="b-vtab" role="tab" id="q-1" aria-controls="p-1" aria-selected="true" type="button">What format is the price stream?</button>
+      <button class="b-vtab" role="tab" id="q-2" aria-controls="p-2" aria-selected="false" type="button">Who computes the 60s TWAP?</button>
+      <button class="b-vtab" role="tab" id="q-3" aria-controls="p-3" aria-selected="false" type="button">Why is today's chart smoothed?</button>
+      <button class="b-vtab" role="tab" id="q-4" aria-controls="p-4" aria-selected="false" type="button">Where would the projection be computed?</button>
+      <button class="b-vtab" role="tab" id="q-5" aria-controls="p-5" aria-selected="false" type="button">What changes on web and mobile?</button>
+      <button class="b-vtab" role="tab" id="q-6" aria-controls="p-6" aria-selected="false" type="button">How would we roll it out?</button>
+      <button class="b-vtab" role="tab" id="q-7" aria-controls="p-7" aria-selected="false" type="button">What's still unconfirmed?</button>
+      </div>
+      <div>
+      <section class="b-vtab-panel" role="tabpanel" id="p-1" aria-labelledby="q-1">
+        <h3 class="b-h2">A Connect stream of <code>AssetPrice</code> frames, about one a second, with the price as a decimal string.</h3>
+      <p class="b-small" style="margin:0">Channel <code>9:crypto:btc</code> on <code>gateway-ws-markets.polymarket.us</code>. Each frame is <code>{asset, price: {value: "84318.62", currency: "USD"}, timestamp}</code>. When a page loads, the chart fills in from <code>GetAssetPriceHistory</code>, which returns 1-second OHLC candles, and the line plots the close.</p>
+      <details class="b-details">
+        <summary>Show detail</summary>
+        <div class="b-details-body">
+          <ol class="b-rows">
+            <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">CF Benchmarks, BRTI index</h3><p><code>wss://www.cfbenchmarks.com/ws/v4</code>, stream <code>rti_stats</code>, id <code>BRTI</code>.</p></div></li>
+            <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">go-price-history-us, the ingestor</h3><p>Keeps whole-second prints only, gap-repairs from REST, stores <code>crypto_history</code>, publishes Redis <code>crypto_prices:ticks</code>.</p></div></li>
+            <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Fork on <code>rollout_asset_price_service</code></h3><p>Off: the Redis firehose, raw print. On (production): asset-price-service <code>StreamWindowAverage{60s}</code>, a rolling mean over <code>(t−60s, t]</code>.</p></div><span class="b-chip" data-tone="info">Flag</span></li>
+            <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">go-gateway-us markets-ws, the realtime channel</h3><p><code>CHANNEL_TYPE_ASSET_PRICE</code>, id <code>9:crypto:btc</code>. Does no price math, by design (#2360).</p></div></li>
+            <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">apps/us and mobile, the chart</h3><p>Plots each frame with a 0.6s pen trace. After 5 seconds with no frame it re-reads 15s of 1s history.</p></div></li>
+          </ol>
+          <span class="b-label">Live frame, as the web client decodes it</span>
+<pre class="b-code"><span class="c">// gateway.asset_prices.v1.AssetPrice (JSON form)
+// fixture: apps/us/data/asset-prices/asset-prices.decoder.test.ts</span>
+{
+  <span class="k">"asset"</span>: { "assetClass": "ASSET_CLASS_CRYPTO", "symbol": "btc" },
+  <span class="k">"price"</span>: { "value": "63011.5200", "currency": "USD" },
+  <span class="k">"timestamp"</span>: "2026-09-15T13:02:17.250Z"
+}
+<span class="c">// normalized to LiveAssetPrice</span>
+{ asset: "crypto:btc", price: "63011.52",   <span class="c">// Usd: exact decimal string</span>
+  currency: "USD", timestampIso: "2026-09-15T13:02:17.250Z" }</pre>
+          <span class="b-label">History backfill (Connect unary)</span>
+<pre class="b-code"><span class="c">// AssetPricesService.GetAssetPriceHistory</span>
+request  { assets: ["crypto:btc"], bucket: "ASSET_PRICE_BUCKET_1S",
+           from: "1791389000", to: "0" }        <span class="c">// unix s, 0 = now, ≤ 3,600 candles</span>
+response { series: [{ asset, currency: "USD", bucket, from, to, candles: [
+           { timestamp: 1791389001, open: "63000.01", high: "63001.02",
+             low: "62999.99", close: "63000.98", tickCount: 1 } ] }] }
+<span class="c">// tickCount 0 = gap fill: drawn, never the "latest price"</span></pre>
+          <span class="b-label">Where each frame starts</span>
+<pre class="b-code"><span class="c">// go-price-history-us ingestor, to Redis crypto_prices:ticks</span>
+type tickPayload struct {
+  Symbol    string `json:"symbol"`
+  Price     string `json:"price"` <span class="c">// fixed 2-dp, "63000.00"</span>
+  Timestamp int64  `json:"timestamp_ms"`
+}</pre>
+          <span class="b-label">In flight: unified EVENT channel (Sidd, unmerged)</span>
+<pre class="b-code"><span class="c">// unified.domain.realtime.v1, channel 5:&lt;eventId&gt;</span>
+AssetPriceUpdate { asset_id, price: Money, timestamp }
+<span class="c">// Money = { currencyCode: "USD", units: 83_457n, nanos: 510_000_000 }</span>
+PriceToBeatUpdate     { market_id, window_start, price }
+SettlementPriceUpdate { market_id, window_end,   price }</pre>
+        </div>
+      </details>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-2" aria-labelledby="q-2" hidden>
+        <h3 class="b-h2">We do. CF Benchmarks only publishes the BRTI print, once per second.</h3>
+      <p class="b-small" style="margin:0">Settlement is the equal-weight mean of the 60 cent-rounded prints in <code>[T−60s, T)</code>, rounded half-up to the cent. A missing second blocks auto-settlement. Price to beat appears to be the same mean over the minute ending at window start.</p>
+      <details class="b-details">
+        <summary>Show detail</summary>
+        <div class="b-details-body">
+          <dl class="b-kv">
+            <dt>Index</dt><dd>CF Benchmarks BRTI. Chainlink is the international app's TWAP feed, not this one.</dd>
+            <dt>Samples</dt><dd>One print per whole second, each rounded to the cent first.</dd>
+            <dt>Window</dt><dd><code>[T−60s, T)</code>: the 60 prints strictly before close. This applies to instruments minted from Sep 23. Older ones use <code>(T−60s, T]</code>.</dd>
+            <dt>Mean</dt><dd>Sum of cents ÷ 60, rounded half-up. Equal weight, nothing trimmed.</dd>
+            <dt>Gaps</dt><dd>Any spacing over 1.5s is reported. With a gap, the market goes to manual settlement (Sep 23 incident: a 59-print minute).</dd>
+            <dt>Price to beat</dt><dd>Stamped 1–3s after window start from "a mean of the same window". That reads as the minute ending at start, the previous run's settlement (inferred).</dd>
+            <dt>Tie</dt><dd>Settlement ≥ price to beat resolves Up.</dd>
+          </dl>
+          <span class="b-label">The settlement read</span>
+<pre class="b-code"><span class="c">// protos/crypto-prices/v1/crypto-prices.proto
+// "[end−60s, end] spans 61 publications - pass from = end−59s
+//  for exactly the prior 60 … callers must not settle
+//  automatically while gaps is non-empty."</span>
+rpc <span class="h">GetWindowAverage</span>(GetWindowAverageRequest)
+    returns (GetWindowAverageResponse);
+
+<span class="c">// crypto_history.go, meanCents</span>
+quotient := sumCents / count
+if (sumCents%count)*2 &gt;= count { return quotient + 1 }</pre>
+        </div>
+      </details>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-3" aria-labelledby="q-3" hidden>
+        <h3 class="b-h2">A gateway flag. <code>rollout_asset_price_service</code> makes each frame carry the 60s rolling mean.</h3>
+      <p class="b-small" style="margin:0">It shipped Oct 7 in go-gateway-us (#2312, #2360, #2370). LaunchDarkly shows targeting on in production and preprod, off in staging. With the flag on, the 1s history also switches to <code>ListWindowAverages</code> to match. On the client, <code>apps/us</code> only adds a "60s avg" label to the change chip in the final minute. That chip uses the running average from the playground.</p>
+      <details class="b-details">
+        <summary>Show detail</summary>
+        <div class="b-details-body">
+          <span class="b-label">The upstream frame with the flag on</span>
+<pre class="b-code"><span class="c">// asset-price-service StreamWindowAverage (vendored in go-gateway-us)</span>
+type WindowAverage struct {
+  Average   *Money  <span class="c">// equal-weight mean, half away from zero</span>
+  TickCount int64
+  Gaps      []*PriceGap      <span class="c">// in [as_of − window, as_of]</span>
+  AsOf      *timestamppb.Timestamp <span class="c">// window is (as_of − 60s, as_of]</span>
+}
+<span class="c">// convert.go: price from Average, timestamp from AsOf</span></pre>
+          <aside class="b-note" data-tone="warn"><p><strong>Off by one second.</strong> The rolling stream averages <code>(t−60s, t]</code>, but settlement uses <code>[T−60s, T)</code>. So the TWAP line's last frame at 0:00 includes the print at T and drops the one at T−60, and can miss settlement by a dollar or two. That's the "Off at 0:00" column in the playground table.</p></aside>
+          <p class="b-small" style="margin:0">Source: go-gateway-us <code>cmd/markets-ws/ops.md</code>, section "ASSET_PRICE source", and <code>marketsws/assetprices_service.go</code>. apps/us <code>crypto-event-chart.logic.ts</code>, <code>cryptoSettlementAverage</code>.</p>
+        </div>
+      </details>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-4" aria-labelledby="q-4" hidden>
+        <h3 class="b-h2">In asset-price-service, as one optional message on each frame. The gateway passes it through.</h3>
+      <p class="b-small" style="margin:0">The service already reads every print for the rolling stream. Add a per-asset accumulator for the current minute that tracks the sum, the count and the latest print, and emit the projection with each frame. It needs no market lookup, because the minute boundary is enough.</p>
+      <details class="b-details">
+        <summary>Show detail</summary>
+        <div class="b-details-body">
+          <span class="b-label">Wire</span>
+<pre class="b-code"><span class="c">// gateway.asset_prices.v1, passthrough from asset-price-service</span>
+message AssetPrice {
+  AssetId   asset     = 1;
+  Amount    price     = 2;  <span class="c">// back to the raw BRTI print</span>
+  Timestamp timestamp = 3;
+  <span class="h">SettlementMinute settlement_minute = 4;</span>  <span class="c">// new</span>
+}
+
+<span class="c">// The minute [minute_end − 60s, minute_end) that settles every
+// window ending at minute_end (5m, 15m, 1h, 4h, 1d all do).</span>
+message SettlementMinute {
+  Timestamp minute_end      = 1;
+  int32     prints_observed = 2;  <span class="c">// k, 1…60</span>
+  Amount    observed_mean   = 3;  <span class="c">// mean of the k prints</span>
+  Amount    projected       = 4;  <span class="c">// D(t), cent, half-up</span>
+  bool      has_gap         = 5;  <span class="c">// settlement will go manual</span>
+}</pre>
+          <span class="b-label">Service: a per-asset accumulator on the print loop</span>
+<pre class="b-code"><span class="c">// asset-price-service, fed the same cent-rounded 1 Hz prints
+// that GetWindowAverage reads.</span>
+type minuteProjector struct {
+  start time.Time  <span class="c">// first second of the minute</span>
+  sum   int64      <span class="c">// cents</span>
+  n     int64
+  last  time.Time
+  gap   bool
+}
+
+func (m *minuteProjector) OnPrint(ts time.Time, cents int64) *SettlementMinute {
+  start := ts.Truncate(time.Minute) <span class="c">// print at T opens the next minute</span>
+  if !start.Equal(m.start) {
+    *m = minuteProjector{start: start, gap: !ts.Equal(start)}
+  } else if ts.Sub(m.last) &gt; 1500*time.Millisecond {
+    m.gap = true
+  }
+  m.sum += cents; m.n++; m.last = ts
+  left := 59 - int64(ts.Sub(start)/time.Second) <span class="c">// seconds still to print</span>
+  return &amp;SettlementMinute{
+    MinuteEnd:      start.Add(time.Minute),
+    PrintsObserved: m.n,
+    ObservedMean:   divHalfUp(m.sum, m.n),
+    Projected:      divHalfUp(m.sum+left*cents, m.n+left),
+    HasGap:         m.gap,
+  }
+}</pre>
+        </div>
+      </details>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-5" aria-labelledby="q-5" hidden>
+        <h3 class="b-h2">Inside the run's final minute, the line, big price, change chip and color read <code>projected</code> in place of the print.</h3>
+      <p class="b-small" style="margin:0">Outside the final minute nothing changes. The "60s avg" label becomes something like "Settling at, 23/60 in". A faint spot line behind it is optional. There's also a client-only shortcut, but it needs raw prints back on the wire.</p>
+      <details class="b-details">
+        <summary>Show detail</summary>
+        <div class="b-details-body">
+          <span class="b-label">Pick the value per window (apps/us, mobile)</span>
+<pre class="b-code"><span class="c">// crypto-event-chart.logic.ts</span>
+export function cryptoDisplayPrice(frame: LiveAssetPrice, windowEnd: number): Usd {
+  const minute = frame.settlementMinute
+  <span class="c">// Outside this run's final minute the line is spot.</span>
+  if (!minute || minute.minuteEnd !== windowEnd) return frame.price
+  return minute.projected
+}</pre>
+          <span class="b-label">Shortcut: client-only, if the stream carries raw prints</span>
+<pre class="b-code"><span class="c">// apps/us already computes the running average (today's "60s avg").</span>
+const avg = cryptoSettlementAverage(points, windowEnd, now) <span class="c">// A, k = samples</span>
+const left = windowEnd - Math.min(windowEnd, Math.floor(now))
+const projected = Money.divideByInteger(
+  Money.sum(Money.multiply(avg.price, avg.samples),
+            Money.multiply(spot, left)),
+  BigInt(avg.samples + left), 2, 'halfUp')</pre>
+          <p class="b-small" style="margin:0">A page opened mid-minute can rebuild the projection from the 1s history it already reads (<code>cryptoSettlementPrints</code>), so no new history API is needed.</p>
+        </div>
+      </details>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-6" aria-labelledby="q-6" hidden>
+        <h3 class="b-h2">Restore the raw print, add the projection server-side, then switch clients at T−60.</h3>
+      <p class="b-small" style="margin:0">Each step can ship on its own. The first step alone brings back the live chart.</p>
+      <ol class="b-rows">
+        <li class="b-row"><span class="b-row-n">1</span><div class="b-row-body"><h3 class="b-h3">Put the raw print back on the line</h3><p>Either serve the flag off for the chart, or have asset-price-service send the print in <code>price</code> and move the rolling mean to its own field. With only rolling means on the wire, no client can recover spot.</p></div></li>
+        <li class="b-row"><span class="b-row-n">2</span><div class="b-row-body"><h3 class="b-h3">Add the minute projector to asset-price-service</h3><p>It costs one accumulator per asset.</p></div></li>
+        <li class="b-row"><span class="b-row-n">3</span><div class="b-row-body"><h3 class="b-h3">Gateway passes it through</h3><p>That keeps the #2360 rule that the gateway does no price math. Mobile gets the same field through the unified <code>AssetPriceUpdate</code>.</p></div></li>
+        <li class="b-row"><span class="b-row-n">4</span><div class="b-row-body"><h3 class="b-h3">Clients switch at T−60</h3><p>Web and mobile read <code>projected</code> in the final minute of the run on screen.</p></div></li>
+        <li class="b-row"><span class="b-row-n">5</span><div class="b-row-body"><h3 class="b-h3">Verify</h3><p>Extend <code>crypto_settlement_observed</code> to compare the last <code>projected</code> frame with the stamped <code>settlement_price</code>. Every gap-free run should match exactly.</p></div></li>
+      </ol>
+      </section>
+      <section class="b-vtab-panel" role="tabpanel" id="p-7" aria-labelledby="q-7" hidden>
+        <h3 class="b-h2">Three facts to check with the backend team, and one copy decision.</h3>
+      <div class="b-grid" data-cols="2">
+        <div class="b-panel"><h3 class="b-h3">Is the settler on <code>[T−60s, T)</code>?</h3><p class="b-small" style="margin:0">The mission-control verifier and docs say so for instruments minted since Sep 23. The settler itself is in pmx-monorepo, which we couldn't read.</p></div>
+        <div class="b-panel"><h3 class="b-h3">Was the average the goal of the flag?</h3><p class="b-small" style="margin:0"><code>rollout_asset_price_service</code> moves the source to asset-price-service and switches every frame to the average, in one step. Ask whether the average was intended, or came along with the migration.</p></div>
+        <div class="b-panel"><h3 class="b-h3">How is price to beat stamped?</h3><p class="b-small" style="margin:0">The 1–3s stamp latency suggests the minute before window start. The ingestor's older Redis <code>price_to_beat</code> path uses the last print at the boundary.</p></div>
+        <div class="b-panel"><h3 class="b-h3">What does the UI say during the glide?</h3><p class="b-small" style="margin:0">Something like "Settling at $84,341.20, 23/60 in". The tie rule (≥ resolves Up) also needs to show when the line sits on the target.</p></div>
+      </div>
+      </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script id="model">
+// ===== Model: mocked BRTI prints in integer cents, and every display rule. No DOM. =====
+const T = 300, WIN = 60, FS = T - WIN, PRE = 120, N = PRE + T + 1;
+const CLOCK0 = 14 * 3600 + 5 * 60; // run opens 14:05:00 ET
+
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+function meanHalfUp(sum, n) { const q = Math.floor(sum / n), rem = sum - q * n; return 2 * rem >= n ? q + 1 : q; }
+function interpKeys(keys, s) {
+  if (s <= keys[0][0]) return keys[0][1];
+  for (let j = 1; j < keys.length; j++) if (s <= keys[j][0]) { const [a, va] = keys[j - 1], [b, vb] = keys[j]; return va + (vb - va) * (s - a) / (b - a); }
+  return keys[keys.length - 1][1];
+}
+
+// Offsets in dollars from the price to beat.
+const SCENARIOS = {
+  lateDump: { label: 'Late dump', blurb: 'Above the line the whole final minute, then dumps in the last 4 seconds.', seed: 11, noise: 3.2,
+    keys: [[0, 3], [50, -16], [110, 12], [170, 30], [232, 26], [262, 34], [295, 31], [297, -52], [300, -64]] },
+  latePump: { label: 'Late pump', blurb: 'Below the line all minute, then rips through it at the bell.', seed: 23, noise: 3.2,
+    keys: [[0, -2], [60, 14], [120, -11], [180, -28], [232, -24], [262, -33], [295, -29], [297, 50], [300, 61]] },
+  whipsaw: { label: 'Whipsaw', blurb: 'Crosses the line every ten seconds through the final minute.', seed: 7, noise: 4.6,
+    keys: [[0, 2], [80, 18], [160, -14], [230, 6], [240, 22], [250, -26], [260, 30], [270, -28], [280, 26], [290, -22], [300, 12]] },
+  coinFlip: { label: 'Coin flip', blurb: 'Hugs the price to beat. Every rule struggles here.', seed: 41, noise: 2.6,
+    keys: [[0, 5], [100, -10], [200, 7], [240, 1.5], [300, -0.5]] },
+  steady: { label: 'Steady climb', blurb: 'A clean trend with no late drama. Every rule agrees.', seed: 5, noise: 3.4,
+    keys: [[0, 3], [300, 92]] },
+  random: { label: 'Random', blurb: 'A fresh random walk. Use New random run to reroll.', seed: 99, noise: 3.6, keys: null },
+};
+
+function randomKeys(r) {
+  const keys = [[0, (r() - .5) * 16]];
+  for (let s = 35; s < FS; s += 35 + Math.floor(r() * 30)) keys.push([s, (r() - .5) * 80]);
+  keys.push([FS, (r() - .5) * 50]);
+  let s = FS;
+  while (s < T - 3) { s = Math.min(T - 3, s + 5 + Math.floor(r() * 14)); keys.push([s, (r() - .5) * 80]); }
+  keys.push([T, (r() - .5) * 90]);
+  return keys;
+}
+
+function generate(id, seedOverride) {
+  const sc = SCENARIOS[id];
+  const r = mulberry32(seedOverride ?? sc.seed);
+  const p = new Array(N);
+  const base = 8431840 + Math.round((r() - .5) * 3000);
+  let e = 0, w = 0;
+  const step = () => { e = e * 0.84 + gauss(r) * sc.noise * 100; w = w * 0.993 + gauss(r) * 90; return e + w; };
+  for (let s = -PRE; s < 0; s++) p[s + PRE] = Math.round(base + step());
+  let sum = 0; for (let s = -60; s < 0; s++) sum += p[s + PRE];
+  const target = meanHalfUp(sum, 60);
+  const keys = sc.keys ?? randomKeys(r);
+  w *= 0.3;
+  for (let s = 0; s <= T; s++) p[s + PRE] = Math.round(target + interpKeys(keys, s) * 100 + step());
+  let ss = 0; for (let s = FS; s < T; s++) ss += p[s + PRE];
+  const settle = meanHalfUp(ss, 60);
+  return { id, p, target, settle, outcome: settle >= target ? 'up' : 'down', disp: {}, k: null };
+}
+
+function computeDisplays(d, k) {
+  const { p } = d;
+  const pre = new Float64Array(N + 1);
+  for (let i = 0; i < N; i++) pre[i + 1] = pre[i] + p[i];
+  const sumRange = (a, b) => pre[b + PRE + 1] - pre[a + PRE]; // inclusive seconds
+  const spot = new Float64Array(N), rolling = new Float64Array(N), running = new Float64Array(N), projected = new Float64Array(N);
+  for (let s = -PRE; s <= T; s++) {
+    const i = s + PRE, v = p[i];
+    spot[i] = v;
+    const a = Math.max(-PRE, s - 59);
+    rolling[i] = meanHalfUp(sumRange(a, s), s - a + 1);
+    if (s < FS) { running[i] = v; projected[i] = v; }
+    else if (s < T) {
+      const kk = s - FS + 1;
+      running[i] = meanHalfUp(sumRange(FS, s), kk);
+      projected[i] = meanHalfUp(sumRange(FS, s) + (T - 1 - s) * v, 60);
+    } else { running[i] = d.settle; projected[i] = d.settle; }
+  }
+  d.disp = { spot, rolling, running, projected };
+  computeExp(d, k);
+  return d;
+}
+function expWeight(s, k) { const u = (s - FS + 1) / WIN; return (Math.exp(k * u) - 1) / (Math.exp(k) - 1); }
+function computeExp(d, k) {
+  const { spot, rolling } = d.disp;
+  const exp = new Float64Array(N);
+  for (let s = -PRE; s <= T; s++) {
+    const i = s + PRE;
+    if (s < FS) exp[i] = spot[i];
+    else if (s < T) { const w = expWeight(s, k); exp[i] = (1 - w) * spot[i] + w * rolling[i]; }
+    else exp[i] = d.settle;
+  }
+  d.disp.exp = exp; d.k = k;
+}
+
+// Share of a $1 spot move at second s that reaches the displayed price.
+function sensitivity(id, s, k) {
+  if (id === 'spot') return 1;
+  if (id === 'rolling') return 1 / 60;
+  if (s < FS) return 1;
+  if (s >= T) return 0;
+  if (id === 'running') return 1 / (s - FS + 1);
+  if (id === 'projected') return (T - s) / 60;
+  if (id === 'exp') { const w = expWeight(s, k); return (1 - w) + w / 60; }
+  return 1;
+}
+
+function metrics(d, id) {
+  const a = d.disp[id], sp = d.disp.spot, at = s => a[s + PRE];
+  let mv = 0, ms = 0; for (let s = 1; s < FS; s++) { mv += Math.abs(at(s) - at(s - 1)); ms += Math.abs(sp[s + PRE] - sp[s - 1 + PRE]); }
+  let fv = 0, fs = 0; for (let s = FS; s < T; s++) { fv += Math.abs(at(s) - at(s - 1)); fs += Math.abs(sp[s + PRE] - sp[s - 1 + PRE]); }
+  let wrong = 0; for (let s = FS; s < T; s++) { const side = at(s) >= d.target ? 'up' : 'down'; if (side !== d.outcome) wrong++; }
+  let jump = 0; for (let s = T - 4; s <= T; s++) jump = Math.max(jump, Math.abs(at(s) - at(s - 1)));
+  return { live: mv / ms, liveFinal: fv / fs, wrong, endErr: at(T) - d.settle, jump };
+}
+
+if (typeof module !== 'undefined') module.exports = { generate, computeDisplays, metrics, SCENARIOS, T, FS, PRE, sensitivity };
+</script>
+
+<script>
+(() => {
+// ===== Theme tokens for canvas, read from Bench =====
+const root = document.documentElement;
+const MAP = { card: 'card', sunk: 'sunk', fg: 'strong', fg2: 'text', fg3: 'muted', grid: 'line-2', ring: 'ring', band: 'line', green: 'green', red: 'red',
+  btc: 'series-3', twap: 'series-2', proj: 'series-1', run: 'series-4' };
+let TK = {}, FONT = 'ui-sans-serif, system-ui, sans-serif';
+function readTokens() {
+  const cs = getComputedStyle(root);
+  for (const [k, v] of Object.entries(MAP)) TK[k] = cs.getPropertyValue('--b-' + v).trim();
+  FONT = cs.getPropertyValue('--b-sans').trim() || FONT;
+}
+readTokens();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => setTimeout(readTokens, 0));
+new MutationObserver(() => setTimeout(readTokens, 0)).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function rgba(hex, a) {
+  if (!hex || hex[0] !== '#') return hex;
+  let h = hex.slice(1); if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  if (h.length === 8) h = h.slice(0, 6);
+  const n = parseInt(h, 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+const usd = c => '$' + (Math.round(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const usdAbs = c => usd(Math.abs(c));
+const clockLabel = (s, secs) => { const t = CLOCK0 + Math.round(s); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, sec = t % 60; return `${h}:${String(m).padStart(2, '0')}` + (secs ? `:${String(sec).padStart(2, '0')}` : ''); };
+const countdown = t => { const r = Math.max(0, Math.ceil(T - t - 1e-9)); return `${String(Math.floor(r / 60)).padStart(2, '0')}:${String(r % 60).padStart(2, '0')}`; };
+const ease = f => 1 - Math.pow(1 - Math.max(0, Math.min(1, f)), 3);
+const MOVE = 0.6;
+
+// Pen trace: hold the previous print at s, reach the new one at s + 0.6.
+function tipValue(get, t) {
+  const tt = Math.min(t, T + MOVE);
+  const i = Math.min(Math.floor(tt), T);
+  const f = tt - i;
+  if (f >= MOVE || i >= T && tt >= T + MOVE) return get(i);
+  return get(i - 1) + (get(i) - get(i - 1)) * ease(f / MOVE);
+}
+function buildPts(get, t, from) {
+  const pts = [];
+  const tt = Math.min(t, T + MOVE);
+  const last = Math.min(Math.floor(tt), T);
+  const s0 = Math.max(-PRE + 1, Math.floor(from) - 1);
+  pts.push([s0, get(s0 - 1)]);
+  for (let s = s0; s <= last; s++) {
+    if (s > s0) pts.push([s, get(s - 1)]);
+    if (s + MOVE <= tt) pts.push([s + MOVE, get(s)]);
+    else { pts.push([tt, get(s - 1) + (get(s) - get(s - 1)) * ease((tt - s) / MOVE)]); return pts; }
+  }
+  if (tt > pts[pts.length - 1][0]) pts.push([tt, get(last)]);
+  return pts;
+}
+function niceStep(span, count) {
+  const raw = span / Math.max(1, count), mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * mag >= raw) return m * mag;
+  return 10 * mag;
+}
+
+// ===== Chart (recreates the apps/us PriceLinePlot) =====
+class Chart {
+  constructor(canvas) {
+    this.c = canvas; this.ctx = canvas.getContext('2d'); this.dom = null;
+    this.resize(); new ResizeObserver(() => this.resize()).observe(canvas);
+  }
+  resize() {
+    const r = this.c.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+    this.w = r.width; this.h = r.height;
+    this.c.width = Math.max(1, Math.round(r.width * d)); this.c.height = Math.max(1, Math.round(r.height * d));
+    this.ctx.setTransform(d, 0, 0, d, 0, 0);
+  }
+  draw(st, dt) {
+    const { ctx, w, h } = this; if (!w || !h) return;
+    ctx.clearRect(0, 0, w, h);
+    const m = { l: 4, r: 70, t: 12, b: 22 }, pw = w - m.l - m.r, ph = h - m.t - m.b;
+    const t = st.t;
+    let x0, x1;
+    if (st.view === 'live') { const e = Math.min(t, T + 1); x0 = e - 30; x1 = e + 1.5; }
+    else { x0 = -4; x1 = T + 6; }
+    const xs = s => m.l + (s - x0) / (x1 - x0) * pw;
+
+    const built = st.series.map(se => ({ ...se, pts: buildPts(se.get, t, Math.max(x0, se.from ?? -Infinity)) }));
+    let lo = Infinity, hi = -Infinity;
+    for (const se of built) for (const [x, v] of se.pts) if (x >= x0 - 1) { if (v < lo) lo = v; if (v > hi) hi = v; }
+    if (st.view === 'full') { lo = Math.min(lo, st.target); hi = Math.max(hi, st.target); }
+    if (!isFinite(lo)) { lo = st.target - 1000; hi = st.target + 1000; }
+    const span = Math.max(hi - lo, 2000), mid = (hi + lo) / 2;
+    const goal = [mid - span * 0.7, mid + span * 0.7];
+    if (!this.dom || st.snap) this.dom = goal.slice();
+    else { const k = 1 - Math.exp(-(dt || 0.016) / 0.14); this.dom[0] += (goal[0] - this.dom[0]) * k; this.dom[1] += (goal[1] - this.dom[1]) * k; }
+    const [y0, y1] = this.dom;
+    const ys = v => m.t + (1 - (v - y0) / (y1 - y0)) * ph;
+
+    // settlement minute band
+    ctx.save(); ctx.beginPath(); ctx.rect(m.l, 0, pw + 2, h); ctx.clip();
+    if (st.band) {
+      const bx0 = Math.max(m.l, xs(FS)), bx1 = Math.min(m.l + pw, xs(T));
+      if (bx1 > bx0) {
+        ctx.fillStyle = rgba(TK.band, 0.08); ctx.fillRect(bx0, m.t, bx1 - bx0, ph);
+        ctx.strokeStyle = rgba(TK.band, 0.6); ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+        for (const s of [FS, T]) { const x = Math.round(xs(s)) + .5; ctx.beginPath(); ctx.moveTo(x, m.t); ctx.lineTo(x, m.t + ph); ctx.stroke(); }
+        ctx.setLineDash([]);
+        if (bx1 - bx0 > 90) { ctx.fillStyle = TK.fg3; ctx.font = `500 11px ${FONT}`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText('Settlement minute', bx0 + 6, m.t + 13); }
+      }
+    }
+    ctx.restore();
+
+    // grid + y labels
+    const step = niceStep(y1 - y0, ph / 36);
+    ctx.font = `500 11px ${FONT}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = Math.ceil(y0 / step) * step; v <= y1; v += step) {
+      const y = Math.round(ys(v)) + .5;
+      ctx.strokeStyle = rgba(TK.grid, 0.6); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(m.l, y); ctx.lineTo(m.l + pw, y); ctx.stroke();
+      ctx.fillStyle = TK.fg3; ctx.fillText(usd(v), w - 6, y);
+    }
+    // x labels
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = TK.fg3;
+    const xstep = st.view === 'live' ? 10 : 60;
+    for (let s = Math.ceil(x0 / xstep) * xstep; s <= x1; s += xstep) {
+      const x = xs(s); if (x < m.l + 18 || x > m.l + pw - 18) continue;
+      ctx.fillText(clockLabel(s, st.view === 'live'), x, h - 6);
+    }
+
+    const yT = ys(st.target), tInView = yT >= m.t && yT <= m.t + ph;
+    if (tInView) {
+      ctx.strokeStyle = rgba(TK.fg3, 0.9); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(m.l, Math.round(yT) + .5); ctx.lineTo(m.l + pw, Math.round(yT) + .5); ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t - 4, pw, ph + 8); ctx.clip();
+    const line = d3.line().x(p => xs(p[0])).y(p => ys(p[1])).curve(d3.curveMonotoneX).context(ctx);
+    for (const se of built) {
+      const col = TK[se.color] || se.color;
+      const tip = se.pts[se.pts.length - 1];
+      const above = tip[1] >= st.target;
+      if (se.fill) {
+        let minY = Infinity, maxY = -Infinity; for (const p of se.pts) { const y = ys(p[1]); if (y < minY) minY = y; if (y > maxY) maxY = y; }
+        const edge = above ? m.t + ph : m.t;
+        const g = ctx.createLinearGradient(0, above ? minY : maxY, 0, edge);
+        g.addColorStop(0, rgba(col, 0.18)); g.addColorStop(1, rgba(col, 0));
+        ctx.beginPath(); line(se.pts);
+        ctx.lineTo(xs(tip[0]), edge); ctx.lineTo(xs(se.pts[0][0]), edge); ctx.closePath();
+        ctx.fillStyle = g; ctx.fill();
+      }
+      ctx.lineWidth = se.width || 1.75; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.setLineDash(se.dash || []);
+      const alpha = se.alpha ?? 1;
+      if (se.dim && tInView) {
+        for (const region of ['above', 'below']) {
+          ctx.save(); ctx.beginPath();
+          if (region === 'above') ctx.rect(m.l, 0, pw, yT); else ctx.rect(m.l, yT, pw, h);
+          ctx.clip();
+          const win = (region === 'above') === above;
+          ctx.strokeStyle = rgba(col, alpha * (win ? 1 : 0.45));
+          ctx.beginPath(); line(se.pts); ctx.stroke(); ctx.restore();
+        }
+      } else { ctx.strokeStyle = rgba(col, alpha); ctx.beginPath(); line(se.pts); ctx.stroke(); }
+      ctx.setLineDash([]);
+    }
+    ctx.restore();
+
+    // end dots + pulse
+    const now = performance.now() / 1000;
+    for (const se of built) {
+      if (!se.dot) continue;
+      const col = TK[se.color] || se.color, tip = se.pts[se.pts.length - 1];
+      const x = xs(tip[0]), y = ys(tip[1]);
+      if (se.pulse && !reduceMotion && t < T) {
+        const ph2 = ((now - 0.7) % 3.25 + 3.25) % 3.25 / 3.25;
+        if (ph2 < 0.6923) { const q = ease(ph2 / 0.6923); ctx.fillStyle = rgba(col, 0.6 * (1 - q)); ctx.beginPath(); ctx.arc(x, y, 4 * (1 + 3 * q), 0, Math.PI * 2); ctx.fill(); }
+      }
+      ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, se.dotR || 3, 0, Math.PI * 2); ctx.fill();
+      if (se.ring) { ctx.strokeStyle = TK.card; ctx.lineWidth = 1.5; ctx.stroke(); }
+    }
+
+    if (st.settle != null && t >= T) {
+      const x = xs(T), y = ys(st.settle);
+      ctx.strokeStyle = TK.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.stroke();
+    }
+
+    // target pill, drawn like a Bench chip
+    const label = `${usd(st.target)} target`;
+    ctx.font = `500 12px ${FONT}`;
+    const tw = ctx.measureText(label).width, pinned = yT < m.t + 11 || yT > m.t + ph - 11;
+    const pillW = tw + (pinned ? 40 : 30), pillH = 24;
+    const px = Math.min(m.l + pw - pillW - 6, Math.max(m.l + 6, m.l + pw * (st.view === 'full' ? 0.36 : 0.42) - pillW / 2));
+    let py = yT, pin = 0;
+    if (yT < m.t + pillH / 2) { py = m.t + pillH / 2; pin = -1; }
+    if (yT > m.t + ph - pillH / 2) { py = m.t + ph - pillH / 2; pin = 1; }
+    ctx.fillStyle = TK.card; ctx.beginPath(); ctx.roundRect(px, py - pillH / 2, pillW, pillH, 12); ctx.fill();
+    ctx.strokeStyle = TK.ring; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(px + .5, py - pillH / 2 + .5, pillW - 1, pillH - 1, 12); ctx.stroke();
+    ctx.fillStyle = TK.btc; ctx.beginPath(); ctx.arc(px + 12, py, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = TK.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(label, px + 21, py + .5);
+    if (pin) { // caret pointing to where the target line is
+      const cx = px + pillW - 13; ctx.fillStyle = TK.fg3; ctx.beginPath();
+      if (pin < 0) { ctx.moveTo(cx - 4, py + 2); ctx.lineTo(cx + 4, py + 2); ctx.lineTo(cx, py - 3); }
+      else { ctx.moveTo(cx - 4, py - 2); ctx.lineTo(cx + 4, py - 2); ctx.lineTo(cx, py + 3); }
+      ctx.closePath(); ctx.fill();
+    }
+  }
+}
+
+// ===== Players =====
+class Player {
+  constructor(t, speed, loop) { this.t = t; this.speed = speed; this.loop = loop; this.playing = false; this.snap = true; }
+  tick(dt) {
+    if (!this.playing) return;
+    this.t += dt * this.speed;
+    if (this.t >= T + 3) { if (this.loop) { this.t = 0; this.snap = true; } else { this.t = T + 3; this.playing = false; this.onStop && this.onStop(); } }
+  }
+}
+// Bench segmented controls handle selection and the sliding thumb; this reads the picked value.
+function segBind(el, cb) {
+  el.addEventListener('click', e => { const b = e.target.closest('.b-tab'); if (b) cb(b.dataset.v); });
+}
+function setDelta(el, v, target) {
+  const d = Math.round(v) - target;
+  if (d === 0) el.removeAttribute('data-dir'); else el.dataset.dir = d > 0 ? 'up' : 'down';
+  el.innerHTML = (d ? BENCH.icon(d > 0 ? 'caret-up' : 'caret-down') : '') + `${usdAbs(d)} · ${(Math.abs(d) / target * 100).toFixed(2)}%`;
+}
+function tabs(el, items, selected) {
+  el.innerHTML = items.map(([v, label, title]) => `<button class="b-tab" role="tab" type="button" data-v="${v}" aria-selected="${v === selected}"${title ? ` title="${title}"` : ''}>${label}</button>`).join('');
+}
+
+const cache = {};
+function data(id, seed) {
+  const key = id + ':' + (seed ?? '');
+  if (!cache[key]) cache[key] = computeDisplays(generate(id, seed), 6);
+  return cache[key];
+}
+const getter = (d, id) => s => d.disp[id][Math.max(0, Math.min(N - 1, s + PRE))];
+
+// ===== Side by side =====
+const tri = new Player(reduceMotion ? 280 : 228, 1, true);
+let triId = 'lateDump', triView = 'live';
+const triScn = document.getElementById('tri-scn');
+tabs(triScn, Object.entries(SCENARIOS).filter(([k]) => k !== 'random').map(([k, v]) => [k, v.label, v.blurb]), triId);
+const c1 = new Chart(document.getElementById('t1')), c2 = new Chart(document.getElementById('t2')), c3 = new Chart(document.getElementById('t3'));
+const triPlay = document.getElementById('tri-play');
+function triPlayLabel() { triPlay.textContent = tri.playing ? 'Pause' : 'Play'; }
+triPlay.onclick = () => { tri.playing = !tri.playing; triPlayLabel(); };
+segBind(document.getElementById('tri-speed'), v => tri.speed = +v);
+segBind(document.getElementById('tri-view'), v => { triView = v; tri.snap = true; });
+segBind(triScn, v => { triId = v; tri.snap = true; triNote(); });
+document.getElementById('tri-final').onclick = () => { tri.t = FS - 5; tri.snap = true; };
+function triNote() {
+  const d = data(triId);
+  document.getElementById('tri-note').innerHTML = `<strong>${SCENARIOS[triId].label}.</strong> ${SCENARIOS[triId].blurb} Price to beat ${usd(d.target)}. Settles at ${usd(d.settle)}, so ${d.outcome === 'up' ? 'Up' : 'Down'} wins. The spot line ends at ${usd(d.p[T + PRE])}, and the TWAP line's last frame reads ${usd(d.disp.rolling[T + PRE])}.`;
+}
+triNote();
+const triEls = { v1: document.getElementById('t1-v'), d1: document.getElementById('t1-d'), v2: document.getElementById('t2-v'), d2: document.getElementById('t2-d'), a: document.getElementById('t3-a'), b: document.getElementById('t3-b'), g: document.getElementById('t3-g'), readout: document.getElementById('tri-readout') };
+
+function drawTri(dt) {
+  const d = data(triId), t = tri.t, snap = tri.snap; tri.snap = false;
+  const gs = getter(d, 'spot'), gr = getter(d, 'rolling');
+  const base = { t, view: triView, target: d.target, band: true, snap };
+  c1.draw({ ...base, series: [{ get: gs, color: 'btc', fill: true, dim: true, dot: true, pulse: true }] }, dt);
+  c2.draw({ ...base, series: [{ get: gr, color: 'twap', fill: true, dim: true, dot: true, pulse: true }] }, dt);
+  c3.draw({ ...base, series: [{ get: gs, color: 'btc', dot: true, pulse: true, alpha: .95 }, { get: gr, color: 'twap', dot: true, pulse: true }] }, dt);
+  const vs = tipValue(gs, t), vr = tipValue(gr, t);
+  triEls.v1.textContent = usd(vs); setDelta(triEls.d1, vs, d.target);
+  triEls.v2.textContent = usd(vr); setDelta(triEls.d2, vr, d.target);
+  triEls.a.textContent = usd(vs); triEls.b.textContent = usd(vr); triEls.g.textContent = usdAbs(vs - vr);
+  triEls.readout.textContent = countdown(t) + ' left';
+}
+
+// ===== Playground =====
+const METHODS = [
+  { id: 'spot', name: 'Spot', color: 'btc', series: 3, desc: 'The raw print, all the way to 0:00. The liveliest rule, but it can finish on the losing side.', f: 'D = P(t)' },
+  { id: 'rolling', name: 'Rolling 60s TWAP', color: 'twap', series: 2, desc: 'Mean of the last 60 prints, all the time. What production streams today. Trails spot by about 30s, and its 0:00 window is off by one second.', f: 'D = mean P[t−59 … t]' },
+  { id: 'running', name: 'Running average', color: 'run', series: 4, dash: [5, 4], desc: 'Mean of the prints so far in the final minute. Today\'s "60s avg" chip. A move in second k shows at only 1/k.', f: 'D = mean P[T−60 … t]' },
+  { id: 'projected', name: 'Projected settlement', color: 'proj', series: 1, isNew: true, desc: 'Prints so far, plus the current price for every second left. Spot until T−60, and exactly the settlement at 0:00.', f: 'D = (ΣP[T−60…t] + (T−1−t)·P(t)) / 60' },
+];
+const pg = new Player(232, 1, false);
+let pgId = 'lateDump', pgSeed = undefined, pgMethod = 'projected', pgView = 'full', pgK = 6;
+const pgc = new Chart(document.getElementById('pgc'));
+const sensC = document.getElementById('sens'), sensCtx = sensC.getContext('2d');
+const stripC = document.getElementById('pg-strip'), stripCtx = stripC.getContext('2d');
+
+const scnEl = document.getElementById('pg-scn');
+tabs(scnEl, Object.entries(SCENARIOS).map(([k, v]) => [k, v.label, v.blurb]), pgId);
+segBind(scnEl, v => { pgId = v; pgSeed = v === 'random' ? (pgSeed ?? 1234) : undefined; pg.snap = true; refreshPg(); });
+document.getElementById('pg-reroll').onclick = () => {
+  pgId = 'random'; pgSeed = Math.floor(Math.random() * 1e9);
+  scnEl.querySelector('[data-v="random"]').click();
+};
+
+const mEl = document.getElementById('pg-methods');
+function renderMethods() {
+  mEl.innerHTML = '';
+  for (const me of METHODS) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'b-option'; b.dataset.v = me.id;
+    b.setAttribute('aria-pressed', String(me.id === pgMethod));
+    b.innerHTML = `${me.isNew ? '<span class="b-panel-tag">Proposed</span>' : ''}<span class="b-key b-h3"><i data-series="${me.series}"${me.dash ? ' data-dash' : ''}></i>${me.name}</span><p>${me.desc}</p><code>${me.f}</code>`;
+    b.onclick = () => { pgMethod = me.id; for (const x of mEl.querySelectorAll('.b-option')) x.setAttribute('aria-pressed', String(x.dataset.v === pgMethod)); renderTable(); };
+    mEl.appendChild(b);
+  }
+}
+renderMethods();
+
+function pgData() { const d = data(pgId, pgSeed); if (d.k !== pgK) computeExp(d, pgK); return d; }
+
+const playBtn = document.getElementById('pg-play'), scrub = document.getElementById('pg-scrub');
+function pgPlayLabel() { const l = pg.playing ? 'Pause' : (pg.t >= T + 2.9 ? 'Replay' : 'Play'); if (playBtn.textContent !== l) playBtn.textContent = l; }
+playBtn.onclick = () => { if (!pg.playing && pg.t >= T + 2.9) { pg.t = 0; pg.snap = true; } pg.playing = !pg.playing; pgPlayLabel(); };
+pg.onStop = pgPlayLabel;
+scrub.addEventListener('input', () => { pg.t = +scrub.value; pg.snap = true; });
+segBind(document.getElementById('pg-speed'), v => pg.speed = +v);
+segBind(document.getElementById('pg-view'), v => { pgView = v; pg.snap = true; });
+document.getElementById('pg-final').onclick = () => { pg.t = FS - 5; pg.snap = true; };
+const ghostCb = document.getElementById('pg-ghost'), othersCb = document.getElementById('pg-others');
+
+const marks = document.getElementById('pg-marks');
+for (const s of [0, 60, 120, 180, 240, 300]) { const sp = document.createElement('span'); sp.style.left = (s / 303 * 100) + '%'; sp.textContent = countdown(s); marks.appendChild(sp); }
+
+const pgEls = { ptb: document.getElementById('pg-ptb'), now: document.getElementById('pg-now'), delta: document.getElementById('pg-delta'), mode: document.getElementById('pg-mode'), readout: document.getElementById('pg-readout'), timer: document.getElementById('pg-timer'), truth: document.getElementById('pg-truth-sum') };
+
+function refreshPg() { pgData(); renderTable(); }
+
+function renderTable() {
+  const d = pgData();
+  document.getElementById('pg-outcome').innerHTML = `<span>Price to beat <strong>${usd(d.target)}</strong></span><span>Settles at <strong>${usd(d.settle)}</strong></span><span class="b-chip" data-tone="${d.outcome === 'up' ? 'yes' : 'no'}">${d.outcome === 'up' ? 'Up wins' : 'Down wins'}</span><span class="b-small">Spot at 0:00 is ${usd(d.p[T + PRE])}</span>`;
+  const rows = METHODS.map(me => ({ me, r: metrics(d, me.id) }));
+  const best = {
+    live: Math.max(...rows.map(x => x.r.live)), liveFinal: Math.max(...rows.map(x => x.r.liveFinal)),
+    wrong: Math.min(...rows.map(x => x.r.wrong)), endErr: Math.min(...rows.map(x => Math.abs(x.r.endErr))), jump: Math.min(...rows.map(x => x.r.jump)),
+  };
+  const tone = (ok, bad) => ok ? ' data-tone="yes"' : bad ? ' data-tone="no"' : '';
+  let html = '<thead><tr><th>Rule</th><th data-num>Feels live,<br>before T−60</th><th data-num>Feels live,<br>final minute</th><th data-num>Losing side<br>(of 60s)</th><th data-num>Off at 0:00</th><th data-num>Biggest 1s move,<br>last 5s</th></tr></thead><tbody>';
+  for (const { me, r } of rows) {
+    html += `<tr${me.id === pgMethod ? ' data-selected' : ''}><td data-strong><span class="b-key"><i data-series="${me.series}"${me.dash ? ' data-dash' : ''}></i>${me.name}</span></td>`
+      + `<td data-num${tone(r.live >= best.live - 1e-9, r.live < .2)}>${Math.round(r.live * 100)}%</td>`
+      + `<td data-num${tone(r.liveFinal >= best.liveFinal - 1e-9, r.liveFinal < .2)}>${Math.round(r.liveFinal * 100)}%</td>`
+      + `<td data-num${tone(r.wrong === best.wrong, r.wrong >= 5)}>${r.wrong}s</td>`
+      + `<td data-num${tone(Math.abs(r.endErr) <= best.endErr + 1e-9, Math.abs(r.endErr) >= 100)}>${Math.abs(r.endErr) < 0.5 ? 'Exact' : (r.endErr > 0 ? '+' : '−') + usdAbs(r.endErr)}</td>`
+      + `<td data-num${tone(r.jump <= best.jump + 1e-9, r.jump >= 2500)}>${usdAbs(r.jump)}</td></tr>`;
+  }
+  document.getElementById('cmp').innerHTML = html + '</tbody>';
+  document.getElementById('sens-legend').innerHTML = METHODS.map(me => `<span class="b-key"><i data-series="${me.series}"${me.dash ? ' data-dash' : ''}></i>${me.name}</span>`).join('');
+}
+renderTable();
+
+function fitCanvas(c, ctx) {
+  const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  if (c.width !== Math.round(r.width * dpr) || c.height !== Math.round(r.height * dpr)) { c.width = Math.round(r.width * dpr); c.height = Math.round(r.height * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return r;
+}
+function drawSens() {
+  const r = fitCanvas(sensC, sensCtx), ctx = sensCtx;
+  const w = r.width, h = r.height, m = { l: 40, r: 10, t: 10, b: 22 }, pw = w - m.l - m.r, ph = h - m.t - m.b;
+  ctx.clearRect(0, 0, w, h);
+  const a = FS - 12, b = T;
+  const xs = s => m.l + (s - a) / (b - a) * pw, ys = v => m.t + (1 - v) * ph;
+  ctx.font = `500 11px ${FONT}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
+  for (const v of [0, .25, .5, .75, 1]) {
+    ctx.strokeStyle = rgba(TK.grid, .6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(m.l, Math.round(ys(v)) + .5); ctx.lineTo(m.l + pw, Math.round(ys(v)) + .5); ctx.stroke();
+    ctx.fillStyle = TK.fg3; ctx.fillText(Math.round(v * 100) + '%', m.l - 8, ys(v));
+  }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = TK.fg3;
+  for (const s of [FS, FS + 15, FS + 30, FS + 45, T]) ctx.fillText(countdown(s), Math.min(w - 16, xs(s)), h - 6);
+  ctx.fillStyle = rgba(TK.band, .08); ctx.fillRect(xs(FS), m.t, xs(T) - xs(FS), ph);
+  const order = METHODS.filter(x => x.id !== pgMethod).concat(METHODS.filter(x => x.id === pgMethod));
+  for (const me of order) {
+    const sel = me.id === pgMethod;
+    ctx.strokeStyle = rgba(TK[me.color], sel ? 1 : .45); ctx.lineWidth = sel ? 2.25 : 1.25; ctx.setLineDash(me.dash || []);
+    ctx.beginPath();
+    for (let s = a; s < T; s++) { const v = sensitivity(me.id, s, pgK); const x0 = xs(s), x1 = xs(s + 1); if (s === a) ctx.moveTo(x0, ys(v)); else ctx.lineTo(x0, ys(v)); ctx.lineTo(x1, ys(v)); }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  if (pg.t >= a && pg.t <= T) { ctx.strokeStyle = TK.fg; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(Math.round(xs(pg.t)) + .5, m.t); ctx.lineTo(Math.round(xs(pg.t)) + .5, m.t + ph); ctx.stroke(); }
+}
+function drawStrip(cells) {
+  const r = fitCanvas(stripC, stripCtx), ctx = stripCtx, gap = 2, cw = (r.width - gap * 59) / 60;
+  ctx.clearRect(0, 0, r.width, r.height);
+  cells.forEach((c, i) => {
+    ctx.fillStyle = c === 'ok' ? rgba(TK.green, .75) : c === 'bad' ? TK.red : TK.sunk;
+    ctx.beginPath(); ctx.roundRect(i * (cw + gap), 0, cw, r.height, 2); ctx.fill();
+  });
+}
+
+let lastTruth = '', lastMode = '';
+function drawPg(dt) {
+  const d = pgData(), t = pg.t, snap = pg.snap; pg.snap = false;
+  const me = METHODS.find(x => x.id === pgMethod);
+  const gSel = getter(d, pgMethod), gSpot = getter(d, 'spot');
+  const series = [];
+  if (othersCb.checked) for (const o of METHODS) if (o.id !== pgMethod && o.id !== 'spot') series.push({ get: getter(d, o.id), color: o.color, alpha: .55, width: 1.25, dash: o.dash });
+  if (ghostCb.checked && pgMethod !== 'spot') series.push({ get: gSpot, color: 'btc', alpha: .38, width: 1.25, dot: true, dotR: 2.5 });
+  // The site draws the line in the asset color; under the projected rule, its final-minute stretch switches to ink.
+  series.push({ get: gSel, color: me.color === 'proj' ? 'btc' : me.color, dash: me.dash, fill: true, dim: true, dot: true, pulse: true, width: 2 });
+  if (pgMethod === 'projected' && t >= FS - 1) series.push({ get: gSel, from: FS - 1, color: 'proj', width: 2.25, dot: true, ring: true, dotR: 3.5 });
+  pgc.draw({ t, view: pgView, target: d.target, band: true, snap, series, settle: d.settle }, dt);
+
+  const v = tipValue(gSel, t);
+  pgEls.ptb.textContent = usd(d.target);
+  pgEls.now.textContent = usd(v);
+  pgEls.now.style.color = Math.round(v) >= d.target ? 'var(--b-green)' : 'var(--b-red)';
+  setDelta(pgEls.delta, v, d.target);
+  const inFinal = t >= FS && t < T;
+  const mode = t >= T ? `Settled, ${d.outcome === 'up' ? 'Up' : 'Down'}` : !inFinal ? (pgMethod === 'rolling' ? '60s mean' : 'Spot') :
+    ({ spot: 'Spot', rolling: '60s mean', running: `60s avg, ${Math.min(60, Math.floor(t) - FS + 1)} prints`, projected: `Settling at, ${Math.min(60, Math.floor(t) - FS + 1)}/60 in` })[pgMethod];
+  if (mode !== lastMode) {
+    pgEls.mode.textContent = mode; lastMode = mode;
+    const live = inFinal && pgMethod !== 'spot';
+    pgEls.mode.toggleAttribute('data-plain', !live); if (live) pgEls.mode.dataset.tone = 'info'; else pgEls.mode.removeAttribute('data-tone');
+  }
+  pgEls.readout.textContent = countdown(t) + ' left';
+  pgEls.timer.textContent = countdown(t);
+  if (document.activeElement !== scrub) scrub.value = t;
+
+  const arr = d.disp[pgMethod]; let ok = 0, bad = 0; const cells = [];
+  for (let i = 0; i < 60; i++) {
+    const s = FS + i; let c = '';
+    if (s <= t - MOVE) { const side = arr[s + PRE] >= d.target ? 'up' : 'down'; if (side === d.outcome) { c = 'ok'; ok++; } else { c = 'bad'; bad++; } }
+    cells.push(c);
+  }
+  drawStrip(cells);
+  const truth = ok + bad === 0 ? 'Fills in from T−60 (1:00 left)' : `${ok} right, ${bad} on the losing side`;
+  if (truth !== lastTruth) { pgEls.truth.textContent = truth; lastTruth = truth; }
+  drawSens();
+}
+
+// ===== Loop =====
+let last = performance.now();
+tri.playing = !reduceMotion; triPlayLabel(); pgPlayLabel();
+function frame(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  tri.tick(dt); pg.tick(dt);
+  drawTri(dt); drawPg(dt);
+  if (pg.playing) pgPlayLabel();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); playBtn.click(); }
+});
+})();
+</script>

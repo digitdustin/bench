@@ -1,0 +1,28 @@
+<title>{{Name}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--bench:css-->
+<style>
+/* page-specific layout only */
+.t-layout{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:var(--b-5)}
+@media (max-width:760px){.t-layout{grid-template-columns:1fr}}
+</style>
+<main class="b-page" data-width="wide">
+  <header class="b-masthead">
+    <div class="b-eyebrow"><span class="b-label">{{Team}}</span><span class="b-label">Tool</span><span class="b-label">{{Oct 15, 2026}}</span></div>
+    <h1 class="b-display">{{Tool name}}</h1>
+    <p class="b-lede">{{What it does, in one sentence.}}</p>
+    <dl class="b-meta"><div><dt class="b-label">Status</dt><dd>{{Working draft}}</dd></div></dl>
+  </header>
+
+  <div class="t-layout">
+    <section class="b-panel">
+      <div class="b-field"><label class="b-label" for="in-1">{{Input}}</label><input class="b-input" id="in-1" value="{{example value}}"></div>
+      <div class="b-tabs" role="tablist" aria-label="{{Mode}}"><button class="b-tab" role="tab" aria-selected="true">{{One}}</button><button class="b-tab" role="tab" aria-selected="false">{{Two}}</button></div>
+      <button class="b-btn" data-variant="solid" type="button">{{Run}}</button>
+    </section>
+    <section class="b-plate">
+      <div class="b-corners" aria-hidden="true"><span class="b-corner" data-corner="fig">Output</span><span class="b-corner" data-corner="readout" id="readout">{{live value}}</span></div>
+      {{Output, already filled with example data}}
+    </section>
+  </div>
+</main>
